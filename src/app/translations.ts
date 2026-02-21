@@ -13,7 +13,7 @@ export const langNames: Record<Lang, string> = {
 
 // Base English — all keys defined here
 const en: Record<string, string> = {
-  nav_services: "Services", nav_hub: "Hub", nav_indicators: "Indicators", nav_pricing: "Pricing",
+  nav_calendar: "Calendar", nav_services: "Services", nav_hub: "Hub", nav_indicators: "Indicators", nav_pricing: "Pricing",
   nav_team: "Team", nav_reviews: "Reviews", nav_faq: "FAQ", nav_cta: "BOOK A CALL",
   hero_badge: "LIVE AI ANALYSIS",
   hero_title: "The Future of",
@@ -73,14 +73,14 @@ const en: Record<string, string> = {
   ft_copy: "© 2025 Aureus IA SPRL — BCE BE 1028.230.781 — All rights reserved",
   ft_terms: "Terms & Conditions",
   ft_privacy: "Privacy Policy",
-  terms_title: "Terms and Conditions of Use and Protection",
+  cal_tag: "Live Data", cal_title: "Economic Calendar", cal_desc: "Real-time economic events and market-moving announcements.", terms_title: "Terms and Conditions of Use and Protection",
   terms_subtitle: "Aureus IA SRL — © 2025 — All Rights Reserved",
   terms_close: "Close",
   terms_read: "Read our Terms & Conditions",
 };
 
 const fr: Record<string, string> = {
-  nav_services: "Services", nav_hub: "Hub", nav_indicators: "Indicateurs", nav_pricing: "Tarifs",
+  nav_calendar: "Calendrier", nav_services: "Services", nav_hub: "Hub", nav_indicators: "Indicateurs", nav_pricing: "Tarifs",
   nav_team: "Équipe", nav_reviews: "Avis", nav_faq: "FAQ", nav_cta: "RÉSERVER",
   hero_badge: "ANALYSE IA EN DIRECT", hero_title: "Le Futur de",
   hero_tw1: "L'Intelligence de Marché", hero_tw2: "L'Analyse Trading", hero_tw3: "La Reconnaissance de Patterns", hero_tw4: "La Gestion du Risque", hero_tw5: "La Data Science",
@@ -138,13 +138,13 @@ const fr: Record<string, string> = {
   ft_disc: "Analyse de marché par IA.\nÉducatif & analytique — pas de conseil financier.",
   ft_copy: "© 2025 Aureus IA SPRL — BCE BE 1028.230.781 — Tous droits réservés",
   ft_terms: "Conditions Générales", ft_privacy: "Politique de Confidentialité",
-  terms_title: "Conditions Générales d'Utilisation et de Protection",
+  cal_tag: "Données Live", cal_title: "Calendrier Économique", cal_desc: "Événements économiques et annonces en temps réel.", terms_title: "Conditions Générales d'Utilisation et de Protection",
   terms_subtitle: "Aureus IA SRL — © 2025 — Tous Droits Réservés",
   terms_close: "Fermer", terms_read: "Lire nos Conditions Générales",
 };
 
 const nl: Record<string, string> = {
-  nav_services: "Diensten", nav_hub: "Hub", nav_indicators: "Indicatoren", nav_pricing: "Tarieven",
+  nav_calendar: "Kalender", nav_services: "Diensten", nav_hub: "Hub", nav_indicators: "Indicatoren", nav_pricing: "Tarieven",
   nav_team: "Team", nav_reviews: "Reviews", nav_faq: "FAQ", nav_cta: "BOEK NU",
   hero_badge: "LIVE AI ANALYSE", hero_title: "De Toekomst van",
   hero_tw1: "Marktintelligentie", hero_tw2: "Handelsanalyse", hero_tw3: "Patroonherkenning", hero_tw4: "Risicobeheer", hero_tw5: "Datawetenschap",
@@ -173,11 +173,11 @@ const nl: Record<string, string> = {
   faq1_q: "Wie kan Aureus IA gebruiken?", faq1_a: "Iedereen: beginners, traders, analisten en professionals.", faq2_q: "Hoe boek ik een desk?", faq2_a: "Via info@aureus-ia.com of +32 491 70 94 13.", faq3_q: "Wat zijn de tarieven?", faq3_a: "Gratis consultatie, AI Toegang €48.40/sessie, Coaching €96.80/sessie, Discovery Day op aanvraag.", faq4_q: "Neemt de AI beslissingen?", faq4_a: "Nee. Strikt educatief en analytisch.", faq5_q: "Kan ik op afstand deelnemen?", faq5_a: "Ja! Via onze beveiligde digitale omgeving.", faq6_q: "Hoe lang duurt de training?", faq6_a: "Discovery Day is een volle dag. Coaching: 1 uur.", faq7_q: "Voordelen t.o.v. klassieke software?", faq7_a: "11 AI-indicatoren, real-time detectie, persoonlijke coaching.", faq8_q: "Alleen voor professionals?", faq8_a: "Nee, alle niveaus welkom.", faq9_q: "Eigen laptop meenemen?", faq9_a: "Ja, met beveiligde remote toegang.", faq10_q: "Waar is Aureus IA?", faq10_a: "Place Marcel Broodthaers 8, Sint-Gillis, Brussel. Ook online.",
   ct_tag: "Contact", ct_title: "Laten We Verbinden", ct_desc: "Transparante aanpak conform regelgeving.", ct_name: "Uw Naam", ct_email: "Uw Email", ct_msg: "Uw Bericht", ct_send: "Verzenden", ct_sent: "✓ Verzonden!",
   ft_platform: "Platform", ft_legal: "Juridisch", ft_contact: "Contact", ft_disc: "AI-marktanalyse.\nEducatief — geen financieel advies.", ft_copy: "© 2025 Aureus IA SPRL — BCE BE 1028.230.781 — Alle rechten voorbehouden",
-  ft_terms: "Algemene Voorwaarden", ft_privacy: "Privacybeleid", terms_title: "Algemene Voorwaarden", terms_subtitle: "Aureus IA SRL — © 2025", terms_close: "Sluiten", terms_read: "Lees onze Algemene Voorwaarden",
+  ft_terms: "Algemene Voorwaarden", ft_privacy: "Privacybeleid", cal_tag: "Live Data", cal_title: "Economische Kalender", cal_desc: "Economische evenementen in real-time.", terms_title: "Algemene Voorwaarden", terms_subtitle: "Aureus IA SRL — © 2025", terms_close: "Sluiten", terms_read: "Lees onze Algemene Voorwaarden",
 };
 
 const de: Record<string, string> = {
-  nav_services: "Dienste", nav_hub: "Hub", nav_indicators: "Indikatoren", nav_pricing: "Preise",
+  nav_calendar: "Kalender", nav_services: "Dienste", nav_hub: "Hub", nav_indicators: "Indikatoren", nav_pricing: "Preise",
   nav_team: "Team", nav_reviews: "Bewertungen", nav_faq: "FAQ", nav_cta: "BUCHEN",
   hero_badge: "LIVE KI-ANALYSE", hero_title: "Die Zukunft der",
   hero_tw1: "Marktintelligenz", hero_tw2: "Handelsanalytik", hero_tw3: "Mustererkennung", hero_tw4: "Risikomanagement", hero_tw5: "Datenwissenschaft",
@@ -203,11 +203,11 @@ const de: Record<string, string> = {
   faq1_q: "Wer kann Aureus IA nutzen?", faq1_a: "Alle: Anfänger bis Profis.", faq2_q: "Wie buche ich?", faq2_a: "Via info@aureus-ia.com oder +32 491 70 94 13.", faq3_q: "Preise?", faq3_a: "Beratung gratis, KI €48.40, Coaching €96.80, Discovery auf Anfrage.", faq4_q: "Trifft die KI Entscheidungen?", faq4_a: "Nein. Rein bildungsbasiert.", faq5_q: "Remote teilnehmen?", faq5_a: "Ja! Sichere digitale Umgebung.", faq6_q: "Dauer der Intensivtraining?", faq6_a: "Discovery Day: ganzer Tag. Coaching: 1 Stunde.", faq7_q: "Vorteile?", faq7_a: "11 KI-Indikatoren, Echtzeit, persönliches Coaching.", faq8_q: "Nur für Profis?", faq8_a: "Nein, alle Niveaus willkommen.", faq9_q: "Eigener Laptop?", faq9_a: "Ja, mit sicherem Fernzugriff.", faq10_q: "Wo?", faq10_a: "Place Marcel Broodthaers 8, Saint-Gilles, Brüssel. Auch online.",
   ct_tag: "Kontakt", ct_title: "Verbinden", ct_desc: "Transparent, DSGVO-konform.", ct_name: "Ihr Name", ct_email: "Ihre Email", ct_msg: "Ihre Nachricht", ct_send: "Senden", ct_sent: "✓ Gesendet!",
   ft_platform: "Plattform", ft_legal: "Rechtliches", ft_contact: "Kontakt", ft_disc: "KI-Marktanalyse.\nBildung — keine Finanzberatung.", ft_copy: "© 2025 Aureus IA SPRL — BCE BE 1028.230.781 — Alle Rechte vorbehalten",
-  ft_terms: "AGB", ft_privacy: "Datenschutz", terms_title: "Allgemeine Geschäftsbedingungen", terms_subtitle: "Aureus IA SRL — © 2025", terms_close: "Schließen", terms_read: "AGB lesen",
+  ft_terms: "AGB", ft_privacy: "Datenschutz", cal_tag: "Live-Daten", cal_title: "Wirtschaftskalender", cal_desc: "Wirtschaftsereignisse in Echtzeit.", terms_title: "Allgemeine Geschäftsbedingungen", terms_subtitle: "Aureus IA SRL — © 2025", terms_close: "Schließen", terms_read: "AGB lesen",
 };
 
 const es: Record<string, string> = {
-  nav_services: "Servicios", nav_hub: "Hub", nav_indicators: "Indicadores", nav_pricing: "Precios",
+  nav_calendar: "Calendario", nav_services: "Servicios", nav_hub: "Hub", nav_indicators: "Indicadores", nav_pricing: "Precios",
   nav_team: "Equipo", nav_reviews: "Opiniones", nav_faq: "FAQ", nav_cta: "RESERVAR",
   hero_badge: "ANÁLISIS IA EN VIVO", hero_title: "El Futuro de",
   hero_tw1: "La Inteligencia de Mercado", hero_tw2: "El Análisis de Trading", hero_tw3: "El Reconocimiento de Patrones", hero_tw4: "La Gestión de Riesgos", hero_tw5: "La Ciencia de Datos",
@@ -236,11 +236,11 @@ const es: Record<string, string> = {
   faq1_q: "¿Quién puede usar Aureus IA?", faq1_a: "Todos: principiantes, traders, analistas y profesionales.", faq2_q: "¿Cómo reservo?", faq2_a: "Email info@aureus-ia.com o +32 491 70 94 13.", faq3_q: "¿Cuáles son los precios?", faq3_a: "Consulta gratis, Acceso IA €48.40, Coaching €96.80, Discovery bajo solicitud.", faq4_q: "¿La IA toma decisiones por mí?", faq4_a: "No. Estrictamente educativo y analítico.", faq5_q: "¿Puedo participar remotamente?", faq5_a: "¡Sí! Acceso seguro desde cualquier dispositivo.", faq6_q: "¿Duración de la formación?", faq6_a: "Discovery Day: día completo. Coaching: 1 hora.", faq7_q: "¿Ventajas vs software clásico?", faq7_a: "11 indicadores IA, detección en tiempo real, coaching personalizado.", faq8_q: "¿Solo para profesionales?", faq8_a: "No, todos los niveles son bienvenidos.", faq9_q: "¿Puedo traer mi portátil?", faq9_a: "Sí, con acceso remoto seguro.", faq10_q: "¿Dónde está Aureus IA?", faq10_a: "Place Marcel Broodthaers 8, Saint-Gilles, Bruselas. También online.",
   ct_tag: "Contacto", ct_title: "Conectemos", ct_desc: "Enfoque transparente y conforme a regulaciones europeas.", ct_name: "Su Nombre", ct_email: "Su Email", ct_msg: "Su Mensaje", ct_send: "Enviar", ct_sent: "✓ ¡Enviado!",
   ft_platform: "Plataforma", ft_legal: "Legal", ft_contact: "Contacto", ft_disc: "Análisis de mercado con IA.\nEducativo — no asesoramiento financiero.", ft_copy: "© 2025 Aureus IA SPRL — BCE BE 1028.230.781 — Todos los derechos reservados",
-  ft_terms: "Términos y Condiciones", ft_privacy: "Política de Privacidad", terms_title: "Términos y Condiciones de Uso", terms_subtitle: "Aureus IA SRL — © 2025", terms_close: "Cerrar", terms_read: "Leer Términos y Condiciones",
+  ft_terms: "Términos y Condiciones", ft_privacy: "Política de Privacidad", cal_tag: "Datos en Vivo", cal_title: "Calendario Económico", cal_desc: "Eventos económicos en tiempo real.", terms_title: "Términos y Condiciones de Uso", terms_subtitle: "Aureus IA SRL — © 2025", terms_close: "Cerrar", terms_read: "Leer Términos y Condiciones",
 };
 
 const pt: Record<string, string> = {
-  nav_services: "Serviços", nav_hub: "Hub", nav_indicators: "Indicadores", nav_pricing: "Preços",
+  nav_calendar: "Calendário", nav_services: "Serviços", nav_hub: "Hub", nav_indicators: "Indicadores", nav_pricing: "Preços",
   nav_team: "Equipa", nav_reviews: "Avaliações", nav_faq: "FAQ", nav_cta: "RESERVAR",
   hero_badge: "ANÁLISE IA AO VIVO", hero_title: "O Futuro da",
   hero_tw1: "Inteligência de Mercado", hero_tw2: "Análise de Trading", hero_tw3: "Reconhecimento de Padrões", hero_tw4: "Gestão de Risco", hero_tw5: "Ciência de Dados",
@@ -269,11 +269,11 @@ const pt: Record<string, string> = {
   faq1_q: "Quem pode usar o Aureus IA?", faq1_a: "Todos: iniciantes, traders, analistas e profissionais.", faq2_q: "Como reservo?", faq2_a: "Email info@aureus-ia.com ou +32 491 70 94 13.", faq3_q: "Quais são os preços?", faq3_a: "Consulta grátis, Acesso IA €48.40, Coaching €96.80, Discovery sob pedido.", faq4_q: "A IA toma decisões por mim?", faq4_a: "Não. Estritamente educativo e analítico.", faq5_q: "Posso participar remotamente?", faq5_a: "Sim! Acesso seguro de qualquer dispositivo.", faq6_q: "Duração da formação?", faq6_a: "Discovery Day: dia inteiro. Coaching: 1 hora.", faq7_q: "Vantagens vs software clássico?", faq7_a: "11 indicadores IA, deteção em tempo real, coaching personalizado.", faq8_q: "Só para profissionais?", faq8_a: "Não, todos os níveis são bem-vindos.", faq9_q: "Posso trazer o meu portátil?", faq9_a: "Sim, com acesso remoto seguro.", faq10_q: "Onde fica o Aureus IA?", faq10_a: "Place Marcel Broodthaers 8, Saint-Gilles, Bruxelas. Também online.",
   ct_tag: "Contacto", ct_title: "Vamos Conectar", ct_desc: "Abordagem transparente e conforme às regulações europeias.", ct_name: "Seu Nome", ct_email: "Seu Email", ct_msg: "Sua Mensagem", ct_send: "Enviar", ct_sent: "✓ Enviado!",
   ft_platform: "Plataforma", ft_legal: "Legal", ft_contact: "Contacto", ft_disc: "Análise de mercado com IA.\nEducativo — sem aconselhamento financeiro.", ft_copy: "© 2025 Aureus IA SPRL — BCE BE 1028.230.781 — Todos os direitos reservados",
-  ft_terms: "Termos e Condições", ft_privacy: "Política de Privacidade", terms_title: "Termos e Condições de Uso", terms_subtitle: "Aureus IA SRL — © 2025", terms_close: "Fechar", terms_read: "Ler Termos e Condições",
+  ft_terms: "Termos e Condições", ft_privacy: "Política de Privacidade", cal_tag: "Dados ao Vivo", cal_title: "Calendário Económico", cal_desc: "Eventos económicos em tempo real.", terms_title: "Termos e Condições de Uso", terms_subtitle: "Aureus IA SRL — © 2025", terms_close: "Fechar", terms_read: "Ler Termos e Condições",
 };
 
 const ru: Record<string, string> = {
-  nav_services: "Услуги", nav_hub: "Хаб", nav_indicators: "Индикаторы", nav_pricing: "Цены",
+  nav_calendar: "Календарь", nav_services: "Услуги", nav_hub: "Хаб", nav_indicators: "Индикаторы", nav_pricing: "Цены",
   nav_team: "Команда", nav_reviews: "Отзывы", nav_faq: "FAQ", nav_cta: "ЗАПИСАТЬСЯ",
   hero_badge: "АНАЛИЗ ИИ В РЕАЛЬНОМ ВРЕМЕНИ", hero_title: "Будущее",
   hero_tw1: "Рыночной Аналитики", hero_tw2: "Торговых Данных", hero_tw3: "Распознавания Паттернов", hero_tw4: "Управления Рисками", hero_tw5: "Науки о Данных",
@@ -299,11 +299,11 @@ const ru: Record<string, string> = {
   faq1_q: "Кто может использовать?", faq1_a: "Все: новички, трейдеры, аналитики.", faq2_q: "Как забронировать?", faq2_a: "info@aureus-ia.com или +32 491 70 94 13.", faq3_q: "Цены?", faq3_a: "Консультация бесплатно, ИИ €48.40, Коучинг €96.80, День Открытий по запросу.", faq4_q: "ИИ принимает решения?", faq4_a: "Нет. Только образование.", faq5_q: "Дистанционно?", faq5_a: "Да! Безопасный доступ.", faq6_q: "Длительность?", faq6_a: "День Открытий: весь день. Коучинг: 1 час.", faq7_q: "Преимущества?", faq7_a: "11 ИИ-индикаторов, реальное время, персональный коучинг.", faq8_q: "Только для профи?", faq8_a: "Нет, все уровни.", faq9_q: "Свой ноутбук?", faq9_a: "Да, с безопасным доступом.", faq10_q: "Где?", faq10_a: "Place Marcel Broodthaers 8, Брюссель. Также онлайн.",
   ct_tag: "Связаться", ct_title: "Свяжемся", ct_desc: "Прозрачно и по закону.", ct_name: "Ваше Имя", ct_email: "Ваш Email", ct_msg: "Сообщение", ct_send: "Отправить", ct_sent: "✓ Отправлено!",
   ft_platform: "Платформа", ft_legal: "Юридическое", ft_contact: "Контакты", ft_disc: "ИИ-анализ рынка.\nОбразовательный.", ft_copy: "© 2025 Aureus IA SPRL — BCE BE 1028.230.781 — Все права защищены",
-  ft_terms: "Условия", ft_privacy: "Конфиденциальность", terms_title: "Условия Использования", terms_subtitle: "Aureus IA SRL — © 2025", terms_close: "Закрыть", terms_read: "Читать Условия",
+  ft_terms: "Условия", ft_privacy: "Конфиденциальность", cal_tag: "Данные", cal_title: "Экономический Календарь", cal_desc: "Экономические события в реальном времени.", terms_title: "Условия Использования", terms_subtitle: "Aureus IA SRL — © 2025", terms_close: "Закрыть", terms_read: "Читать Условия",
 };
 
 const ar: Record<string, string> = {
-  nav_services: "الخدمات", nav_hub: "المركز", nav_indicators: "المؤشرات", nav_pricing: "الأسعار",
+  nav_calendar: "التقويم", nav_services: "الخدمات", nav_hub: "المركز", nav_indicators: "المؤشرات", nav_pricing: "الأسعار",
   nav_team: "الفريق", nav_reviews: "الآراء", nav_faq: "الأسئلة", nav_cta: "احجز الآن",
   hero_badge: "تحليل ذكاء اصطناعي مباشر", hero_title: "مستقبل",
   hero_tw1: "ذكاء السوق", hero_tw2: "تحليلات التداول", hero_tw3: "التعرف على الأنماط", hero_tw4: "إدارة المخاطر", hero_tw5: "علم البيانات",
@@ -329,7 +329,7 @@ const ar: Record<string, string> = {
   faq1_q: "من يمكنه استخدام Aureus IA؟", faq1_a: "الجميع: مبتدئين، متداولين، محللين.", faq2_q: "كيف أحجز؟", faq2_a: "info@aureus-ia.com أو +32 491 70 94 13.", faq3_q: "الأسعار؟", faq3_a: "استشارة مجانية، وصول IA €48.40، تدريب €96.80، يوم الاكتشاف عند الطلب.", faq4_q: "هل يقرر الذكاء الاصطناعي بدلاً عني؟", faq4_a: "لا. تعليمي فقط.", faq5_q: "عن بُعد؟", faq5_a: "نعم! وصول آمن.", faq6_q: "مدة التدريب؟", faq6_a: "يوم الاكتشاف: يوم كامل. التدريب: ساعة.", faq7_q: "المزايا؟", faq7_a: "11 مؤشراً، كشف فوري، تدريب شخصي.", faq8_q: "للمحترفين فقط؟", faq8_a: "لا، الجميع مرحب بهم.", faq9_q: "حاسوبي الخاص؟", faq9_a: "نعم، مع وصول آمن.", faq10_q: "أين؟", faq10_a: "Place Marcel Broodthaers 8، بروكسل. أيضاً عبر الإنترنت.",
   ct_tag: "تواصل", ct_title: "لنتواصل", ct_desc: "نهج شفاف ومتوافق.", ct_name: "اسمك", ct_email: "بريدك", ct_msg: "رسالتك", ct_send: "إرسال", ct_sent: "✓ تم!",
   ft_platform: "المنصة", ft_legal: "قانوني", ft_contact: "اتصل", ft_disc: "تحليل بالذكاء الاصطناعي.\nتعليمي.", ft_copy: "© 2025 Aureus IA SPRL — BCE BE 1028.230.781 — جميع الحقوق محفوظة",
-  ft_terms: "الشروط والأحكام", ft_privacy: "سياسة الخصوصية", terms_title: "شروط الاستخدام والحماية", terms_subtitle: "Aureus IA SRL — © 2025", terms_close: "إغلاق", terms_read: "قراءة الشروط",
+  ft_terms: "الشروط والأحكام", ft_privacy: "سياسة الخصوصية", cal_tag: "بيانات مباشرة", cal_title: "التقويم الاقتصادي", cal_desc: "الأحداث الاقتصادية في الوقت الفعلي.", terms_title: "شروط الاستخدام والحماية", terms_subtitle: "Aureus IA SRL — © 2025", terms_close: "إغلاق", terms_read: "قراءة الشروط",
 };
 
 export const t: Record<Lang, Record<string, string>> = { en, fr, nl, de, es, pt, ru, ar };
