@@ -171,11 +171,12 @@ function FAQ({ lang }: { lang: Lang }) {
 
 function LangSwitcher({ lang, setLang }: { lang: Lang; setLang: (l: Lang) => void }) {
   const [open, setOpen] = useState(false);
+  const fullNames: Record<Lang, string> = { en:"English", fr:"Français", nl:"Nederlands", de:"Deutsch", es:"Español", pt:"Português", ru:"Русский", ar:"العربية" };
   return (
     <div className="lang-sw">
-      <button className="lang-btn" onClick={() => setOpen(!open)}>{langNames[lang].split(" ")[0]} <span style={{ fontSize: 8 }}>▼</span></button>
+      <button className="lang-btn" onClick={() => setOpen(!open)}>{langNames[lang]} <span style={{ fontSize: 8 }}>▼</span></button>
       {open && <div className="lang-dd">{(Object.keys(langNames) as Lang[]).map(l => (
-        <button key={l} className={`lang-opt ${l === lang ? "act" : ""}`} onClick={() => { setLang(l); setOpen(false); }}>{langNames[l]}</button>
+        <button key={l} className={`lang-opt ${l === lang ? "act" : ""}`} onClick={() => { setLang(l); setOpen(false); }}>{langNames[l]} — {fullNames[l]}</button>
       ))}</div>}
     </div>
   );
