@@ -2,6 +2,7 @@
 import { useState, useEffect, useRef } from "react";
 import { t, langNames, type Lang } from "./translations";
 import { termsContent } from "./terms-content";
+import { privacyContent } from "./privacy-content";
 import { bookingT, timeSlots } from "./booking";
 
 const tickerData = [
@@ -325,6 +326,47 @@ function TermsModal({ lang, onClose }: { lang: Lang; onClose: () => void }) {
   );
 }
 
+function PrivacyModal({ lang, onClose }: { lang: Lang; onClose: () => void }) {
+  const L = t[lang];
+  useEffect(() => { document.body.style.overflow = "hidden"; return () => { document.body.style.overflow = ""; }; }, []);
+  return (
+    <div className="modal-overlay" onClick={onClose}>
+      <div className="modal-box" onClick={e => e.stopPropagation()}>
+        <div className="modal-header"><h3>{L.ft_privacy}</h3><button className="modal-close" onClick={onClose}>{L.terms_close}</button></div>
+        <div className="modal-body" dangerouslySetInnerHTML={{ __html: privacyContent }} />
+      </div>
+    </div>
+  );
+}
+
+const cookieBannerT: Record<string, { msg: string; accept: string; decline: string; more: string }> = {
+  en: { msg: "We use cookies to improve your experience.", accept: "Accept All", decline: "Necessary Only", more: "Privacy Policy" },
+  fr: { msg: "Nous utilisons des cookies pour améliorer votre expérience.", accept: "Tout Accepter", decline: "Nécessaires Uniquement", more: "Politique de Confidentialité" },
+  nl: { msg: "Wij gebruiken cookies om uw ervaring te verbeteren.", accept: "Alles Accepteren", decline: "Alleen Noodzakelijk", more: "Privacybeleid" },
+  de: { msg: "Wir verwenden Cookies zur Verbesserung Ihrer Erfahrung.", accept: "Alle Akzeptieren", decline: "Nur Notwendige", more: "Datenschutz" },
+  es: { msg: "Usamos cookies para mejorar su experiencia.", accept: "Aceptar Todo", decline: "Solo Necesarias", more: "Política de Privacidad" },
+  pt: { msg: "Usamos cookies para melhorar sua experiência.", accept: "Aceitar Tudo", decline: "Apenas Necessários", more: "Política de Privacidade" },
+  ru: { msg: "Мы используем cookies для улучшения опыта.", accept: "Принять Все", decline: "Только Необходимые", more: "Конфиденциальность" },
+  ar: { msg: "نستخدم ملفات تعريف الارتباط لتحسين تجربتك.", accept: "قبول الكل", decline: "الضرورية فقط", more: "سياسة الخصوصية" },
+};
+
+function CookieBanner({ lang, onPrivacy }: { lang: Lang; onPrivacy: () => void }) {
+  const [visible, setVisible] = useState(true);
+  const B = cookieBannerT[lang] || cookieBannerT.en;
+  if (!visible) return null;
+  return (
+    <div className="cookie-banner">
+      <div className="cookie-inner">
+        <p className="cookie-msg">🍪 {B.msg} <a href="#" onClick={e => { e.preventDefault(); onPrivacy(); }} style={{ color: "var(--g)", textDecoration: "underline" }}>{B.more}</a></p>
+        <div className="cookie-btns">
+          <button className="cookie-decline" onClick={() => setVisible(false)}>{B.decline}</button>
+          <button className="cookie-accept" onClick={() => setVisible(false)}>{B.accept}</button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function ContactForm({ lang }: { lang: Lang }) {
   const L = t[lang];
   const [sent, setSent] = useState(false);
@@ -344,6 +386,7 @@ export default function Home() {
   const [scrollPct, setScrollPct] = useState(0);
   const [mobileMenu, setMobileMenu] = useState(false);
   const [showTerms, setShowTerms] = useState(false);
+  const [showPrivacy, setShowPrivacy] = useState(false);
   const [showBooking, setShowBooking] = useState(false);
   const L = t[lang];
   const isRtl = lang === "ar";
@@ -578,7 +621,7 @@ export default function Home() {
           <p style={{ fontSize: 12, color: "var(--tm)", lineHeight: 1.65, whiteSpace: "pre-line" }}>{L.ft_disc}</p>
         </div>
         <div><div className="fh">{L.ft_platform}</div><a href="#services">{L.nav_services}</a><a href="#hub">Brussels Hub</a><a href="#indicators">{L.nav_indicators}</a><a href="#discovery">Discovery Day</a><a href="#pricing">{L.nav_pricing}</a></div>
-        <div><div className="fh">{L.ft_legal}</div><a href="https://fr.trustpilot.com/review/aureus-ia.com" target="_blank" rel="noopener noreferrer">⭐ Trustpilot</a><a href="#" onClick={e => { e.preventDefault(); setShowTerms(true); }}>{L.ft_privacy}</a><a href="#" onClick={e => { e.preventDefault(); setShowTerms(true); }}>{L.ft_terms}</a></div>
+        <div><div className="fh">{L.ft_legal}</div><a href="https://fr.trustpilot.com/review/aureus-ia.com" target="_blank" rel="noopener noreferrer">⭐ Trustpilot</a><a href="#" onClick={e => { e.preventDefault(); setShowPrivacy(true); }}>{L.ft_privacy}</a><a href="#" onClick={e => { e.preventDefault(); setShowTerms(true); }}>{L.ft_terms}</a></div>
         <div><div className="fh">{L.ft_contact}</div><p style={{ fontSize: 12, color: "var(--td)", lineHeight: 1.65 }}>Pl. Marcel Broodthaers 8<br />1060 Saint-Gilles, Belgium<br />info@aureus-ia.com<br />+32 491 70 94 13</p></div>
       </div><div className="fb">{L.ft_copy}</div></footer>
 
@@ -590,8 +633,14 @@ export default function Home() {
       {/* TERMS MODAL */}
       {showTerms && <TermsModal lang={lang} onClose={() => setShowTerms(false)} />}
 
+      {/* PRIVACY MODAL */}
+      {showPrivacy && <PrivacyModal lang={lang} onClose={() => setShowPrivacy(false)} />}
+
       {/* BOOKING MODAL */}
       {showBooking && <BookingModal lang={lang} onClose={() => setShowBooking(false)} />}
+
+      {/* COOKIE BANNER */}
+      <CookieBanner lang={lang} onPrivacy={() => setShowPrivacy(true)} />
     </div>
   );
 }
