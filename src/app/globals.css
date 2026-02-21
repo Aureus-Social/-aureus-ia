@@ -309,3 +309,8 @@ footer a:hover{color:var(--g)}
 .bk-confirm{background:linear-gradient(135deg,var(--g),var(--gd));color:var(--bg);padding:14px 36px;font-size:14px}
 .bk-confirm:disabled{opacity:.4;cursor:default}
 .bk-confirm:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 4px 16px rgba(201,168,76,.25)}
+
+/* ECONOMIC CALENDAR */
+.cal-container{background:linear-gradient(145deg,var(--c1),var(--c2));border:1px solid rgba(201,168,76,.08);border-radius:20px;overflow:hidden;padding:4px}
+.cal-wrap{overflow:hidden;border-radius:16px;position:relative}
+.cal-wrap iframe{margin-top:-38px;display:block}
