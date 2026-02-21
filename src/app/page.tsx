@@ -358,6 +358,7 @@ export default function Home() {
     { label: L.nav_team, href: "#team" },
     { label: L.nav_reviews, href: "#reviews" },
     { label: L.nav_faq, href: "#faq" },
+    { label: L.nav_calendar, href: "#calendar" },
   ];
 
   return (
@@ -513,6 +514,23 @@ export default function Home() {
       </div></section>
 
       {/* CONTACT */}
+      {/* ECONOMIC CALENDAR */}
+      <section id="calendar" style={{ background: "linear-gradient(180deg,transparent,rgba(201,168,76,.015),transparent)" }}><div className="mx">
+        <FI><SH tag={L.cal_tag} title={L.cal_title} desc={L.cal_desc} /></FI>
+        <FI><div style={{ background: "linear-gradient(145deg,var(--c1),var(--c2))", border: "1px solid rgba(201,168,76,.08)", borderRadius: 20, overflow: "hidden", padding: 4 }}>
+          <iframe
+            src={`https://sslecal2.investing.com?columns=exc_flags,exc_currency,exc_importance,exc_actual,exc_forecast,exc_previous&importance=2,3&features=datepicker,timezone,timesremaining,filters&countries=72,22,17,25,39,5,32&calType=week&timeZone=15&lang=${lang === "fr" ? "4" : lang === "nl" ? "8" : lang === "de" ? "2" : lang === "es" ? "9" : lang === "pt" ? "10" : lang === "ru" ? "6" : lang === "ar" ? "7" : "1"}`}
+            width="100%"
+            height="600"
+            style={{ border: "none", borderRadius: 16, background: "#0A0A0F" }}
+            allowFullScreen
+          />
+        </div></FI>
+        <FI><p style={{ textAlign: "center", fontSize: 11, color: "var(--tm)", marginTop: 16 }}>
+          Data provided by <a href="https://www.investing.com" target="_blank" rel="noopener noreferrer" style={{ color: "var(--g)" }}>Investing.com</a>
+        </p></FI>
+      </div></section>
+
       <section id="contact"><div className="mx" style={{ maxWidth: 660 }}>
         <FI><SH tag={L.ct_tag} title={L.ct_title} desc={L.ct_desc} /></FI>
         <FI><ContactForm lang={lang} /></FI>
