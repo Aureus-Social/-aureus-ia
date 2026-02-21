@@ -510,7 +510,7 @@ export default function Home() {
       {/* DISCOVERY DAY */}
       <section id="discovery"><div className="mx">
         <FI><div className="dc">
-          <img src="https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=700&q=80" alt="Trading Screens" style={{ width: 200, height: 200, objectFit: "cover", borderRadius: "50%", margin: "0 auto 24px", display: "block", border: "3px solid rgba(201,168,76,.2)", opacity: 0.85 }} />
+          <img src="https://images.unsplash.com/photo-1621981386829-9b458a2cddde?w=700&q=80" alt="Benjamin Franklin" style={{ width: 200, height: 200, objectFit: "cover", borderRadius: "50%", margin: "0 auto 24px", display: "block", border: "3px solid rgba(201,168,76,.2)", opacity: 0.85 }} />
           <h2 className="dct"><span className="gld">{L.disc_title}</span></h2>
           <p className="dcp">{L.disc_desc}</p>
           <div className="dcc">{[L.disc_c1, L.disc_c2, L.disc_c3, L.disc_c4].map((c, i) => <span key={i} className="dcch">{c}</span>)}</div>
