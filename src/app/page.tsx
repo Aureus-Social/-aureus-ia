@@ -510,7 +510,7 @@ export default function Home() {
       {/* DISCOVERY DAY */}
       <section id="discovery"><div className="mx">
         <FI><div className="dc">
-          <img src="https://cdn.pixabay.com/photo/2017/01/18/15/20/wall-street-1989484_640.jpg" alt="Wall Street Bull" style={{ width: 200, height: 200, objectFit: "cover", borderRadius: "50%", margin: "0 auto 24px", display: "block", border: "3px solid rgba(201,168,76,.3)" }} />
+          <img src="https://tile.loc.gov/storage-services/service/pnp/highsm/12000/12607v.jpg" alt="Wall Street Charging Bull" style={{ width: 200, height: 200, objectFit: "cover", borderRadius: "50%", margin: "0 auto 24px", display: "block", border: "3px solid rgba(201,168,76,.3)" }} />
           <h2 className="dct"><span className="gld">{L.disc_title}</span></h2>
           <p className="dcp">{L.disc_desc}</p>
           <div className="dcc">{[L.disc_c1, L.disc_c2, L.disc_c3, L.disc_c4].map((c, i) => <span key={i} className="dcch">{c}</span>)}</div>
