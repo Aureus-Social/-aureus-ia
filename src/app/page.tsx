@@ -389,7 +389,7 @@ export default function Home() {
       </nav>
 
       {/* HERO */}
-      <section id="hero"><div className="hbg" /><div className="hmesh" />
+      <section id="hero"><div className="hbg" /><div className="hmesh" /><div className="hero-img" />
         <div className="hg">
           <div>
             <div className="hbd"><span className="hdt" /><span>{L.hero_badge}</span></div>
@@ -419,6 +419,16 @@ export default function Home() {
       </div></section>
 
       {/* SERVICES */}
+      {/* NYC SKYLINE BANNER */}
+      <FI><div style={{ position: "relative", height: 280, overflow: "hidden", margin: "60px 0 0" }}>
+        <img src="https://images.unsplash.com/photo-1480714378408-67cf0d13bc1b?w=1920&q=80" alt="NYC Financial District" style={{ width: "100%", height: "100%", objectFit: "cover", filter: "brightness(0.3) sepia(0.3)" }} />
+        <div style={{ position: "absolute", inset: 0, background: "linear-gradient(180deg,var(--bg),transparent 20%,transparent 80%,var(--bg))" }} />
+        <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", flexDirection: "column", gap: 8 }}>
+          <div style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: "clamp(24px,3.5vw,42px)", fontWeight: 700, color: "var(--tx)", textAlign: "center" }}>The <span className="gld">Institutional</span> Edge</div>
+          <div style={{ fontSize: 13, color: "var(--td)", letterSpacing: 3, textTransform: "uppercase" as const }}>Wall Street Technology • Brussels Expertise</div>
+        </div>
+      </div></FI>
+
       <section id="services"><div className="mx">
         <FI><SH tag={L.svc_tag} title={L.svc_title} /></FI>
         <div className="g4">
@@ -432,7 +442,8 @@ export default function Home() {
       <section id="hub" style={{ background: "linear-gradient(180deg,transparent,rgba(201,168,76,.015),transparent)" }}><div className="mx">
         <FI><SH tag={L.hub_tag} title={L.hub_title} desc={L.hub_desc} /></FI>
         <FI><div className="hub">
-          <div className="hl">
+          <div className="hl" style={{ position: "relative", overflow: "hidden" }}>
+            <img src="https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=600&q=80" alt="Trading screens" style={{ width: "100%", height: 180, objectFit: "cover", borderRadius: 12, marginBottom: 16, opacity: 0.7 }} />
             <div style={{ fontSize: 44 }}>🇧🇪</div>
             <div className="ha">Place Marcel<br />Broodthaers 8</div>
             <div className="hcy">{L.hub_city}</div>
@@ -456,7 +467,7 @@ export default function Home() {
       {/* DISCOVERY DAY */}
       <section id="discovery"><div className="mx">
         <FI><div className="dc">
-          <div className="dci">✦</div>
+          <img src="https://images.unsplash.com/photo-1565514020179-026b92b84bb6?w=700&q=80" alt="Wall Street Bull" style={{ width: 200, height: 200, objectFit: "cover", borderRadius: "50%", margin: "0 auto 24px", display: "block", border: "3px solid rgba(201,168,76,.2)", opacity: 0.85 }} />
           <h2 className="dct"><span className="gld">{L.disc_title}</span></h2>
           <p className="dcp">{L.disc_desc}</p>
           <div className="dcc">{[L.disc_c1, L.disc_c2, L.disc_c3, L.disc_c4].map((c, i) => <span key={i} className="dcch">{c}</span>)}</div>
@@ -474,6 +485,16 @@ export default function Home() {
       </div></section>
 
       {/* PRICING */}
+      {/* TRADING FLOOR BANNER */}
+      <FI><div style={{ position: "relative", height: 220, overflow: "hidden" }}>
+        <img src="https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?w=1920&q=80" alt="Trading Floor" style={{ width: "100%", height: "100%", objectFit: "cover", filter: "brightness(0.25) sepia(0.2)" }} />
+        <div style={{ position: "absolute", inset: 0, background: "linear-gradient(180deg,var(--bg),transparent 15%,transparent 85%,var(--bg))" }} />
+        <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", flexDirection: "column", gap: 8 }}>
+          <div style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: "clamp(20px,3vw,36px)", fontWeight: 700, color: "var(--tx)", textAlign: "center" }}>Powered by <span className="gld">13 Years</span> of Market Data</div>
+          <div style={{ fontSize: 12, color: "var(--td)", letterSpacing: 2 }}>AI • Analytics • Excellence</div>
+        </div>
+      </div></FI>
+
       <section id="pricing"><div className="mx">
         <FI><SH tag={L.pr_tag} title={L.pr_title} /></FI>
         <div className="pg">
