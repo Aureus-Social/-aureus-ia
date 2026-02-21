@@ -1,597 +1,329 @@
-"use client";
-import { useState, useEffect, useRef } from "react";
-import { t, langNames, type Lang } from "./translations";
-import { termsContent } from "./terms-content";
-import { bookingT, timeSlots } from "./booking";
+@import "tailwindcss";
 
-const tickerData = [
-  { s: "XAUUSD", p: "2,687.45", c: "+1.24%", up: true },
-  { s: "EURUSD", p: "1.0842", c: "+0.15%", up: true },
-  { s: "BTCUSD", p: "97,432", c: "+3.21%", up: true },
-  { s: "US500", p: "6,012.8", c: "-0.32%", up: false },
-  { s: "GBPUSD", p: "1.2634", c: "+0.08%", up: true },
-  { s: "USDJPY", p: "149.82", c: "-0.45%", up: false },
-  { s: "XAGUSD", p: "31.42", c: "+2.10%", up: true },
-];
+:root{--g:#C9A84C;--gl:#E8D48B;--gd:#A07C2A;--bg:#06060B;--c1:#0D0D14;--c2:#111119;--c3:#16161F;--tx:#F0ECE3;--td:#8A8A9F;--tm:#5C5C70;--gr:#2ECC71;--rd:#E74C3C}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--tx);font-family:'Outfit',sans-serif;overflow-x:hidden}
+::-webkit-scrollbar{width:5px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--gd);border-radius:3px}
+a{text-decoration:none}
 
-const reviewsData = [
-  { n: "Marc D.", r: "Independent Trader", t_txt: "Aureus IA has completely transformed my analytical approach. The AI indicators detect patterns I would never have seen. Exceptional." },
-  { n: "Sophie L.", r: "Financial Analyst", t_txt: "The coaching with Lucas is incredibly valuable. 13 years of expertise distilled into actionable insights. The platform is next-level." },
-  { n: "Thomas B.", r: "Portfolio Manager", t_txt: "Finally an AI tool that delivers real analytical depth. The institutional-grade approach is exactly what I needed." },
-  { n: "Elena K.", r: "Data Scientist", t_txt: "From a technical standpoint, the AI models behind Aureus IA are impressive. Pattern recognition accuracy is truly remarkable." },
-  { n: "Pierre V.", r: "Day Trader", t_txt: "The Discovery Day was a game-changer. A full day of immersion that gave me a completely new perspective on market analysis." },
-];
+/* LOADER */
+#loader{position:fixed;inset:0;z-index:99999;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity 0.6s,visibility 0.6s}
+#loader.hide{opacity:0;visibility:hidden;pointer-events:none}
+.lr{width:70px;height:70px;border-radius:50%;border:3px solid rgba(201,168,76,0.1);border-top-color:var(--g);animation:spin 1s linear infinite;display:flex;align-items:center;justify-content:center}
+.lr span{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:700;color:var(--g)}
+.lt{margin-top:20px;font-size:13px;color:var(--td);letter-spacing:4px;text-transform:uppercase;opacity:0;animation:fu .5s .3s forwards}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes fu{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
 
-const indicators = [
-  { n: "Trend Matrix Pro", d: "Multi-timeframe trend detection", c: "#C9A84C" },
-  { n: "Volume Surge AI", d: "Institutional volume analysis", c: "#2ECC71" },
-  { n: "Fibonacci Neural", d: "AI-optimized Fibonacci levels", c: "#3498DB" },
-  { n: "Order Flow Scanner", d: "Real-time order flow mapping", c: "#E67E22" },
-  { n: "Momentum Pulse", d: "Dynamic momentum oscillator", c: "#9B59B6" },
-  { n: "Support/Resistance AI", d: "Auto-detected key levels", c: "#E74C3C" },
-  { n: "Divergence Hunter", d: "Hidden divergence detection", c: "#1ABC9C" },
-  { n: "Volatility Shield", d: "Smart volatility filter", c: "#F39C12" },
-  { n: "Candlestick AI", d: "Pattern recognition engine", c: "#E74C3C" },
-  { n: "Correlation Radar", d: "Cross-asset correlation map", c: "#3498DB" },
-  { n: "Risk Manager Pro", d: "Dynamic position sizing", c: "#2ECC71" },
-];
+/* SCROLL PROGRESS */
+#sp{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--gd),var(--g),var(--gl));z-index:9998;box-shadow:0 0 12px rgba(201,168,76,0.5);width:0%}
 
-function useInView(threshold = 0.08) {
-  const ref = useRef<HTMLDivElement>(null);
-  const [visible, setVisible] = useState(false);
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    const obs = new IntersectionObserver(([e]) => {
-      if (e.isIntersecting) { setVisible(true); obs.unobserve(el); }
-    }, { threshold, rootMargin: "0px 0px -40px 0px" });
-    obs.observe(el);
-    return () => obs.disconnect();
-  }, [threshold]);
-  return { ref, visible };
-}
+/* NAVBAR */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;transition:all .5s;border-bottom:1px solid transparent}
+nav.sc{background:rgba(6,6,11,.96);backdrop-filter:blur(24px);border-bottom:1px solid rgba(201,168,76,.06)}
+.ni{max-width:1240px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:66px;padding:0 28px}
+.logo{display:flex;align-items:center;gap:11px;color:var(--tx)}
+.lc{width:40px;height:40px;border-radius:50%;background:conic-gradient(from 0deg,var(--g),var(--gd),var(--g));display:flex;align-items:center;justify-content:center;font-weight:900;font-size:18px;color:var(--bg);font-family:'Cormorant Garamond',serif;box-shadow:0 0 24px rgba(201,168,76,.25);animation:spin 25s linear infinite}
+.lo-t{font-family:'Cormorant Garamond',serif;font-size:19px;font-weight:700;letter-spacing:3px}
+.lo-s{font-size:8px;color:var(--gd);letter-spacing:3px;text-transform:uppercase;margin-top:-2px}
+.nl{display:flex;align-items:center;gap:22px}
+.nl a{color:var(--td);font-size:10.5px;font-weight:500;letter-spacing:1.8px;text-transform:uppercase;transition:color .3s;position:relative}
+.nl a:hover{color:var(--g)}
+.nl a::after{content:'';position:absolute;bottom:-4px;left:0;width:0;height:1px;background:var(--g);transition:width .3s}
+.nl a:hover::after{width:100%}
+.nc{padding:10px 20px!important;border-radius:6px;background:linear-gradient(135deg,var(--g),var(--gd))!important;color:var(--bg)!important;font-weight:700!important;letter-spacing:1.5px!important;box-shadow:0 4px 16px rgba(201,168,76,.25)}
+.nc::after{display:none!important}
+.bur{display:none;background:none;border:none;cursor:pointer;padding:8px;flex-direction:column;gap:5px}
+.bur span{width:22px;height:2px;background:var(--g);border-radius:2px}
+.mm{display:none;padding:24px;flex-direction:column;gap:18px;background:rgba(6,6,11,.98);border-top:1px solid rgba(201,168,76,.1)}
+.mm.op{display:flex}
+.mm a{color:var(--td);font-size:15px}
+@media(max-width:1024px){.nl{display:none!important}.bur{display:flex!important}}
 
-function FI({ children, className = "" }: { children: React.ReactNode; className?: string }) {
-  const { ref, visible } = useInView();
-  return <div ref={ref} className={`fi ${visible ? "v" : ""} ${className}`}>{children}</div>;
-}
+/* TICKER */
+.tk{width:100%;overflow:hidden;background:rgba(6,6,11,.92);border-bottom:1px solid rgba(201,168,76,.05);padding:9px 0;display:none}
+nav.sc .tk{display:block}
+.tki{display:flex;gap:44px;white-space:nowrap;animation:tick 28s linear infinite;width:max-content}
+.tk span{font-family:'JetBrains Mono',monospace;font-size:11px}
+.ts{color:var(--g);font-weight:700}.tp{color:var(--tx)}.tu{color:var(--gr);font-weight:600}.td2{color:var(--rd);font-weight:600}
+@keyframes tick{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
 
-function SH({ tag, title, desc }: { tag: string; title: string; desc?: string }) {
-  return (
-    <div className="sh">
-      <span className="tag">{tag}</span>
-      <h2 className="st2">{title}</h2>
-      <div className="sl" />
-      {desc && <p className="sd" dangerouslySetInnerHTML={{ __html: desc }} />}
-    </div>
-  );
-}
+/* SECTIONS */
+section{padding:130px 28px}
+.mx{max-width:1140px;margin:0 auto}
+.tag{font-size:11px;color:var(--g);letter-spacing:5px;text-transform:uppercase;font-weight:600;text-align:center;display:block}
+.st2{font-family:'Cormorant Garamond',serif;font-size:clamp(32px,5vw,52px);font-weight:700;text-align:center;margin:14px 0 0;line-height:1.15}
+.sl{width:60px;height:2px;background:linear-gradient(90deg,transparent,var(--g),transparent);margin:20px auto 0}
+.sd{font-size:16px;color:var(--td);text-align:center;line-height:1.8;max-width:640px;margin:24px auto 0}
+.sh{margin-bottom:70px}
+.bg2{display:inline-block;padding:15px 32px;border-radius:8px;background:linear-gradient(135deg,var(--g),var(--gd));color:var(--bg);font-weight:700;font-size:14px;box-shadow:0 8px 32px rgba(201,168,76,.3);transition:all .3s}
+.bg2:hover{transform:translateY(-2px);box-shadow:0 12px 40px rgba(201,168,76,.4)}
+.bo{display:inline-block;padding:15px 32px;border-radius:8px;border:1px solid rgba(201,168,76,.3);background:rgba(201,168,76,.04);color:var(--g);font-weight:600;font-size:14px;transition:all .3s}
+.bo:hover{background:rgba(201,168,76,.08);transform:translateY(-2px)}
+.gld{background:linear-gradient(135deg,var(--gl),var(--g),var(--gd));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.fi{opacity:0;transform:translateY(36px);transition:all .9s cubic-bezier(.16,1,.3,1)}
+.fi.v{opacity:1;transform:none}
+@keyframes pls{0%,100%{opacity:1;box-shadow:0 0 6px var(--gr)}50%{opacity:.3;box-shadow:none}}
 
-function Ticker() {
-  const d = [...tickerData, ...tickerData];
-  return (
-    <div className="tk"><div className="tki">
-      {d.map((tk, i) => (
-        <span key={i}><span className="ts">{tk.s}</span>{" "}<span className="tp">{tk.p}</span>{" "}<span className={tk.up ? "tu" : "td2"}>{tk.c}</span></span>
-      ))}
-    </div></div>
-  );
-}
+/* HERO */
+#hero{min-height:100vh;display:flex;align-items:center;position:relative;overflow:hidden;padding-top:120px}
+.hbg{position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 50% -5%,rgba(201,168,76,.07),transparent 65%)}
+.hmesh{position:absolute;inset:0;background:radial-gradient(ellipse 35% 35% at 25% 30%,rgba(201,168,76,.04),transparent),radial-gradient(ellipse 30% 30% at 75% 60%,rgba(201,168,76,.03),transparent);animation:mf 18s ease-in-out infinite alternate}
+.hero-img{position:absolute;inset:0;background:url("https://images.unsplash.com/photo-1534430480872-3498386e7856?w=1920&q=80") center/cover no-repeat;opacity:.07;filter:sepia(.4)}
+@keyframes mf{0%{transform:translate(0,0) scale(1)}50%{transform:translate(-2%,1%) scale(1.03)}100%{transform:translate(1%,-1%) scale(.98)}}
+.hg{display:grid;grid-template-columns:1fr 1fr;gap:52px;align-items:center;max-width:1200px;margin:0 auto;width:100%;position:relative;z-index:2}
+@media(max-width:900px){.hg{grid-template-columns:1fr!important}}
+.hbd{display:inline-flex;align-items:center;gap:8px;padding:7px 18px;border-radius:50px;border:1px solid rgba(201,168,76,.2);background:rgba(201,168,76,.04);margin-bottom:22px;backdrop-filter:blur(8px)}
+.hdt{width:6px;height:6px;border-radius:50%;background:var(--gr);animation:pls 2s infinite}
+.hbd span:last-child{font-size:11px;color:var(--g);letter-spacing:2.5px;font-weight:600}
+h1{font-family:'Cormorant Garamond',serif;font-size:clamp(40px,5.8vw,72px);font-weight:700;line-height:1.08;margin:0 0 22px}
+#tw::after{content:'';border-right:3px solid var(--g);margin-left:2px;animation:bk 1s infinite}
+@keyframes bk{0%,100%{opacity:1}50%{opacity:0}}
+.hp{font-size:clamp(15px,1.8vw,18px);color:var(--td);line-height:1.8;margin:0 0 34px;max-width:480px}
+.hbt{display:flex;gap:14px;flex-wrap:wrap}
 
-function Typewriter({ lang }: { lang: Lang }) {
-  const L = t[lang];
-  const words = [L.hero_tw1, L.hero_tw2, L.hero_tw3, L.hero_tw4, L.hero_tw5];
-  const [wi, setWi] = useState(0);
-  const [ci, setCi] = useState(0);
-  const [del, setDel] = useState(false);
-  useEffect(() => { setWi(0); setCi(0); setDel(false); }, [lang]);
-  useEffect(() => {
-    const tm = setTimeout(() => {
-      if (!del) {
-        if (ci < words[wi].length) setCi(ci + 1);
-        else setTimeout(() => setDel(true), 2200);
-      } else {
-        if (ci > 0) setCi(ci - 1);
-        else { setDel(false); setWi((wi + 1) % words.length); }
-      }
-    }, del ? 45 : 85);
-    return () => clearTimeout(tm);
-  }, [ci, del, wi, words]);
-  return <span className="gld" id="tw">{words[wi].substring(0, ci)}</span>;
-}
+/* CHART CARD */
+.cc{background:var(--c1);border-radius:20px;border:1px solid rgba(201,168,76,.1);padding:22px;box-shadow:0 28px 80px rgba(0,0,0,.45);transition:transform .3s}
+.cc:hover{transform:translateY(-4px)}
+.cch{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+.ccs{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--g);font-weight:700;letter-spacing:1px}
+.ccp{font-family:'Cormorant Garamond',serif;font-size:32px;font-weight:700;margin-top:2px}
+.ccpc{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--gr);font-weight:700;padding:4px 12px;border-radius:6px;background:rgba(46,204,113,.1);border:1px solid rgba(46,204,113,.15)}
+.cctg{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap}
+.cct{padding:4px 12px;border-radius:20px;background:rgba(201,168,76,.05);border:1px solid rgba(201,168,76,.08);font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--gl)}
+.ccai{display:flex;align-items:center;gap:8px;margin-top:16px;padding:10px 14px;border-radius:10px;background:rgba(201,168,76,.03);border:1px solid rgba(201,168,76,.06)}
+.ccaid{width:8px;height:8px;border-radius:50%;background:var(--g);animation:pls 2.5s infinite}
+.ccai span{font-size:11px;color:var(--td)}
+.ccai b{color:var(--g)}
 
-function LiveChart() {
-  const ref = useRef<HTMLCanvasElement>(null);
-  useEffect(() => {
-    const c = ref.current;
-    if (!c) return;
-    const ctx = c.getContext("2d");
-    if (!ctx) return;
-    const W = c.width, H = c.height;
-    const data: number[] = [];
-    let price = 2650 + Math.random() * 50;
-    for (let i = 0; i < 200; i++) { price += (Math.random() - 0.48) * 4; data.push(price); }
-    let raf: number;
-    const draw = () => {
-      price += (Math.random() - 0.48) * 3; data.push(price);
-      if (data.length > 300) data.shift();
-      const mn = Math.min(...data) - 5, mx = Math.max(...data) + 5, rn = mx - mn;
-      ctx.clearRect(0, 0, W, H);
-      const g = ctx.createLinearGradient(0, 0, 0, H);
-      g.addColorStop(0, "rgba(201,168,76,.18)"); g.addColorStop(1, "rgba(201,168,76,0)");
-      ctx.beginPath(); ctx.moveTo(0, H);
-      data.forEach((v, i) => ctx.lineTo((i / (data.length - 1)) * W, H - ((v - mn) / rn) * H));
-      ctx.lineTo(W, H); ctx.fillStyle = g; ctx.fill();
-      ctx.beginPath();
-      data.forEach((v, i) => { const x = (i / (data.length - 1)) * W, y = H - ((v - mn) / rn) * H; i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y); });
-      ctx.strokeStyle = "#C9A84C"; ctx.lineWidth = 2.5; ctx.stroke();
-      const ly = H - ((data[data.length - 1] - mn) / rn) * H;
-      ctx.beginPath(); ctx.arc(W, ly, 5, 0, Math.PI * 2); ctx.fillStyle = "#C9A84C"; ctx.fill();
-      ctx.beginPath(); ctx.arc(W, ly, 12, 0, Math.PI * 2); ctx.fillStyle = "rgba(201,168,76,.2)"; ctx.fill();
-      raf = requestAnimationFrame(draw);
-    };
-    draw();
-    return () => cancelAnimationFrame(raf);
-  }, []);
-  return <canvas ref={ref} width={720} height={260} style={{ width: "100%", height: 130, display: "block", borderRadius: 8 }} />;
-}
+/* STATS */
+.stats{max-width:1040px;margin:-44px auto 0;position:relative;z-index:3;display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1px;background:rgba(201,168,76,.06);border-radius:18px;overflow:hidden;border:1px solid rgba(201,168,76,.1);box-shadow:0 16px 64px rgba(0,0,0,.25)}
+.stat{padding:34px 20px;text-align:center;background:rgba(6,6,11,.92);backdrop-filter:blur(12px)}
+.stv{font-family:'Cormorant Garamond',serif;font-size:40px;font-weight:700;color:var(--g)}
+.stl{font-size:10px;color:var(--td);letter-spacing:2.5px;text-transform:uppercase;margin-top:4px}
 
-function Reviews() {
-  const [cur, setCur] = useState(0);
-  useEffect(() => { const iv = setInterval(() => setCur(c => (c + 1) % reviewsData.length), 5000); return () => clearInterval(iv); }, []);
-  const r = reviewsData[cur];
-  return (
-    <div className="rv">
-      <div className="rvq">&ldquo;</div>
-      <p className="rvt">{r.t_txt}</p>
-      <div className="rvs">★★★★★</div>
-      <div className="rvn">{r.n}</div>
-      <div className="rvr">{r.r}</div>
-      <div className="rvd">{reviewsData.map((_, i) => (<button key={i} className={`rvdt ${i === cur ? "act" : ""}`} onClick={() => setCur(i)} />))}</div>
-    </div>
-  );
-}
+/* SERVICE CARDS */
+.g4{display:grid;grid-template-columns:repeat(auto-fit,minmax(245px,1fr));gap:18px}
+.sc2{background:var(--c1);border-radius:18px;padding:34px 26px;border:1px solid rgba(201,168,76,.05);position:relative;overflow:hidden;transition:all .4s}
+.sc2:hover{border-color:rgba(201,168,76,.18);transform:translateY(-6px);box-shadow:0 20px 50px rgba(0,0,0,.35)}
+.sc2::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--g),transparent);opacity:0;transition:opacity .4s}
+.sc2:hover::before{opacity:.5}
+.si{font-size:32px;margin-bottom:16px;display:block}
+.sct{font-family:'Cormorant Garamond',serif;font-size:21px;font-weight:700;margin-bottom:10px}
+.scd{font-size:13px;color:var(--td);line-height:1.75}
 
-function FAQ({ lang }: { lang: Lang }) {
-  const L = t[lang];
-  const [open, setOpen] = useState<number | null>(null);
-  const faqs = Array.from({ length: 10 }, (_, i) => ({
-    q: L[`faq${i + 1}_q` as keyof typeof L] || "",
-    a: L[`faq${i + 1}_a` as keyof typeof L] || "",
-  })).filter(f => f.q);
-  return (
-    <>{faqs.map((f, i) => (
-      <div key={i} className={`fq ${open === i ? "op" : ""}`} onClick={() => setOpen(open === i ? null : i)}>
-        <div className="fqq"><h4>{f.q}</h4><span className="fqi">+</span></div>
-        <div className="fqa"><p>{f.a}</p></div>
-      </div>
-    ))}</>
-  );
-}
+/* INDICATORS */
+.ig{display:grid;grid-template-columns:repeat(auto-fit,minmax(185px,1fr));gap:12px}
+.ic{background:var(--c1);border-radius:12px;padding:20px 18px;border:1px solid rgba(201,168,76,.05);position:relative;overflow:hidden;transition:all .3s;cursor:default}
+.ic:hover{transform:translateY(-4px);box-shadow:0 12px 30px rgba(0,0,0,.3)}
+.icb{position:absolute;top:0;left:0;width:3px;height:100%;opacity:.5;transition:opacity .3s}
+.ic:hover .icb{opacity:1}
+.icd{width:8px;height:8px;border-radius:50%;margin-bottom:12px}
+.icn{font-size:13px;font-weight:700;margin-bottom:2px}
+.icdesc{font-size:11px;color:var(--tm)}
 
-function LangSwitcher({ lang, setLang }: { lang: Lang; setLang: (l: Lang) => void }) {
-  const [open, setOpen] = useState(false);
-  const fullNames: Record<Lang, string> = { en:"English", fr:"Français", nl:"Nederlands", de:"Deutsch", es:"Español", pt:"Português", ru:"Русский", ar:"العربية" };
-  return (
-    <div className="lang-sw">
-      <button className="lang-btn" onClick={() => setOpen(!open)}>{langNames[lang]} <span style={{ fontSize: 8 }}>▼</span></button>
-      {open && <div className="lang-dd">{(Object.keys(langNames) as Lang[]).map(l => (
-        <button key={l} className={`lang-opt ${l === lang ? "act" : ""}`} onClick={() => { setLang(l); setOpen(false); }}>{langNames[l]} — {fullNames[l]}</button>
-      ))}</div>}
-    </div>
-  );
-}
+/* HUB */
+.hub{background:var(--c1);border-radius:24px;overflow:hidden;border:1px solid rgba(201,168,76,.08);display:grid;grid-template-columns:1fr 1fr;margin-bottom:36px;box-shadow:0 24px 64px rgba(0,0,0,.25)}
+@media(max-width:768px){.hub{grid-template-columns:1fr!important}}
+.hl{background:linear-gradient(145deg,rgba(201,168,76,.07),rgba(201,168,76,.02));padding:44px 40px;position:relative}
+.hl::after{content:'';position:absolute;top:20px;right:20px;width:100px;height:100px;border-radius:50%;border:1px solid rgba(201,168,76,.06);background:rgba(201,168,76,.02)}
+.hr2{padding:44px 40px}
+.ha{font-family:'Cormorant Garamond',serif;font-size:30px;font-weight:700;line-height:1.2;margin:14px 0 10px}
+.hcy{font-size:15px;color:var(--td);margin-bottom:22px}
+.htr{font-size:12px;color:var(--td);margin-bottom:9px;display:flex;align-items:center;gap:8px}
+.ho{padding:18px 20px;border-radius:14px;margin-bottom:10px;border:1px solid rgba(201,168,76,.06);background:rgba(201,168,76,.02);transition:all .35s;cursor:default}
+.ho:hover{border-color:rgba(201,168,76,.2);transform:translateX(6px);box-shadow:0 8px 24px rgba(0,0,0,.2)}
+.ho.fl{background:rgba(201,168,76,.06);border-color:rgba(201,168,76,.18)}
+.hoh{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px}
+.hot{font-size:15px;font-weight:700}
+.hop{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--g);font-weight:700}
+.hod{font-size:12px;color:var(--td);line-height:1.5}
+.hbdg{font-size:8px;color:var(--g);font-weight:700;letter-spacing:2px;padding:3px 8px;border-radius:4px;background:rgba(201,168,76,.1);border:1px solid rgba(201,168,76,.15);position:absolute;top:8px;right:12px}
+.hopn{margin-top:16px;padding:13px 18px;border-radius:12px;background:rgba(46,204,113,.05);border:1px solid rgba(46,204,113,.12);display:flex;align-items:center;gap:8px}
+.hopd{width:7px;height:7px;border-radius:50%;background:var(--gr);animation:pls 2s infinite}
+.hfg{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px}
+.hf{display:flex;gap:15px;padding:20px 22px;border-radius:14px;background:var(--c1);border:1px solid rgba(201,168,76,.05);transition:all .35s}
+.hf:hover{border-color:rgba(201,168,76,.18);transform:translateY(-3px)}
+.hfi{width:44px;height:44px;border-radius:12px;flex-shrink:0;background:rgba(201,168,76,.05);border:1px solid rgba(201,168,76,.08);display:flex;align-items:center;justify-content:center;font-size:20px}
+.hft{font-size:14px;font-weight:700;margin-bottom:3px}
+.hfd{font-size:12px;color:var(--td);line-height:1.55}
 
-function BookingModal({ lang, onClose }: { lang: Lang; onClose: () => void }) {
-  const B = bookingT[lang] || bookingT.en;
-  const months = B.months.split(",");
-  const weekdays = B.weekdays.split(",");
-  const [step, setStep] = useState(1);
-  const [selDate, setSelDate] = useState<Date | null>(null);
-  const [selTime, setSelTime] = useState("");
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
-  const [done, setDone] = useState(false);
-  const [viewMonth, setViewMonth] = useState(new Date().getMonth());
-  const [viewYear, setViewYear] = useState(new Date().getFullYear());
+/* DISCOVERY */
+.dc{background:var(--c1);border-radius:28px;border:1px solid rgba(201,168,76,.1);padding:72px 56px;text-align:center;position:relative;overflow:hidden;box-shadow:0 32px 80px rgba(0,0,0,.3);max-width:900px;margin:0 auto}
+.dc::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 50% at 50% 0%,rgba(201,168,76,.06),transparent 70%)}
+.dc::after{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,transparent,var(--g),transparent);opacity:.5}
+.dci{font-size:56px;margin-bottom:24px;position:relative;z-index:1}
+.dct{font-family:'Cormorant Garamond',serif;font-size:clamp(30px,4vw,44px);font-weight:700;margin-bottom:16px;position:relative;z-index:1}
+.dcp{font-size:17px;color:var(--td);line-height:1.85;max-width:560px;margin:0 auto 32px;position:relative;z-index:1}
+.dcc{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;margin-bottom:36px;position:relative;z-index:1}
+.dcch{padding:8px 20px;border-radius:24px;background:rgba(201,168,76,.05);border:1px solid rgba(201,168,76,.12);font-size:12px;color:var(--gl);font-weight:500}
+.dcn{font-size:13px;color:var(--tm);font-style:italic;margin-top:20px;position:relative;z-index:1}
 
-  useEffect(() => { document.body.style.overflow = "hidden"; return () => { document.body.style.overflow = ""; }; }, []);
+/* PRICING */
+.pg{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:18px}
+.pc{border-radius:18px;height:100%;transition:transform .3s}
+.pc:hover{transform:translateY(-6px)}
+.pc.pop{padding:2px;background:conic-gradient(from 0deg,var(--g),var(--gd),var(--g),var(--gd),var(--g))}
+.pi{background:var(--c1);border-radius:16px;padding:38px 26px;border:1px solid rgba(201,168,76,.06);display:flex;flex-direction:column;height:100%;position:relative;overflow:hidden;transition:box-shadow .3s}
+.pc.pop .pi{background:var(--bg);border:none}
+.pc:hover .pi{box-shadow:0 20px 60px rgba(0,0,0,.4)}
+.ppb{position:absolute;top:13px;right:-24px;background:var(--g);color:var(--bg);padding:3px 32px;font-size:9px;font-weight:800;transform:rotate(45deg);letter-spacing:1.5px}
+.pn{font-size:11px;font-weight:700;color:var(--g);letter-spacing:2.5px;text-transform:uppercase;margin-bottom:6px}
+.pdu{display:inline-block;padding:3px 10px;border-radius:14px;background:rgba(201,168,76,.05);border:1px solid rgba(201,168,76,.1);font-size:10px;color:var(--gl);margin-bottom:14px}
+.ppr{font-family:'Cormorant Garamond',serif;font-size:42px;font-weight:700;margin-bottom:22px}
+.pper{font-size:13px;color:var(--td);font-family:'Outfit',sans-serif;font-weight:400}
+.pf{display:flex;align-items:center;gap:10px;margin-bottom:11px;font-size:12px;color:var(--td)}
+.pf::before{content:'\2726';color:var(--g);font-size:9px}
+.pbt{width:100%;padding:13px 0;border-radius:8px;border:none;cursor:pointer;font-family:'Outfit',sans-serif;font-weight:700;font-size:12px;letter-spacing:1.5px;text-transform:uppercase;margin-top:auto;transition:all .3s}
+.pbt.gd{background:linear-gradient(135deg,var(--g),var(--gd));color:var(--bg)}
+.pbt.gd:hover{box-shadow:0 6px 24px rgba(201,168,76,.35)}
+.pbt.ot{background:transparent;border:1px solid rgba(201,168,76,.25);color:var(--g)}
+.pbt.ot:hover{background:rgba(201,168,76,.06)}
 
-  const today = new Date(); today.setHours(0,0,0,0);
-  const daysInMonth = new Date(viewYear, viewMonth + 1, 0).getDate();
-  const firstDay = (new Date(viewYear, viewMonth, 1).getDay() + 6) % 7;
-  const cells: (number | null)[] = [];
-  for (let i = 0; i < firstDay; i++) cells.push(null);
-  for (let d = 1; d <= daysInMonth; d++) cells.push(d);
+/* TEAM */
+.tc{background:var(--c1);border-radius:24px;padding:56px 44px;text-align:center;border:1px solid rgba(201,168,76,.08);position:relative;overflow:hidden;max-width:780px;margin:0 auto}
+.tc::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,transparent,var(--g),transparent);opacity:.5}
+.tav{width:110px;height:110px;border-radius:50%;margin:0 auto 26px;background:conic-gradient(from 0deg,var(--g),var(--gd),var(--g));display:flex;align-items:center;justify-content:center;box-shadow:0 12px 40px rgba(201,168,76,.25);animation:spin 30s linear infinite}
+.tavi{width:104px;height:104px;border-radius:50%;background:var(--c1);display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-size:40px;font-weight:700;color:var(--g);animation:none}
+.tn{font-family:'Cormorant Garamond',serif;font-size:30px;font-weight:700;margin-bottom:8px}
+.tr2{display:inline-block;padding:5px 18px;border-radius:18px;background:rgba(201,168,76,.05);border:1px solid rgba(201,168,76,.12);font-size:11px;color:var(--g);font-weight:600;letter-spacing:2px;text-transform:uppercase;margin-bottom:22px}
+.tbio{font-size:15px;color:var(--td);line-height:1.8;max-width:540px;margin:0 auto}
 
-  const isSelectable = (d: number) => {
-    const dt = new Date(viewYear, viewMonth, d);
-    const dow = dt.getDay();
-    return dt >= today && dow !== 0 && dow !== 6;
-  };
+/* REVIEWS */
+.rv{background:var(--c1);border-radius:24px;padding:52px 44px;text-align:center;border:1px solid rgba(201,168,76,.08);max-width:780px;margin:0 auto;min-height:220px;position:relative;overflow:hidden}
+.rv::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--g),transparent);opacity:.3}
+.rvq{font-size:52px;color:rgba(201,168,76,.12);font-family:Georgia,serif;line-height:1}
+.rvt{font-family:'Cormorant Garamond',serif;font-size:19px;font-weight:500;line-height:1.75;font-style:italic;margin:8px auto 22px;max-width:580px}
+.rvs{color:var(--g);font-size:15px;letter-spacing:2px;margin-bottom:12px}
+.rvn{font-size:15px;font-weight:700}
+.rvr{font-size:11px;color:var(--td);margin-top:3px}
+.rvd{display:flex;justify-content:center;gap:7px;margin-top:28px}
+.rvdt{width:8px;height:8px;border-radius:50%;border:none;cursor:pointer;background:rgba(201,168,76,.15);transition:all .3s}
+.rvdt.act{width:22px;border-radius:4px;background:var(--g)}
 
-  const fmtDate = (d: Date) => `${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()}`;
+/* FAQ */
+.fq{background:var(--c1);border-radius:14px;margin-bottom:8px;border:1px solid rgba(201,168,76,.05);cursor:pointer;overflow:hidden;transition:all .3s}
+.fq.op{background:var(--c2);border-color:rgba(201,168,76,.15)}
+.fqq{padding:20px 24px;display:flex;justify-content:space-between;align-items:center}
+.fqq h4{font-size:14px;font-weight:600;transition:color .3s}
+.fq.op .fqq h4{color:var(--g)}
+.fqi{color:var(--g);font-size:20px;transition:transform .3s;flex-shrink:0;margin-left:16px;font-weight:300}
+.fq.op .fqi{transform:rotate(45deg)}
+.fqa{max-height:0;overflow:hidden;transition:max-height .4s ease}
+.fq.op .fqa{max-height:220px}
+.fqa p{padding:0 24px 20px;font-size:13px;color:var(--td);line-height:1.7}
 
-  const handleConfirm = () => {
-    if (!selDate || !selTime || !name || !email) return;
-    const dateStr = fmtDate(selDate);
-    const subject = encodeURIComponent(`Aureus IA — Booking Request: ${dateStr} at ${selTime}`);
-    const body = encodeURIComponent(
-      `New booking request:\n\nDate: ${dateStr}\nTime: ${selTime}\nDuration: 30 minutes — Free Consultation\n\nName: ${name}\nEmail: ${email}\nPhone: ${phone || "N/A"}\n\n---\nSent from aureus-ia.com booking system`
-    );
-    window.open(`mailto:info@aureus-ia.com?subject=${subject}&body=${body}`, "_self");
-    setDone(true);
-  };
+/* CONTACT */
+.cf{display:flex;flex-direction:column;gap:14px;max-width:660px;margin:0 auto}
+.cfr{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:600px){.cfr{grid-template-columns:1fr!important}}
+.cfi{width:100%;padding:13px 18px;border-radius:10px;border:1px solid rgba(201,168,76,.1);background:rgba(13,13,20,.7);color:var(--tx);font-family:'Outfit',sans-serif;font-size:13px;outline:none;transition:all .3s}
+.cfi:focus{border-color:rgba(201,168,76,.4);box-shadow:0 0 16px rgba(201,168,76,.08)}
+.cfb{padding:15px 0;border-radius:10px;border:none;cursor:pointer;background:linear-gradient(135deg,var(--g),var(--gd));color:var(--bg);font-family:'Outfit',sans-serif;font-weight:700;font-size:14px;box-shadow:0 6px 24px rgba(201,168,76,.25);transition:all .3s}
+.cfb:hover{transform:translateY(-2px);box-shadow:0 10px 32px rgba(201,168,76,.35)}
+.ci{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:18px;margin-top:44px;text-align:center}
+.cii{font-size:22px;margin-bottom:6px}
+.cil{font-size:9px;color:var(--g);letter-spacing:2.5px;text-transform:uppercase;font-weight:600;margin-bottom:4px}
+.civ{font-size:12px;color:var(--td);line-height:1.5}
 
-  const canPrev = viewMonth > today.getMonth() || viewYear > today.getFullYear();
+/* FOOTER */
+footer{padding:48px 28px 32px;border-top:1px solid rgba(201,168,76,.05);background:rgba(4,4,8,.95)}
+.fg{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:40px;margin-bottom:40px;max-width:1140px;margin-left:auto;margin-right:auto}
+.fh{font-size:10px;color:var(--g);letter-spacing:3px;text-transform:uppercase;margin-bottom:14px;font-weight:700}
+footer a{color:var(--td);font-size:12px;display:block;margin-bottom:7px;transition:color .2s}
+footer a:hover{color:var(--g)}
+.fb{border-top:1px solid rgba(201,168,76,.05);padding-top:22px;text-align:center;font-size:11px;color:var(--tm);max-width:1140px;margin:0 auto}
 
-  if (done) return (
-    <div className="modal-overlay" onClick={onClose}><div className="modal-box bk-box" onClick={e => e.stopPropagation()}>
-      <div style={{ padding: "60px 40px", textAlign: "center" }}>
-        <div style={{ fontSize: 48, marginBottom: 16 }}>✅</div>
-        <h3 style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: 26, color: "var(--g)", marginBottom: 12 }}>{B.success}</h3>
-        <p style={{ color: "var(--td)", fontSize: 14, lineHeight: 1.7, marginBottom: 8 }}>{B.successMsg}</p>
-        <p style={{ color: "var(--g)", fontSize: 15, fontWeight: 600, margin: "16px 0" }}>{selDate && fmtDate(selDate)} — {selTime}</p>
-        <button className="bk-confirm" onClick={onClose}>{B.close}</button>
-      </div>
-    </div></div>
-  );
+/* WHATSAPP */
+.wa{position:fixed;bottom:22px;left:22px;z-index:300;width:54px;height:54px;border-radius:50%;background:#25D366;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(37,211,102,.35);transition:transform .2s}
+.wa:hover{transform:scale(1.12)}
 
-  return (
-    <div className="modal-overlay" onClick={onClose}><div className="modal-box bk-box" onClick={e => e.stopPropagation()}>
-      <div className="modal-header">
-        <div>
-          <h3>{B.title}</h3>
-          <p style={{ fontSize: 12, color: "var(--td)", marginTop: 4 }}>{B.duration}</p>
-        </div>
-        <button className="modal-close" onClick={onClose}>✕</button>
-      </div>
+/* LANGUAGE SWITCHER */
+.lang-sw{position:relative}
+.lang-btn{background:rgba(201,168,76,.06);border:1px solid rgba(201,168,76,.15);border-radius:8px;padding:6px 14px;color:var(--g);font-size:16px;cursor:pointer;font-family:'Outfit',sans-serif;display:flex;align-items:center;gap:6px;transition:all .3s}
+.lang-btn:hover{background:rgba(201,168,76,.12);border-color:rgba(201,168,76,.3)}
+.lang-dd{position:absolute;top:110%;right:0;background:var(--c1);border:1px solid rgba(201,168,76,.12);border-radius:12px;overflow:hidden;min-width:170px;z-index:999;box-shadow:0 16px 48px rgba(0,0,0,.5)}
+.lang-opt{display:block;width:100%;padding:10px 18px;background:none;border:none;color:var(--td);font-size:13px;cursor:pointer;text-align:left;font-family:'Outfit',sans-serif;transition:all .2s}
+.lang-opt:hover{background:rgba(201,168,76,.06);color:var(--tx)}
+.lang-opt.act{color:var(--g);font-weight:600;background:rgba(201,168,76,.08)}
 
-      {/* STEPS INDICATOR */}
-      <div className="bk-steps">
-        {[B.step1, B.step2, B.step3].map((s, i) => (
-          <div key={i} className={`bk-step ${step === i + 1 ? "act" : ""} ${step > i + 1 ? "done" : ""}`}>{s}</div>
-        ))}
-      </div>
+/* RTL support */
+[dir="rtl"] .nl{flex-direction:row-reverse}
+[dir="rtl"] .hg{direction:rtl}
+[dir="rtl"] .ho:hover{transform:translateX(-6px)}
+[dir="rtl"] .lang-dd{right:auto;left:0}
+[dir="rtl"] .lang-opt{text-align:right}
 
-      <div className="modal-body" style={{ padding: "24px 32px" }}>
-        {/* STEP 1: DATE */}
-        {step === 1 && <div>
-          <div className="bk-cal-nav">
-            <button className="bk-nav-btn" disabled={!canPrev} onClick={() => { if (viewMonth === 0) { setViewMonth(11); setViewYear(viewYear - 1); } else setViewMonth(viewMonth - 1); }}>‹</button>
-            <span className="bk-cal-title">{months[viewMonth]} {viewYear}</span>
-            <button className="bk-nav-btn" onClick={() => { if (viewMonth === 11) { setViewMonth(0); setViewYear(viewYear + 1); } else setViewMonth(viewMonth + 1); }}>›</button>
-          </div>
-          <div className="bk-cal-grid">
-            {weekdays.map(w => <div key={w} className="bk-cal-wk">{w}</div>)}
-            {cells.map((d, i) => d === null ? <div key={i} /> : (
-              <button key={i} disabled={!isSelectable(d)}
-                className={`bk-cal-day ${selDate && selDate.getDate() === d && selDate.getMonth() === viewMonth && selDate.getFullYear() === viewYear ? "sel" : ""} ${!isSelectable(d) ? "off" : ""}`}
-                onClick={() => setSelDate(new Date(viewYear, viewMonth, d))}>
-                {d}
-              </button>
-            ))}
-          </div>
-          <div style={{ textAlign: "right", marginTop: 20 }}>
-            <button className="bk-next" disabled={!selDate} onClick={() => setStep(2)}>{B.next}</button>
-          </div>
-        </div>}
+/* Mobile lang switcher in nav - hide desktop one */
+@media(max-width:1024px){.nl .lang-sw{display:none!important}}
+@media(min-width:1025px){.ni > div:last-child .lang-sw{display:none!important}}
 
-        {/* STEP 2: TIME */}
-        {step === 2 && <div>
-          <p style={{ fontSize: 13, color: "var(--td)", marginBottom: 4 }}>{selDate && fmtDate(selDate)}</p>
-          <div className="bk-time-grid">
-            {timeSlots.map(ts => (
-              <button key={ts} className={`bk-time ${selTime === ts ? "sel" : ""}`} onClick={() => setSelTime(ts)}>{ts}</button>
-            ))}
-          </div>
-          <div style={{ display: "flex", justifyContent: "space-between", marginTop: 20 }}>
-            <button className="bk-back" onClick={() => setStep(1)}>{B.back}</button>
-            <button className="bk-next" disabled={!selTime} onClick={() => setStep(3)}>{B.next}</button>
-          </div>
-        </div>}
+/* TERMS MODAL */
+.modal-overlay{position:fixed;inset:0;z-index:10000;background:rgba(0,0,0,.85);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;padding:20px;animation:mfin .3s ease}
+@keyframes mfin{from{opacity:0}to{opacity:1}}
+.modal-box{background:var(--c1);border:1px solid rgba(201,168,76,.15);border-radius:20px;max-width:800px;width:100%;max-height:85vh;display:flex;flex-direction:column;box-shadow:0 40px 100px rgba(0,0,0,.5);animation:msin .3s ease}
+@keyframes msin{from{opacity:0;transform:translateY(20px) scale(.97)}to{opacity:1;transform:none}}
+.modal-header{display:flex;justify-content:space-between;align-items:center;padding:24px 32px 18px;border-bottom:1px solid rgba(201,168,76,.08)}
+.modal-header h3{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:700;color:var(--g)}
+.modal-close{background:rgba(201,168,76,.06);border:1px solid rgba(201,168,76,.15);border-radius:8px;padding:8px 20px;color:var(--g);font-family:'Outfit',sans-serif;font-size:13px;font-weight:600;cursor:pointer;transition:all .3s}
+.modal-close:hover{background:rgba(201,168,76,.15)}
+.modal-body{padding:28px 32px;overflow-y:auto;flex:1}
+.modal-body h3{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:700;color:var(--gl);margin:28px 0 10px;padding-top:16px;border-top:1px solid rgba(201,168,76,.06)}
+.modal-body h3:first-of-type{margin-top:0;padding-top:0;border-top:none}
+.modal-body p{font-size:13.5px;color:var(--td);line-height:1.8;margin-bottom:12px}
+.modal-body::-webkit-scrollbar{width:4px}
+.modal-body::-webkit-scrollbar-thumb{background:var(--gd);border-radius:2px}
 
-        {/* STEP 3: DETAILS */}
-        {step === 3 && <div>
-          <div className="bk-summary">
-            <span>📅 {selDate && fmtDate(selDate)}</span>
-            <span>🕐 {selTime}</span>
-            <span>⏱ 30 min</span>
-          </div>
-          <input className="cfi" placeholder={B.name} value={name} onChange={e => setName(e.target.value)} style={{ marginBottom: 12 }} />
-          <input className="cfi" placeholder={B.email} type="email" value={email} onChange={e => setEmail(e.target.value)} style={{ marginBottom: 12 }} />
-          <input className="cfi" placeholder={B.phone} type="tel" value={phone} onChange={e => setPhone(e.target.value)} style={{ marginBottom: 20 }} />
-          <div style={{ display: "flex", justifyContent: "space-between" }}>
-            <button className="bk-back" onClick={() => setStep(2)}>{B.back}</button>
-            <button className="bk-confirm" disabled={!name || !email} onClick={handleConfirm}>{B.confirm}</button>
-          </div>
-        </div>}
-      </div>
-    </div></div>
-  );
-}
+/* BOOKING MODAL */
+.bk-box{max-width:520px}
+.bk-steps{display:flex;border-bottom:1px solid rgba(201,168,76,.08);padding:0 32px}
+.bk-step{flex:1;text-align:center;padding:12px 0;font-size:12px;color:var(--tm);font-weight:500;letter-spacing:.5px;border-bottom:2px solid transparent;transition:all .3s}
+.bk-step.act{color:var(--g);border-bottom-color:var(--g)}
+.bk-step.done{color:var(--gl)}
+.bk-cal-nav{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}
+.bk-cal-title{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:700;color:var(--tx)}
+.bk-nav-btn{background:rgba(201,168,76,.06);border:1px solid rgba(201,168,76,.12);border-radius:8px;width:36px;height:36px;color:var(--g);font-size:18px;cursor:pointer;transition:all .3s;font-family:'Outfit',sans-serif}
+.bk-nav-btn:hover:not(:disabled){background:rgba(201,168,76,.12)}
+.bk-nav-btn:disabled{opacity:.3;cursor:default}
+.bk-cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;text-align:center}
+.bk-cal-wk{font-size:11px;color:var(--tm);padding:8px 0;font-weight:600;letter-spacing:.5px}
+.bk-cal-day{background:none;border:1px solid transparent;border-radius:8px;padding:10px 0;color:var(--td);font-size:13px;font-family:'Outfit',sans-serif;cursor:pointer;transition:all .2s}
+.bk-cal-day:hover:not(:disabled){background:rgba(201,168,76,.08);border-color:rgba(201,168,76,.15);color:var(--tx)}
+.bk-cal-day.sel{background:linear-gradient(135deg,var(--g),var(--gd))!important;color:var(--bg)!important;font-weight:700;border-color:var(--g)!important}
+.bk-cal-day.off{color:var(--tm);opacity:.3;cursor:default}
+.bk-cal-day:disabled{color:var(--tm);opacity:.3;cursor:default}
+.bk-time-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.bk-time{background:rgba(201,168,76,.04);border:1px solid rgba(201,168,76,.1);border-radius:10px;padding:12px;color:var(--td);font-size:14px;font-family:'JetBrains Mono',monospace;font-weight:500;cursor:pointer;transition:all .2s}
+.bk-time:hover{border-color:var(--g);color:var(--g);background:rgba(201,168,76,.08)}
+.bk-time.sel{background:linear-gradient(135deg,var(--g),var(--gd))!important;color:var(--bg)!important;font-weight:700;border-color:var(--g)!important}
+.bk-summary{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:20px;padding:14px;background:rgba(201,168,76,.04);border:1px solid rgba(201,168,76,.1);border-radius:12px}
+.bk-summary span{font-size:13px;color:var(--g);font-weight:500}
+.bk-next,.bk-back,.bk-confirm{padding:12px 28px;border-radius:10px;font-family:'Outfit',sans-serif;font-size:13px;font-weight:600;cursor:pointer;transition:all .3s;border:none}
+.bk-next{background:linear-gradient(135deg,var(--g),var(--gd));color:var(--bg)}
+.bk-next:disabled{opacity:.4;cursor:default}
+.bk-next:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 4px 16px rgba(201,168,76,.25)}
+.bk-back{background:none;border:1px solid rgba(201,168,76,.15);color:var(--g)}
+.bk-back:hover{background:rgba(201,168,76,.06)}
+.bk-confirm{background:linear-gradient(135deg,var(--g),var(--gd));color:var(--bg);padding:14px 36px;font-size:14px}
+.bk-confirm:disabled{opacity:.4;cursor:default}
+.bk-confirm:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 4px 16px rgba(201,168,76,.25)}
 
-function TermsModal({ lang, onClose }: { lang: Lang; onClose: () => void }) {
-  const L = t[lang];
-  useEffect(() => { document.body.style.overflow = "hidden"; return () => { document.body.style.overflow = ""; }; }, []);
-  return (
-    <div className="modal-overlay" onClick={onClose}>
-      <div className="modal-box" onClick={e => e.stopPropagation()}>
-        <div className="modal-header"><h3>{L.terms_title}</h3><button className="modal-close" onClick={onClose}>{L.terms_close}</button></div>
-        <div className="modal-body" dangerouslySetInnerHTML={{ __html: termsContent }} />
-      </div>
-    </div>
-  );
-}
+/* ECONOMIC CALENDAR */
+.cal-container{background:linear-gradient(145deg,var(--c1),var(--c2));border:1px solid rgba(201,168,76,.08);border-radius:20px;overflow:hidden;padding:4px}
+.cal-wrap{overflow:hidden;border-radius:16px;position:relative}
+.cal-wrap iframe{margin-top:-38px;display:block}
 
-function ContactForm({ lang }: { lang: Lang }) {
-  const L = t[lang];
-  const [sent, setSent] = useState(false);
-  return (
-    <div className="cf">
-      <div className="cfr"><input className="cfi" placeholder={L.ct_name} /><input className="cfi" placeholder={L.ct_email} /></div>
-      <textarea className="cfi" placeholder={L.ct_msg} rows={5} style={{ resize: "vertical" }} />
-      <button className="cfb" onClick={() => { setSent(true); setTimeout(() => setSent(false), 2500); }}>{sent ? L.ct_sent : L.ct_send}</button>
-    </div>
-  );
-}
-
-export default function Home() {
-  const [lang, setLang] = useState<Lang>("en");
-  const [loading, setLoading] = useState(true);
-  const [scrolled, setScrolled] = useState(false);
-  const [scrollPct, setScrollPct] = useState(0);
-  const [mobileMenu, setMobileMenu] = useState(false);
-  const [showTerms, setShowTerms] = useState(false);
-  const [showBooking, setShowBooking] = useState(false);
-  const L = t[lang];
-  const isRtl = lang === "ar";
-
-  useEffect(() => { setTimeout(() => setLoading(false), 1800); const onScroll = () => { const s = window.scrollY, d = document.documentElement.scrollHeight - window.innerHeight; setScrollPct(d > 0 ? (s / d) * 100 : 0); setScrolled(s > 60); }; window.addEventListener("scroll", onScroll); return () => window.removeEventListener("scroll", onScroll); }, []);
-
-  const navLinks = [
-    { label: L.nav_services, href: "#services" },
-    { label: L.nav_hub, href: "#hub" },
-    { label: L.nav_indicators, href: "#indicators" },
-    { label: L.nav_pricing, href: "#pricing" },
-    { label: L.nav_team, href: "#team" },
-    { label: L.nav_reviews, href: "#reviews" },
-    { label: L.nav_faq, href: "#faq" },
-    { label: L.nav_calendar, href: "#calendar" },
-  ];
-
-  return (
-    <div dir={isRtl ? "rtl" : "ltr"}>
-      {/* LOADER */}
-      <div id="loader" className={loading ? "" : "hide"}><div className="lr"><span>A</span></div><div className="lt">Aureus IA</div></div>
-      <div id="sp" style={{ width: `${scrollPct}%` }} />
-
-      {/* NAVBAR */}
-      <nav id="nb" className={scrolled ? "sc" : ""}>
-        <Ticker />
-        <div className="ni">
-          <a href="#" className="logo"><div className="lc">A</div><div><div className="lo-t">AUREUS IA</div><div className="lo-s">Market Analysis Experts</div></div></a>
-          <div className="nl">
-            {navLinks.map(l => <a key={l.href} href={l.href}>{l.label}</a>)}
-            <a href="#contact" className="nc">{L.nav_cta}</a>
-            <LangSwitcher lang={lang} setLang={setLang} />
-          </div>
-          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-            <LangSwitcher lang={lang} setLang={setLang} />
-            <button className="bur" onClick={() => setMobileMenu(!mobileMenu)}><span /><span /><span /></button>
-          </div>
-        </div>
-        <div id="mob" className={`mm ${mobileMenu ? "op" : ""}`}>
-          {navLinks.map(l => <a key={l.href} href={l.href} onClick={() => setMobileMenu(false)}>{l.label}</a>)}
-          <a href="#contact" onClick={() => setMobileMenu(false)}>{L.nav_cta}</a>
-        </div>
-      </nav>
-
-      {/* HERO */}
-      <section id="hero"><div className="hbg" /><div className="hmesh" /><div className="hero-img" />
-        <div className="hg">
-          <div>
-            <div className="hbd"><span className="hdt" /><span>{L.hero_badge}</span></div>
-            <h1>{L.hero_title}<br /><Typewriter lang={lang} /></h1>
-            <p className="hp">{L.hero_desc}</p>
-            <div className="hbt"><a href="#pricing" className="bg2">{L.hero_btn1}</a><a href="#hub" className="bo">{L.hero_btn2}</a></div>
-          </div>
-          <div>
-            <div className="cc">
-              <div className="cch">
-                <div><div className="ccs">XAUUSD • Gold</div><div className="ccp">2,687.<span style={{ fontSize: 22, color: "var(--td)" }}>45</span></div></div>
-                <div style={{ textAlign: isRtl ? "left" : "right" }}><div className="ccpc">▲ +1.24%</div><div style={{ fontSize: 10, color: "var(--tm)", marginTop: 6, fontFamily: "'JetBrains Mono',monospace" }}>{L.chart_conf}</div></div>
-              </div>
-              <LiveChart />
-              <div className="cctg"><span className="cct">Trend: Bullish</span><span className="cct">Volume: High</span><span className="cct">RSI: 62.4</span></div>
-              <div className="ccai"><span className="ccaid" /><span>{L.chart_ai} <b>{L.chart_ai2}</b> {L.chart_ai3}</span></div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* STATS */}
-      <section style={{ padding: "0 28px" }}><div className="stats">
-        {[{ v: "13+", l: L.stat1 }, { v: "200+", l: L.stat2 }, { v: "11", l: L.stat3 }, { v: "24/7", l: L.stat4 }].map((s, i) => (
-          <div key={i} className="stat"><div className="stv">{s.v}</div><div className="stl">{s.l}</div></div>
-        ))}
-      </div></section>
-
-      {/* SERVICES */}
-      {/* NYC SKYLINE BANNER */}
-      <FI><div style={{ position: "relative", height: 280, overflow: "hidden", margin: "60px 0 0" }}>
-        <img src="https://images.unsplash.com/photo-1480714378408-67cf0d13bc1b?w=1920&q=80" alt="NYC Financial District" style={{ width: "100%", height: "100%", objectFit: "cover", filter: "brightness(0.3) sepia(0.3)" }} />
-        <div style={{ position: "absolute", inset: 0, background: "linear-gradient(180deg,var(--bg),transparent 20%,transparent 80%,var(--bg))" }} />
-        <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", flexDirection: "column", gap: 8 }}>
-          <div style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: "clamp(24px,3.5vw,42px)", fontWeight: 700, color: "var(--tx)", textAlign: "center" }}>The <span className="gld">Institutional</span> Edge</div>
-          <div style={{ fontSize: 13, color: "var(--td)", letterSpacing: 3, textTransform: "uppercase" as const }}>Wall Street Technology • Brussels Expertise</div>
-        </div>
-      </div></FI>
-
-      <section id="services"><div className="mx">
-        <FI><SH tag={L.svc_tag} title={L.svc_title} /></FI>
-        <div className="g4">
-          {[{ i: "🧠", t2: L.svc1_t, d: L.svc1_d }, { i: "🖥️", t2: L.svc2_t, d: L.svc2_d }, { i: "🎯", t2: L.svc3_t, d: L.svc3_d }, { i: "🏢", t2: L.svc4_t, d: L.svc4_d }].map((s, idx) => (
-            <FI key={idx}><div className="sc2"><span className="si">{s.i}</span><h3 className="sct">{s.t2}</h3><p className="scd">{s.d}</p></div></FI>
-          ))}
-        </div>
-      </div></section>
-
-      {/* BRUSSELS HUB */}
-      <section id="hub" style={{ background: "linear-gradient(180deg,transparent,rgba(201,168,76,.015),transparent)" }}><div className="mx">
-        <FI><SH tag={L.hub_tag} title={L.hub_title} desc={L.hub_desc} /></FI>
-        <FI><div className="hub">
-          <div className="hl" style={{ position: "relative", overflow: "hidden" }}>
-            <img src="https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=600&q=80" alt="Trading screens" style={{ width: "100%", height: 180, objectFit: "cover", borderRadius: 12, marginBottom: 16, opacity: 0.7 }} />
-            <div style={{ fontSize: 44 }}>🇧🇪</div>
-            <div className="ha">Place Marcel<br />Broodthaers 8</div>
-            <div className="hcy">{L.hub_city}</div>
-            {[L.hub_tr1, L.hub_tr2, L.hub_tr3, L.hub_tr4].map((tr, i) => <div key={i} className="htr">{tr}</div>)}
-          </div>
-          <div className="hr2">
-            <div style={{ fontSize: 11, color: "var(--g)", letterSpacing: 3, textTransform: "uppercase" as const, fontWeight: 600, marginBottom: 16 }}>{L.hub_options}</div>
-            <div className="ho"><div className="hoh"><span className="hot">{L.hub_o1_t}</span><span className="hop">€48.40/h</span></div><div className="hod">{L.hub_o1_d}</div></div>
-            <div className="ho"><div className="hoh"><span className="hot">{L.hub_o2_t}</span><span className="hop">Custom</span></div><div className="hod">{L.hub_o2_d}</div></div>
-            <div className="ho fl" style={{ position: "relative" }}><span className="hbdg">EXCLUSIVE</span><div className="hoh"><span className="hot">{L.hub_o3_t}</span><span className="hop">{L.hub_o3_price}</span></div><div className="hod">{L.hub_o3_d}</div></div>
-            <div className="hopn"><span className="hopd" /><span style={{ fontSize: 11, fontWeight: 700, color: "var(--gr)" }}>{L.hub_open}</span><span style={{ fontSize: 11, color: "var(--td)", marginLeft: 10 }}>{L.hub_hours}</span></div>
-          </div>
-        </div></FI>
-        <div className="hfg">
-          {[{ i: "🖥️", t2: L.hub_f1_t, d: L.hub_f1_d }, { i: "📶", t2: L.hub_f2_t, d: L.hub_f2_d }, { i: "🧠", t2: L.hub_f3_t, d: L.hub_f3_d }, { i: "☕", t2: L.hub_f4_t, d: L.hub_f4_d }, { i: "🔒", t2: L.hub_f5_t, d: L.hub_f5_d }, { i: "🤝", t2: L.hub_f6_t, d: L.hub_f6_d }].map((f, i) => (
-            <FI key={i}><div className="hf"><div className="hfi">{f.i}</div><div><div className="hft">{f.t2}</div><div className="hfd">{f.d}</div></div></div></FI>
-          ))}
-        </div>
-      </div></section>
-
-      {/* DISCOVERY DAY */}
-      <section id="discovery"><div className="mx">
-        <FI><div className="dc">
-          <img src="https://images.unsplash.com/photo-1565514020179-026b92b84bb6?w=700&q=80" alt="Wall Street Bull" style={{ width: 200, height: 200, objectFit: "cover", borderRadius: "50%", margin: "0 auto 24px", display: "block", border: "3px solid rgba(201,168,76,.2)", opacity: 0.85 }} />
-          <h2 className="dct"><span className="gld">{L.disc_title}</span></h2>
-          <p className="dcp">{L.disc_desc}</p>
-          <div className="dcc">{[L.disc_c1, L.disc_c2, L.disc_c3, L.disc_c4].map((c, i) => <span key={i} className="dcch">{c}</span>)}</div>
-          <a href="#contact" className="bg2">{L.disc_btn}</a>
-          <p className="dcn">{L.disc_note}</p>
-        </div></FI>
-      </div></section>
-
-      {/* INDICATORS */}
-      <section id="indicators" style={{ background: "linear-gradient(180deg,transparent,rgba(201,168,76,.015),transparent)" }}><div className="mx">
-        <FI><SH tag={L.ind_tag} title={L.ind_title} /></FI>
-        <div className="ig">{indicators.map((ind, i) => (
-          <FI key={i}><div className="ic"><div className="icb" style={{ background: ind.c }} /><div className="icd" style={{ background: ind.c, boxShadow: `0 0 10px ${ind.c}66` }} /><div className="icn">{ind.n}</div><div className="icdesc">{ind.d}</div></div></FI>
-        ))}</div>
-      </div></section>
-
-      {/* PRICING */}
-      {/* TRADING FLOOR BANNER */}
-      <FI><div style={{ position: "relative", height: 220, overflow: "hidden" }}>
-        <img src="https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?w=1920&q=80" alt="Trading Floor" style={{ width: "100%", height: "100%", objectFit: "cover", filter: "brightness(0.25) sepia(0.2)" }} />
-        <div style={{ position: "absolute", inset: 0, background: "linear-gradient(180deg,var(--bg),transparent 15%,transparent 85%,var(--bg))" }} />
-        <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", flexDirection: "column", gap: 8 }}>
-          <div style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: "clamp(20px,3vw,36px)", fontWeight: 700, color: "var(--tx)", textAlign: "center" }}>Powered by <span className="gld">13 Years</span> of Market Data</div>
-          <div style={{ fontSize: 12, color: "var(--td)", letterSpacing: 2 }}>AI • Analytics • Excellence</div>
-        </div>
-      </div></FI>
-
-      <section id="pricing"><div className="mx">
-        <FI><SH tag={L.pr_tag} title={L.pr_title} /></FI>
-        <div className="pg">
-          {[
-            { n: L.pr1_n, dur: "30 min", pr: "Free", per: "", feat: [L.pr1_f1, L.pr1_f2, L.pr1_f3, L.pr1_f4], pop: false, btn: L.pr1_btn },
-            { n: L.pr2_n, dur: "1 hour", pr: "€48.40", per: "/session", feat: [L.pr2_f1, L.pr2_f2, L.pr2_f3, L.pr2_f4], pop: true, btn: L.pr2_btn },
-            { n: L.pr3_n, dur: "1 hour", pr: "€96.80", per: "/session", feat: [L.pr3_f1, L.pr3_f2, L.pr3_f3, L.pr3_f4], pop: false, btn: L.pr3_btn },
-            { n: L.pr4_n, dur: "Full day", pr: L.pr4_price, per: "", feat: [L.pr4_f1, L.pr4_f2, L.pr4_f3, L.pr4_f4], pop: false, btn: L.pr4_btn },
-          ].map((p, i) => (
-            <FI key={i}><div className={`pc ${p.pop ? "pop" : ""}`}><div className="pi">
-              {p.pop && <div className="ppb">POPULAR</div>}
-              <div className="pn">{p.n}</div>
-              <div className="pdu">⏱ {p.dur}</div>
-              <div className="ppr">{p.pr} {p.per && <span className="pper">{p.per}</span>}</div>
-              {p.feat.map((f, fi) => <div key={fi} className="pf">{f}</div>)}
-              <button className={`pbt ${p.pop ? "gd" : "ot"}`} onClick={() => { if (i === 0) setShowBooking(true); }}>{p.btn}</button>
-            </div></div></FI>
-          ))}
-        </div>
-      </div></section>
-
-      {/* TEAM */}
-      <section id="team" style={{ background: "linear-gradient(180deg,transparent,rgba(201,168,76,.015),transparent)" }}><div className="mx">
-        <FI><SH tag={L.team_tag} title={L.team_title} /></FI>
-        <FI><div className="tc"><div className="tav"><div className="tavi">L</div></div><div className="tn">Lucas</div><div className="tr2">{L.team_role}</div><p className="tbio">{L.team_bio}</p></div></FI>
-      </div></section>
-
-      {/* REVIEWS */}
-      <section id="reviews"><div className="mx">
-        <FI><SH tag={L.rev_tag} title={L.rev_title} /></FI>
-        <FI><Reviews /></FI>
-      </div></section>
-
-      {/* FAQ */}
-      <section id="faq" style={{ background: "linear-gradient(180deg,transparent,rgba(201,168,76,.015),transparent)" }}><div className="mx" style={{ maxWidth: 780 }}>
-        <FI><SH tag={L.faq_tag} title={L.faq_title} /></FI>
-        <FAQ lang={lang} />
-      </div></section>
-
-      {/* CONTACT */}
-      {/* ECONOMIC CALENDAR */}
-      <section id="calendar" style={{ background: "linear-gradient(180deg,transparent,rgba(201,168,76,.015),transparent)" }}><div className="mx">
-        <FI><SH tag={L.cal_tag} title={L.cal_title} desc={L.cal_desc} /></FI>
-        <FI><div className="cal-container"><div className="cal-wrap">
-          <iframe
-            src={`https://www.widgets.investing.com/economic-calendar?theme=darkTheme&dateFrom=${new Date().toISOString().split("T")[0]}&countries=72,22,17,25,39,5,32&importance=2,3`}
-            width="100%"
-            height="638"
-            style={{ border: "none", borderRadius: 16 }}
-            allowFullScreen
-          />
-        </div></div></FI>
-        <FI><div style={{ display: "flex", gap: 16, justifyContent: "center", marginTop: 20, flexWrap: "wrap" }}>
-          {[
-            { name: "Forex Factory", url: "https://www.forexfactory.com/calendar" },
-            { name: "Investing.com", url: "https://www.investing.com/economic-calendar/" },
-            { name: "Trading Economics", url: "https://tradingeconomics.com/calendar" },
-          ].map(s => (
-            <a key={s.name} href={s.url} target="_blank" rel="noopener noreferrer" style={{ fontSize: 12, color: "var(--g)", padding: "8px 18px", border: "1px solid rgba(201,168,76,.15)", borderRadius: 8, transition: "all .3s" }}>{s.name} ↗</a>
-          ))}
-        </div></FI>
-      </div></section>
-
-      <section id="contact"><div className="mx" style={{ maxWidth: 660 }}>
-        <FI><SH tag={L.ct_tag} title={L.ct_title} desc={L.ct_desc} /></FI>
-        <FI><ContactForm lang={lang} /></FI>
-        <FI><div className="ci">
-          <div><div className="cii">📍</div><div className="cil">Address</div><div className="civ">Pl. Marcel Broodthaers 8<br />1060 Saint-Gilles, Brussels</div></div>
-          <div><div className="cii">✉️</div><div className="cil">Email</div><div className="civ">info@aureus-ia.com</div></div>
-          <div><div className="cii">📞</div><div className="cil">Phone</div><div className="civ">+32 491 70 94 13</div></div>
-        </div></FI>
-      </div></section>
-
-      {/* FOOTER */}
-      <footer><div className="fg">
-        <div>
-          <div style={{ display: "flex", alignItems: "center", gap: 9, marginBottom: 14 }}>
-            <div style={{ width: 30, height: 30, borderRadius: "50%", background: "linear-gradient(135deg,var(--g),var(--gd))", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 800, fontSize: 13, color: "var(--bg)", fontFamily: "'Cormorant Garamond',serif" }}>A</div>
-            <span style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: 15, fontWeight: 700, letterSpacing: 2 }}>AUREUS IA</span>
-          </div>
-          <p style={{ fontSize: 12, color: "var(--tm)", lineHeight: 1.65, whiteSpace: "pre-line" }}>{L.ft_disc}</p>
-        </div>
-        <div><div className="fh">{L.ft_platform}</div><a href="#services">{L.nav_services}</a><a href="#hub">Brussels Hub</a><a href="#indicators">{L.nav_indicators}</a><a href="#discovery">Discovery Day</a><a href="#pricing">{L.nav_pricing}</a></div>
-        <div><div className="fh">{L.ft_legal}</div><a href="https://fr.trustpilot.com/review/aureus-ia.com" target="_blank" rel="noopener noreferrer">⭐ Trustpilot</a><a href="#" onClick={e => { e.preventDefault(); setShowTerms(true); }}>{L.ft_privacy}</a><a href="#" onClick={e => { e.preventDefault(); setShowTerms(true); }}>{L.ft_terms}</a></div>
-        <div><div className="fh">{L.ft_contact}</div><p style={{ fontSize: 12, color: "var(--td)", lineHeight: 1.65 }}>Pl. Marcel Broodthaers 8<br />1060 Saint-Gilles, Belgium<br />info@aureus-ia.com<br />+32 491 70 94 13</p></div>
-      </div><div className="fb">{L.ft_copy}</div></footer>
-
-      {/* WHATSAPP */}
-      <a href="https://wa.me/32491709413" target="_blank" rel="noopener noreferrer" className="wa">
-        <svg width="26" height="26" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" /></svg>
-      </a>
-
-      {/* TERMS MODAL */}
-      {showTerms && <TermsModal lang={lang} onClose={() => setShowTerms(false)} />}
-
-      {/* BOOKING MODAL */}
-      {showBooking && <BookingModal lang={lang} onClose={() => setShowBooking(false)} />}
-    </div>
-  );
-}
+/* COOKIE BANNER */
+.cookie-banner{position:fixed;bottom:0;left:0;right:0;z-index:9990;background:rgba(10,10,15,.97);backdrop-filter:blur(20px);border-top:1px solid rgba(201,168,76,.12);padding:18px 28px;animation:cbslide .4s ease}
+@keyframes cbslide{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.cookie-inner{max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap}
+.cookie-msg{font-size:13px;color:var(--td);flex:1;min-width:280px;line-height:1.6}
+.cookie-btns{display:flex;gap:10px;flex-shrink:0}
+.cookie-decline{background:none;border:1px solid rgba(201,168,76,.2);border-radius:8px;padding:10px 20px;color:var(--g);font-family:'Outfit',sans-serif;font-size:12px;font-weight:600;cursor:pointer;transition:all .3s}
+.cookie-decline:hover{background:rgba(201,168,76,.06)}
+.cookie-accept{background:linear-gradient(135deg,var(--g),var(--gd));border:none;border-radius:8px;padding:10px 24px;color:var(--bg);font-family:'Outfit',sans-serif;font-size:12px;font-weight:700;cursor:pointer;transition:all .3s}
+.cookie-accept:hover{transform:translateY(-1px);box-shadow:0 4px 16px rgba(201,168,76,.25)}
+@media(max-width:640px){.cookie-inner{flex-direction:column;text-align:center}.cookie-btns{width:100%;justify-content:center}}
