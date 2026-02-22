@@ -197,6 +197,8 @@ function BookingModal({ lang, onClose }: { lang: Lang; onClose: () => void }) {
   const [viewMonth, setViewMonth] = useState(new Date().getMonth());
   const [viewYear, setViewYear] = useState(new Date().getFullYear());
 
+  const [sending, setSending] = useState(false);
+
   useEffect(() => { document.body.style.overflow = "hidden"; return () => { document.body.style.overflow = ""; }; }, []);
 
   const today = new Date(); today.setHours(0,0,0,0);
@@ -225,15 +227,42 @@ function BookingModal({ lang, onClose }: { lang: Lang; onClose: () => void }) {
 
   const fmtDate = (d: Date) => `${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()}`;
 
-  const handleConfirm = () => {
+  const handleConfirm = async () => {
     if (!selDate || !selTime || !name || !email) return;
+    setSending(true);
     const dateStr = fmtDate(selDate);
-    const subject = encodeURIComponent(`Aureus IA — Booking Request: ${dateStr} at ${selTime}`);
-    const body = encodeURIComponent(
-      `New booking request:\n\nDate: ${dateStr}\nTime: ${selTime}\nDuration: 30 minutes — Free Consultation\n\nName: ${name}\nEmail: ${email}\nPhone: ${phone || "N/A"}\n\n---\nSent from aureus-ia.com booking system`
-    );
-    window.open(`mailto:info@aureus-ia.com?subject=${subject}&body=${body}`, "_self");
-    setDone(true);
+    try {
+      const res = await fetch("https://formsubmit.co/ajax/info@aureus-ia.com", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "Accept": "application/json" },
+        body: JSON.stringify({
+          _subject: `🗓️ Aureus IA — Nouvelle Réservation: ${dateStr} à ${selTime}`,
+          Date: dateStr,
+          Heure: selTime,
+          Durée: "30 minutes — Free Consultation",
+          Nom: name,
+          Email: email,
+          Téléphone: phone || "Non renseigné",
+          _template: "table",
+        }),
+      });
+      if (res.ok) {
+        setDone(true);
+      } else {
+        // Fallback mailto
+        const subject = encodeURIComponent(`Aureus IA — Booking: ${dateStr} at ${selTime}`);
+        const body = encodeURIComponent(`Réservation:\n\nDate: ${dateStr}\nHeure: ${selTime}\nDurée: 30 min\n\nNom: ${name}\nEmail: ${email}\nTéléphone: ${phone || "N/A"}\n\n---\naureus-ia.com`);
+        window.open(`mailto:info@aureus-ia.com?subject=${subject}&body=${body}`, "_self");
+        setDone(true);
+      }
+    } catch {
+      // Fallback mailto if fetch fails
+      const subject = encodeURIComponent(`Aureus IA — Booking: ${dateStr} at ${selTime}`);
+      const body = encodeURIComponent(`Réservation:\n\nDate: ${dateStr}\nHeure: ${selTime}\nDurée: 30 min\n\nNom: ${name}\nEmail: ${email}\nTéléphone: ${phone || "N/A"}\n\n---\naureus-ia.com`);
+      window.open(`mailto:info@aureus-ia.com?subject=${subject}&body=${body}`, "_self");
+      setDone(true);
+    }
+    setSending(false);
   };
 
   const canPrev = viewMonth > today.getMonth() || viewYear > today.getFullYear();
@@ -316,7 +345,7 @@ function BookingModal({ lang, onClose }: { lang: Lang; onClose: () => void }) {
           <input className="cfi" placeholder={B.phone} type="tel" value={phone} onChange={e => setPhone(e.target.value)} style={{ marginBottom: 20 }} />
           <div style={{ display: "flex", justifyContent: "space-between" }}>
             <button className="bk-back" onClick={() => setStep(2)}>{B.back}</button>
-            <button className="bk-confirm" disabled={!name || !email} onClick={handleConfirm}>{B.confirm}</button>
+            <button className="bk-confirm" disabled={!name || !email || sending} onClick={handleConfirm}>{sending ? "Envoi..." : B.confirm}</button>
           </div>
         </div>}
       </div>
@@ -381,11 +410,37 @@ function CookieBanner({ lang, onPrivacy }: { lang: Lang; onPrivacy: () => void }
 function ContactForm({ lang }: { lang: Lang }) {
   const L = t[lang];
   const [sent, setSent] = useState(false);
+  const [sending, setSending] = useState(false);
+  const [cName, setCName] = useState("");
+  const [cEmail, setCEmail] = useState("");
+  const [cMsg, setCMsg] = useState("");
+  const handleSend = async () => {
+    if (!cName || !cEmail || !cMsg) return;
+    setSending(true);
+    try {
+      const res = await fetch("https://formsubmit.co/ajax/info@aureus-ia.com", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "Accept": "application/json" },
+        body: JSON.stringify({
+          _subject: `📩 Aureus IA — Message de ${cName}`,
+          Nom: cName, Email: cEmail, Message: cMsg,
+          _template: "table",
+        }),
+      });
+      if (res.ok) { setSent(true); setCName(""); setCEmail(""); setCMsg(""); setTimeout(() => setSent(false), 3000); }
+    } catch {
+      const subject = encodeURIComponent(`Aureus IA — Message de ${cName}`);
+      const body = encodeURIComponent(`Nom: ${cName}\nEmail: ${cEmail}\n\n${cMsg}`);
+      window.open(`mailto:info@aureus-ia.com?subject=${subject}&body=${body}`, "_self");
+      setSent(true); setTimeout(() => setSent(false), 3000);
+    }
+    setSending(false);
+  };
   return (
     <div className="cf">
-      <div className="cfr"><input className="cfi" placeholder={L.ct_name} /><input className="cfi" placeholder={L.ct_email} /></div>
-      <textarea className="cfi" placeholder={L.ct_msg} rows={5} style={{ resize: "vertical" }} />
-      <button className="cfb" onClick={() => { setSent(true); setTimeout(() => setSent(false), 2500); }}>{sent ? L.ct_sent : L.ct_send}</button>
+      <div className="cfr"><input className="cfi" placeholder={L.ct_name} value={cName} onChange={e => setCName(e.target.value)} /><input className="cfi" placeholder={L.ct_email} value={cEmail} onChange={e => setCEmail(e.target.value)} /></div>
+      <textarea className="cfi" placeholder={L.ct_msg} rows={5} style={{ resize: "vertical" }} value={cMsg} onChange={e => setCMsg(e.target.value)} />
+      <button className="cfb" disabled={sending || !cName || !cEmail || !cMsg} onClick={handleSend}>{sending ? "Envoi..." : sent ? L.ct_sent : L.ct_send}</button>
     </div>
   );
 }
