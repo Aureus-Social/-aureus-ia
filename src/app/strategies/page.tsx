@@ -2,19 +2,85 @@
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 
-/* ── TOOLS DATA (11 indicators) ── */
+/* ── TOOLS DATA (11 indicators) with full details ── */
 const tools = [
-  { id: 1, name: "LT Trade BP Symbol", role: "Identification instantanée", desc: "Affiche en temps réel l'instrument traité. Élimine les erreurs d'exécution dans un environnement multi-actifs et multi-écrans.", icon: "🎯", color: "#C9A84C" },
-  { id: 2, name: "LT Trade Breakout Signal", role: "Rupture structurelle", desc: "Détecte les entrées potentielles via Engulfing + Order Blocks et Market Structure Shifts (MSS). Anticipe les zones d'accumulation/distribution.", icon: "⚡", color: "#2ECC71" },
-  { id: 3, name: "LT Trade Daily H/L", role: "Liquidité de la veille", desc: "Trace le plus haut/bas de la veille — zones où se cachent les poches de liquidité visées par les institutions pour les stop hunts.", icon: "📊", color: "#3498DB" },
-  { id: 4, name: "LT Trade GMC-OB", role: "Order Blocks en temps réel", desc: "IA spécialisée dans la reconnaissance des Order Blocks dès leur formation. Timing ultra-précis pour anticiper les retours de prix.", icon: "🧊", color: "#E67E22" },
-  { id: 5, name: "OB Zone Pro", role: "Validation volumétrique", desc: "Mesure la solidité d'un OB via le volume institutionnel. Code couleur vert (haussier) / rouge (baissier) pour filtrer le bruit.", icon: "🔬", color: "#9B59B6" },
-  { id: 6, name: "LT Trade ShowPips", role: "Performance en direct", desc: "Affiche pips, pourcentage et valeur monétaire en temps réel. Favorise la discipline émotionnelle et le suivi multi-trades.", icon: "💰", color: "#F39C12" },
-  { id: 7, name: "LT Trade Trend Corridor", role: "Élasticité du marché", desc: "Canal adaptatif basé sur volume et volatilité. Indique la zone maximale de mouvement et la tendance via l'inclinaison.", icon: "📈", color: "#1ABC9C" },
-  { id: 8, name: "AP LT Trade", role: "Zones extrêmes IA", desc: "IA d'analyse comportementale mesurant la pression achat/vente. Identifie les véritables extrêmes institutionnels, pas le simple bruit.", icon: "🧠", color: "#E74C3C" },
-  { id: 9, name: "LT Trade Momentum", role: "Force du mouvement", desc: "Mesure la force réelle derrière un mouvement en pondérant flux d'ordres et volume effectif des gros acteurs. Déclencheur final.", icon: "🚀", color: "#C9A84C" },
-  { id: 10, name: "LT Trade WorkTime", role: "Session asiatique", desc: "Surligne les fenêtres horaires de session. L'Asie crée un range 'tampon' que Londres/NY viennent balayer avant le vrai mouvement.", icon: "🌏", color: "#3498DB" },
-  { id: 11, name: "LT Trade Davits Pivot", role: "Pivots × Fibonacci", desc: "Fusionne points pivots et ratios Fibonacci pour cartographier les niveaux d'intervention utilisés par les desks professionnels.", icon: "🎯", color: "#9B59B6" },
+  { id: 1, name: "LT Trade BP Symbol", role: "Identification instantanée", desc: "Affiche en temps réel l'instrument traité. Élimine les erreurs d'exécution dans un environnement multi-actifs et multi-écrans.", icon: "🎯", color: "#C9A84C",
+    detail: {
+      full: "Cet outil, simple en apparence, a pourtant une importance clé dans un environnement de trading institutionnel. Le LT Trade BP Symbol affiche en temps réel l'indice, la paire de devises ou la matière première sur laquelle le trader intervient.",
+      utility: ["Sécurité opérationnelle : élimine les erreurs d'exécution dues à la confusion entre instruments", "Clarté analytique : vérifie en un coup d'œil que toutes les analyses se rapportent au bon actif", "Compatibilité multi-écrans : idéal pour les traders disposant de 4 à 6 écrans simultanément"],
+      trap: "Ne pas considérer cet outil comme décoratif. Une mauvaise identification d'actif peut ruiner une session entière, surtout si les tailles de positions sont élevées."
+    }
+  },
+  { id: 2, name: "LT Trade Breakout Signal", role: "Rupture structurelle", desc: "Détecte les entrées potentielles via Engulfing + Order Blocks et Market Structure Shifts (MSS). Anticipe les zones d'accumulation/distribution.", icon: "⚡", color: "#2ECC71",
+    detail: {
+      full: "Module de détection avancée des points d'entrée potentiels, matérialisés par des flèches de signal. Ces signaux reposent sur deux conditions institutionnelles majeures : l'apparition d'un Engulfing créateur d'Order Block et la détection d'un Market Structure Shift (MSS).",
+      utility: ["Anticiper les zones d'accumulation/distribution créées par les banques et fonds", "Identifier les mouvements propulsés par de véritables flux de capitaux, et non par du bruit de marché", "Toujours contextualiser le signal dans une lecture globale de la narrative de marché"],
+      trap: "Prendre un signal isolé sans vérifier la structure supérieure (H1/H4). Un signal seul n'est pas suffisant pour entrer."
+    }
+  },
+  { id: 3, name: "LT Trade Daily H/L", role: "Liquidité de la veille", desc: "Trace le plus haut/bas de la veille — zones où se cachent les poches de liquidité visées par les institutions pour les stop hunts.", icon: "📊", color: "#3498DB",
+    detail: {
+      full: "Cet outil trace automatiquement le plus haut et le plus bas de la journée précédente, zones où se trouvent souvent d'importantes poches de liquidités (ordres stop, ordres limit).",
+      utility: ["Les grandes institutions visent fréquemment ces niveaux pour provoquer des liquidity grabs (stop hunts)", "Permet de savoir si la liquidité du haut ou du bas de la veille a été prise ou non", "Oriente fortement le biais directionnel de la journée"],
+      trap: "Supposer qu'une prise de liquidité entraîne toujours un retournement immédiat — parfois le prix continue après un balayage."
+    }
+  },
+  { id: 4, name: "LT Trade GMC-OB", role: "Order Blocks en temps réel", desc: "IA spécialisée dans la reconnaissance des Order Blocks dès leur formation. Timing ultra-précis pour anticiper les retours de prix.", icon: "🧊", color: "#E67E22",
+    detail: {
+      full: "Intelligence artificielle spécialisée dans la reconnaissance des Order Blocks au moment même de leur formation. Là où un trader manuel doit attendre la clôture d'une structure pour valider un OB, cet outil scanne en continu l'activité des bougies et identifie un déplacement institutionnel.",
+      utility: ["Timing ultra-précis : connaître un OB au moment de sa naissance permet d'anticiper un éventuel retour du prix", "Lecture des intentions algorithmiques : ces zones sont souvent laissées volontairement par les algorithmes bancaires", "Confirmer avec d'autres modules (Momentum, AP LT Trade) avant l'exécution"],
+      trap: "Entrer sur le premier retour de prix sans validation multi-outils. Un OB n'est pas forcément respecté s'il n'a pas un volume suffisant (voir OB Zone Pro)."
+    }
+  },
+  { id: 5, name: "OB Zone Pro", role: "Validation volumétrique", desc: "Mesure la solidité d'un OB via le volume institutionnel. Code couleur vert (haussier) / rouge (baissier) pour filtrer le bruit.", icon: "🔬", color: "#9B59B6",
+    detail: {
+      full: "Complément indispensable du LT Trade GMC-OB. Son objectif est de mesurer la solidité d'un OB en analysant le volume institutionnel présent dans la zone. L'IA évalue en temps réel la quantité et la qualité des ordres présents, puis attribue une notation visuelle via un code couleur.",
+      utility: ["Vert : OB haussier hautement pertinent — Rouge : OB baissier hautement pertinent", "Évite de trader des OB « faibles » ou non institutionnels", "Permet de filtrer le bruit et de se concentrer uniquement sur les zones à forte probabilité"],
+      trap: "Négliger les étapes intermédiaires du code couleur. Un OB qui n'est pas encore passé rouge ou vert peut se renforcer ou disparaître."
+    }
+  },
+  { id: 6, name: "LT Trade ShowPips", role: "Performance en direct", desc: "Affiche pips, pourcentage et valeur monétaire en temps réel. Favorise la discipline émotionnelle et le suivi multi-trades.", icon: "💰", color: "#F39C12",
+    detail: {
+      full: "Module purement visuel qui affiche les pips gagnés ou perdus, le pourcentage de gain/perte, et l'équivalent monétaire en euros. Essentiel pour la discipline émotionnelle en scalping.",
+      utility: ["Favorise la discipline émotionnelle : voir un gain flotter peut inciter à sécuriser partiellement", "Facilite le suivi multi-trades, surtout en scalping où la vitesse d'exécution est critique", "Surveiller le gain en fonction du Risk-to-Reward initial et ajuster le SL au break-even"],
+      trap: "Laisser l'affichage influencer la décision prématurément. Les décisions doivent rester basées sur le plan, pas uniquement sur les gains flottants."
+    }
+  },
+  { id: 7, name: "LT Trade Trend Corridor", role: "Élasticité du marché", desc: "Canal adaptatif basé sur volume et volatilité. Indique la zone maximale de mouvement et la tendance via l'inclinaison.", icon: "📈", color: "#1ABC9C",
+    detail: {
+      full: "Canal adaptatif qui évolue avec le marché, en fonction du volume et de la volatilité en cours. Il indique la zone maximale probable de mouvement avant retournement, et la tendance générale via l'inclinaison du corridor.",
+      utility: ["Lorsque le prix touche une bande, il a statistiquement tendance à revenir vers l'autre bande", "Le corridor « respire » avec le marché, permettant d'éviter les entrées trop tôt sur des corrections mineures", "Utiliser l'autre bande comme objectif de Take Profit naturel"],
+      trap: "Penser que toute sortie de bande entraîne un retournement immédiat. La validation contextuelle est essentielle."
+    }
+  },
+  { id: 8, name: "AP LT Trade", role: "Zones extrêmes IA", desc: "IA d'analyse comportementale mesurant la pression achat/vente. Identifie les véritables extrêmes institutionnels, pas le simple bruit.", icon: "🧠", color: "#E74C3C",
+    detail: {
+      full: "Un des modules phares d'Aureus AI. Contrairement à un simple oscillateur classique, il s'agit d'une IA d'analyse comportementale qui mesure en temps réel la pression d'achat et de vente. Elle croise plusieurs couches de données (volumes, volatilité, vitesse de mouvement, micro-liquidités).",
+      utility: ["Identifie les zones de surachat extrême (probabilité élevée de correction baissière)", "Identifie les zones de survente extrême (probabilité élevée de correction haussière)", "Filtre les faux signaux générés par les simples indicateurs techniques classiques"],
+      trap: "Confondre un extrême institutionnel avec une simple fluctuation technique. L'IA AP LT Trade détecte un excès significatif et non une variation normale."
+    }
+  },
+  { id: 9, name: "LT Trade Momentum", role: "Force du mouvement", desc: "Mesure la force réelle derrière un mouvement en pondérant flux d'ordres et volume effectif des gros acteurs. Déclencheur final.", icon: "🚀", color: "#C9A84C",
+    detail: {
+      full: "N'est pas qu'un indicateur de vitesse des prix. Il mesure la force réelle derrière un mouvement, en pondérant le flux d'ordres et le volume effectif injecté par les gros acteurs. Lorsqu'un Momentum change de direction après un extrême ou une prise de liquidité, cela signale souvent un retournement puissant.",
+      utility: ["Agit comme un déclencheur final : vous ne rentrez pas sur simple intuition mais sur un changement mesurable", "Identifier la zone d'intérêt puis attendre le croisement Momentum + prix dans le sens de l'opportunité", "Valider que le croisement se fait dans un contexte structurel favorable (Dow Theory)"],
+      trap: "Entrer uniquement sur un croisement Momentum sans contexte. Toujours confirmer avec au moins un autre outil."
+    }
+  },
+  { id: 10, name: "LT Trade WorkTime", role: "Session asiatique", desc: "Surligne les fenêtres horaires de session. L'Asie crée un range 'tampon' que Londres/NY viennent balayer avant le vrai mouvement.", icon: "🌏", color: "#3498DB",
+    detail: {
+      full: "Surligne les fenêtres horaires de sessions. Dans Aureus AI, on l'utilise surtout pour l'Asie, considérée comme phase de création/accumulation de liquidité avant Londres/NY. Visualiser cette « boîte asiatique » permet de prévoir où le marché ira chercher la liquidité facile.",
+      utility: ["L'Asie cadre un range « tampon » ; Londres/NY viennent souvent balayer ces extrêmes (stop hunt)", "Sweep d'un bord de la boîte + AP LT Trade AI extrême → signal d'entrée", "Si le bord de la boîte touche un pivot ou un Daily H/L, la probabilité augmente fortement"],
+      trap: "Paramétrage horaire approximatif → décale toute la lecture. Toujours aligner WorkTime sur le fuseau du broker."
+    }
+  },
+  { id: 11, name: "LT Trade Davits Pivot", role: "Pivots × Fibonacci", desc: "Fusionne points pivots et ratios Fibonacci pour cartographier les niveaux d'intervention utilisés par les desks professionnels.", icon: "🎯", color: "#9B59B6",
+    detail: {
+      full: "Davits Pivot V3.2 Auto fusionne les points pivots (calculés sur la période précédente) avec des ratios/étages de Fibonacci, pour cartographier des niveaux d'intervention probables utilisés par des desks pros.",
+      utility: ["Objectivité des niveaux : les pivots sont des repères publics et massivement suivis → réactions collectives", "Affinage Fibonacci : ajoute des « paliers » naturels où le prix respire/accumule avant impulsion", "Confluence premium : lorsqu'un pivot/Fibo coïncide avec un OB validé ou un Daily H/L, la probabilité explose"],
+      trap: "Trader un pivot seul sans contexte (Dow/IA/OB). Ignorer la volatilité de session (cassures fake à l'ouverture)."
+    }
+  },
 ];
 
 /* ── STRATEGIES DATA (6 strategies) ── */
@@ -154,15 +220,132 @@ function FI({ children, className = "", delay = 0 }: { children: React.ReactNode
   );
 }
 
+/* ── TOOL DETAIL MODAL ── */
+function ToolModal({ tool, onClose }: { tool: typeof tools[0] | null; onClose: () => void }) {
+  useEffect(() => {
+    if (tool) document.body.style.overflow = "hidden";
+    else document.body.style.overflow = "";
+    return () => { document.body.style.overflow = ""; };
+  }, [tool]);
+
+  if (!tool) return null;
+
+  return (
+    <div
+      onClick={onClose}
+      style={{
+        position: "fixed", inset: 0, zIndex: 9999,
+        background: "rgba(0,0,0,.75)", backdropFilter: "blur(12px)",
+        display: "flex", alignItems: "center", justifyContent: "center",
+        padding: 20, animation: "fadeIn .3s ease",
+      }}
+    >
+      <div
+        onClick={e => e.stopPropagation()}
+        style={{
+          background: "var(--c1)", borderRadius: 22, maxWidth: 680, width: "100%",
+          maxHeight: "85vh", overflow: "auto",
+          border: `1px solid ${tool.color}30`,
+          boxShadow: `0 32px 80px rgba(0,0,0,.6), 0 0 40px ${tool.color}10`,
+          animation: "slideUp .4s cubic-bezier(.16,1,.3,1)",
+        }}
+      >
+        {/* Header */}
+        <div style={{
+          padding: "32px 32px 24px", borderBottom: `1px solid ${tool.color}15`,
+          position: "relative",
+        }}>
+          <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 3, background: `linear-gradient(90deg,transparent,${tool.color},transparent)`, opacity: .5 }} />
+          
+          {/* Close button */}
+          <button onClick={onClose} style={{
+            position: "absolute", top: 16, right: 16,
+            width: 36, height: 36, borderRadius: "50%",
+            background: "rgba(255,255,255,.05)", border: "1px solid rgba(255,255,255,.1)",
+            color: "var(--td)", fontSize: 18, cursor: "pointer",
+            display: "flex", alignItems: "center", justifyContent: "center",
+            transition: "all .2s",
+          }}
+            onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = "rgba(255,255,255,.1)"; }}
+            onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = "rgba(255,255,255,.05)"; }}
+          >×</button>
+
+          <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+            <div style={{
+              width: 56, height: 56, borderRadius: 16,
+              background: `${tool.color}15`, border: `1px solid ${tool.color}30`,
+              display: "flex", alignItems: "center", justifyContent: "center",
+              fontSize: 28,
+            }}>{tool.icon}</div>
+            <div>
+              <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                <h3 style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: 26, fontWeight: 700, color: "var(--tx)" }}>{tool.name}</h3>
+                <span style={{
+                  width: 26, height: 26, borderRadius: "50%",
+                  background: `${tool.color}20`, border: `1px solid ${tool.color}40`,
+                  display: "inline-flex", alignItems: "center", justifyContent: "center",
+                  fontSize: 11, fontWeight: 700, color: tool.color, fontFamily: "'JetBrains Mono',monospace",
+                }}>{tool.id}</span>
+              </div>
+              <div style={{ fontSize: 11, color: tool.color, letterSpacing: 2, textTransform: "uppercase" as const, fontWeight: 600, marginTop: 4 }}>{tool.role}</div>
+            </div>
+          </div>
+        </div>
+
+        {/* Body */}
+        <div style={{ padding: "24px 32px 32px" }}>
+          {/* Description */}
+          <p style={{ fontSize: 15, color: "var(--td)", lineHeight: 1.85, marginBottom: 24 }}>
+            {tool.detail.full}
+          </p>
+
+          {/* Utilité institutionnelle */}
+          <div style={{
+            background: `${tool.color}08`, borderRadius: 14, padding: "20px 22px",
+            border: `1px solid ${tool.color}15`, marginBottom: 20,
+          }}>
+            <div style={{ fontSize: 10, color: tool.color, letterSpacing: 3, textTransform: "uppercase" as const, fontWeight: 700, marginBottom: 14, display: "flex", alignItems: "center", gap: 8 }}>
+              <span style={{ fontSize: 14 }}>🏛️</span> Utilité Institutionnelle
+            </div>
+            {tool.detail.utility.map((u, i) => (
+              <div key={i} style={{ display: "flex", gap: 10, marginBottom: i < tool.detail.utility.length - 1 ? 10 : 0, alignItems: "flex-start" }}>
+                <span style={{ color: tool.color, fontSize: 14, marginTop: 1, flexShrink: 0 }}>▸</span>
+                <p style={{ fontSize: 13, color: "var(--td)", lineHeight: 1.7 }}>{u}</p>
+              </div>
+            ))}
+          </div>
+
+          {/* Piège à éviter */}
+          <div style={{
+            background: "rgba(231,76,60,.06)", borderRadius: 14, padding: "18px 22px",
+            border: "1px solid rgba(231,76,60,.12)",
+          }}>
+            <div style={{ fontSize: 10, color: "#E74C3C", letterSpacing: 3, textTransform: "uppercase" as const, fontWeight: 700, marginBottom: 10, display: "flex", alignItems: "center", gap: 8 }}>
+              <span style={{ fontSize: 14 }}>⚠️</span> Piège à Éviter
+            </div>
+            <p style={{ fontSize: 13, color: "var(--td)", lineHeight: 1.7 }}>{tool.detail.trap}</p>
+          </div>
+        </div>
+      </div>
+
+      <style>{`
+        @keyframes fadeIn { from { opacity: 0 } to { opacity: 1 } }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(30px) scale(.97) } to { opacity: 1; transform: none } }
+      `}</style>
+    </div>
+  );
+}
+
 /* ── TOOL CARD ── */
-function ToolCard({ tool, index }: { tool: typeof tools[0]; index: number }) {
+function ToolCard({ tool, index, onClick }: { tool: typeof tools[0]; index: number; onClick: () => void }) {
   return (
     <FI delay={index * 60}>
       <div style={{
         background: "var(--c1)", borderRadius: 16, padding: "28px 22px",
         border: "1px solid rgba(201,168,76,.05)", position: "relative", overflow: "hidden",
-        transition: "all .4s", cursor: "default",
+        transition: "all .4s", cursor: "pointer",
       }}
+        onClick={onClick}
         onMouseEnter={e => {
           (e.currentTarget as HTMLElement).style.borderColor = "rgba(201,168,76,.18)";
           (e.currentTarget as HTMLElement).style.transform = "translateY(-6px)";
@@ -186,6 +369,9 @@ function ToolCard({ tool, index }: { tool: typeof tools[0]; index: number }) {
         <div style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: 19, fontWeight: 700, marginBottom: 4, color: "var(--tx)" }}>{tool.name}</div>
         <div style={{ fontSize: 10, color: tool.color, letterSpacing: 2, textTransform: "uppercase" as const, fontWeight: 600, marginBottom: 12 }}>{tool.role}</div>
         <div style={{ fontSize: 13, color: "var(--td)", lineHeight: 1.75 }}>{tool.desc}</div>
+        <div style={{ marginTop: 14, fontSize: 10, color: tool.color, letterSpacing: 1.5, fontWeight: 600, opacity: .7, display: "flex", alignItems: "center", gap: 6 }}>
+          <span>VOIR DÉTAILS</span><span style={{ fontSize: 14 }}>→</span>
+        </div>
       </div>
     </FI>
   );
@@ -310,6 +496,7 @@ function StrategySection({ strategy, index }: { strategy: typeof strategies[0]; 
 /* ── MAIN PAGE ── */
 export default function StrategiesPage() {
   const [scrolled, setScrolled] = useState(false);
+  const [selectedTool, setSelectedTool] = useState<typeof tools[0] | null>(null);
 
   useEffect(() => {
     const h = () => setScrolled(window.scrollY > 60);
@@ -426,7 +613,7 @@ export default function StrategiesPage() {
 
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))", gap: 16 }}>
             {tools.map((tool, i) => (
-              <ToolCard key={tool.id} tool={tool} index={i} />
+              <ToolCard key={tool.id} tool={tool} index={i} onClick={() => setSelectedTool(tool)} />
             ))}
           </div>
         </div>
@@ -549,6 +736,9 @@ export default function StrategiesPage() {
           </p>
         </div>
       </footer>
+
+      {/* ═══════ TOOL DETAIL MODAL ═══════ */}
+      <ToolModal tool={selectedTool} onClose={() => setSelectedTool(null)} />
 
       {/* ═══════ RESPONSIVE ═══════ */}
       <style jsx global>{`
