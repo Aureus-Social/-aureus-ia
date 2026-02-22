@@ -232,33 +232,35 @@ function BookingModal({ lang, onClose }: { lang: Lang; onClose: () => void }) {
     setSending(true);
     const dateStr = fmtDate(selDate);
     try {
-      const res = await fetch("https://formsubmit.co/ajax/f84842ea86e3814c3c5b5f8257086ec2", {
-        method: "POST",
-        headers: { "Content-Type": "application/json", "Accept": "application/json" },
-        body: JSON.stringify({
-          _subject: `🗓️ Aureus IA — Nouvelle Réservation: ${dateStr} à ${selTime}`,
-          Date: dateStr,
-          Heure: selTime,
-          Durée: "30 minutes — Free Consultation",
-          Nom: name,
-          Email: email,
-          Téléphone: phone || "Non renseigné",
-          _template: "table",
-        }),
+      // Create hidden form and submit directly
+      const form = document.createElement("form");
+      form.method = "POST";
+      form.action = "https://formsubmit.co/f84842ea86e3814c3c5b5f8257086ec2";
+      form.target = "_blank";
+      const fields: Record<string, string> = {
+        _subject: `🗓️ Aureus IA — Nouvelle Réservation: ${dateStr} à ${selTime}`,
+        _template: "table",
+        _captcha: "false",
+        _next: "https://aureus-ia.vercel.app/?booking=success",
+        Date: dateStr,
+        Heure: selTime,
+        "Durée": "30 minutes — Free Consultation",
+        Nom: name,
+        Email: email,
+        "Téléphone": phone || "Non renseigné",
+      };
+      Object.entries(fields).forEach(([k, v]) => {
+        const input = document.createElement("input");
+        input.type = "hidden"; input.name = k; input.value = v;
+        form.appendChild(input);
       });
-      if (res.ok) {
-        setDone(true);
-      } else {
-        // Fallback mailto
-        const subject = encodeURIComponent(`Aureus IA — Booking: ${dateStr} at ${selTime}`);
-        const body = encodeURIComponent(`Réservation:\n\nDate: ${dateStr}\nHeure: ${selTime}\nDurée: 30 min\n\nNom: ${name}\nEmail: ${email}\nTéléphone: ${phone || "N/A"}\n\n---\naureus-ia.com`);
-        window.open(`mailto:info@aureus-ia.com?subject=${subject}&body=${body}`, "_self");
-        setDone(true);
-      }
+      document.body.appendChild(form);
+      form.submit();
+      document.body.removeChild(form);
+      setDone(true);
     } catch {
-      // Fallback mailto if fetch fails
       const subject = encodeURIComponent(`Aureus IA — Booking: ${dateStr} at ${selTime}`);
-      const body = encodeURIComponent(`Réservation:\n\nDate: ${dateStr}\nHeure: ${selTime}\nDurée: 30 min\n\nNom: ${name}\nEmail: ${email}\nTéléphone: ${phone || "N/A"}\n\n---\naureus-ia.com`);
+      const body = encodeURIComponent(`Réservation:\n\nDate: ${dateStr}\nHeure: ${selTime}\nNom: ${name}\nEmail: ${email}\nTéléphone: ${phone || "N/A"}`);
       window.open(`mailto:info@aureus-ia.com?subject=${subject}&body=${body}`, "_self");
       setDone(true);
     }
@@ -418,16 +420,26 @@ function ContactForm({ lang }: { lang: Lang }) {
     if (!cName || !cEmail || !cMsg) return;
     setSending(true);
     try {
-      const res = await fetch("https://formsubmit.co/ajax/f84842ea86e3814c3c5b5f8257086ec2", {
-        method: "POST",
-        headers: { "Content-Type": "application/json", "Accept": "application/json" },
-        body: JSON.stringify({
-          _subject: `📩 Aureus IA — Message de ${cName}`,
-          Nom: cName, Email: cEmail, Message: cMsg,
-          _template: "table",
-        }),
+      const form = document.createElement("form");
+      form.method = "POST";
+      form.action = "https://formsubmit.co/f84842ea86e3814c3c5b5f8257086ec2";
+      form.target = "_blank";
+      const fields: Record<string, string> = {
+        _subject: `📩 Aureus IA — Message de ${cName}`,
+        _template: "table",
+        _captcha: "false",
+        _next: "https://aureus-ia.vercel.app/?contact=success",
+        Nom: cName, Email: cEmail, Message: cMsg,
+      };
+      Object.entries(fields).forEach(([k, v]) => {
+        const input = document.createElement("input");
+        input.type = "hidden"; input.name = k; input.value = v;
+        form.appendChild(input);
       });
-      if (res.ok) { setSent(true); setCName(""); setCEmail(""); setCMsg(""); setTimeout(() => setSent(false), 3000); }
+      document.body.appendChild(form);
+      form.submit();
+      document.body.removeChild(form);
+      setSent(true); setCName(""); setCEmail(""); setCMsg(""); setTimeout(() => setSent(false), 3000);
     } catch {
       const subject = encodeURIComponent(`Aureus IA — Message de ${cName}`);
       const body = encodeURIComponent(`Nom: ${cName}\nEmail: ${cEmail}\n\n${cMsg}`);
