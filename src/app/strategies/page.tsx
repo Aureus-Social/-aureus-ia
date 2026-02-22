@@ -644,17 +644,33 @@ export default function StrategiesPage() {
 
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
                 {[
-                  ["AP LT Trade AI", "Indicateur d'excès pertinent"],
-                  ["Momentum", "Confirmation de retournement"],
-                  ["Order Blocks", "Zones de réaction haute probabilité"],
-                  ["Trend Corridor", "Canal d'élasticité cohérent"],
-                ].map(([tool, role], i) => (
+                  ["AP LT Trade AI", "Indicateur d'excès pertinent", 8],
+                  ["Momentum", "Confirmation de retournement", 9],
+                  ["Order Blocks", "Zones de réaction haute probabilité", 4],
+                  ["Trend Corridor", "Canal d'élasticité cohérent", 7],
+                ].map(([tool, role, toolId], i) => (
                   <div key={i} style={{
                     padding: "14px 18px", borderRadius: 10,
                     background: "rgba(201,168,76,.03)", border: "1px solid rgba(201,168,76,.06)",
-                  }}>
-                    <div style={{ fontSize: 13, fontWeight: 700, color: "var(--g)", marginBottom: 4 }}>{tool}</div>
-                    <div style={{ fontSize: 12, color: "var(--td)" }}>→ {role}</div>
+                    cursor: "pointer", transition: "all .3s",
+                  }}
+                    onClick={() => setSelectedTool(tools.find(t => t.id === toolId) || null)}
+                    onMouseEnter={e => {
+                      (e.currentTarget as HTMLElement).style.background = "rgba(201,168,76,.08)";
+                      (e.currentTarget as HTMLElement).style.borderColor = "rgba(201,168,76,.2)";
+                      (e.currentTarget as HTMLElement).style.transform = "translateY(-2px)";
+                    }}
+                    onMouseLeave={e => {
+                      (e.currentTarget as HTMLElement).style.background = "rgba(201,168,76,.03)";
+                      (e.currentTarget as HTMLElement).style.borderColor = "rgba(201,168,76,.06)";
+                      (e.currentTarget as HTMLElement).style.transform = "none";
+                    }}
+                  >
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                      <div style={{ fontSize: 13, fontWeight: 700, color: "var(--g)", marginBottom: 4 }}>{tool as string}</div>
+                      <span style={{ fontSize: 10, color: "var(--g)", opacity: .6 }}>DÉTAILS →</span>
+                    </div>
+                    <div style={{ fontSize: 12, color: "var(--td)" }}>→ {role as string}</div>
                   </div>
                 ))}
               </div>
