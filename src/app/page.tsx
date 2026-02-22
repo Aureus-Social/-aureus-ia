@@ -390,6 +390,40 @@ function ContactForm({ lang }: { lang: Lang }) {
   );
 }
 
+/* ── HUB FEATURES DETAIL DATA ── */
+const hubFeaturesDetail = [
+  { icon: "🖥️", title: "Pro Workstations", color: "#3498DB",
+    full: "Nos postes de travail multi-écrans sont configurés pour offrir une expérience de trading de niveau institutionnel. Chaque station dispose de 2 à 4 moniteurs haute résolution, permettant une surveillance simultanée des marchés, des indicateurs et des flux d'actualités.",
+    features: ["Configurations multi-écrans (2 à 4 moniteurs UHD)", "MetaTrader 4/5 pré-installé avec les 11 indicateurs Aureus IA", "Clavier et souris ergonomiques, sièges professionnels", "Espace de travail individuel avec isolation acoustique partielle"],
+    bonus: "Chaque poste est pré-configuré avec vos préférences après votre première visite. Vous retrouvez votre environnement exact à chaque session."
+  },
+  { icon: "📶", title: "Ultra-Fast Connectivity", color: "#2ECC71",
+    full: "La connectivité est le nerf de la guerre en trading. Notre hub est équipé d'une connexion fibre optique dédiée avec backup redondant, garantissant une latence sub-milliseconde et zéro interruption.",
+    features: ["Fibre optique 1 Gbps avec backup automatique 4G/5G", "Latence sub-milliseconde vers les serveurs de trading", "Réseau dédié et séparé du WiFi public", "Monitoring réseau en temps réel par l'équipe technique"],
+    bonus: "En cas de coupure (extrêmement rare), le basculement sur le réseau de secours est automatique et transparent — vos positions ne sont jamais en danger."
+  },
+  { icon: "🧠", title: "AI Tools On-Site", color: "#C9A84C",
+    full: "Tous les 11 indicateurs propriétaires Aureus IA sont pré-installés et configurés sur chaque poste. Pas de clé API à gérer, pas d'installation — tout est prêt dès votre arrivée.",
+    features: ["Les 11 indicateurs Aureus IA activés et mis à jour automatiquement", "Templates de graphiques pré-configurés par stratégie", "Accès aux backtests et aux données historiques", "Mises à jour et nouvelles fonctionnalités déployées en continu"],
+    bonus: "Lucas configure personnellement vos graphiques lors de votre première session pour optimiser votre workflow selon votre style de trading."
+  },
+  { icon: "☕", title: "Premium Amenities", color: "#E67E22",
+    full: "Le trading exige de la concentration sur la durée. Notre espace est conçu pour maintenir votre confort et votre focus tout au long de la journée, avec des équipements premium à disposition.",
+    features: ["Café, thé, et rafraîchissements en libre-service toute la journée", "Espace lounge dédié pour les pauses et le networking", "Cuisine équipée pour les traders en session journée complète", "Ambiance calme et professionnelle — pas de distractions"],
+    bonus: "Les participants au Discovery Day bénéficient d'un déjeuner offert dans un restaurant partenaire du quartier."
+  },
+  { icon: "🔒", title: "Secure Environment", color: "#9B59B6",
+    full: "La sécurité de vos données et de vos accès est notre priorité absolue. Notre infrastructure est conforme aux normes européennes les plus strictes, avec un chiffrement de bout en bout.",
+    features: ["Accès biométrique au hub (empreinte digitale + badge)", "Réseau chiffré de bout en bout — aucune donnée ne transite en clair", "Postes de travail sans stockage local — tout est en session sécurisée", "Conformité RGPD complète — vos données restent les vôtres"],
+    bonus: "À la fin de chaque session, vos données de trading et configurations sont sauvegardées de manière chiffrée et accessibles uniquement par vous."
+  },
+  { icon: "🤝", title: "Expert Guidance", color: "#1ABC9C",
+    full: "Vous n'êtes jamais seul au hub. Lucas et son équipe sont présents pour répondre à vos questions, valider vos analyses, et vous guider vers les meilleures décisions analytiques.",
+    features: ["Lucas disponible pour des questions ponctuelles tout au long de la journée", "Validation d'analyses et de setups en temps réel", "Mini-sessions de coaching spontanées selon les conditions de marché", "Partage d'insights et d'opportunités détectées par l'équipe"],
+    bonus: "Les moments de marché les plus intéressants (NFP, FOMC, BCE) sont commentés en direct par Lucas pour tous les présents au hub."
+  },
+];
+
 /* ── TOOLS DETAIL DATA ── */
 const toolsDetail = [
   { id: 1, name: "LT Trade BP Symbol", role: "Identification instantanée", icon: "🎯", color: "#C9A84C",
@@ -485,6 +519,41 @@ function ToolModal({ tool, onClose }: { tool: any; onClose: () => void }) {
   );
 }
 
+function HubModal({ hub, onClose }: { hub: any; onClose: () => void }) {
+  useEffect(() => { if (hub) document.body.style.overflow = "hidden"; else document.body.style.overflow = ""; return () => { document.body.style.overflow = ""; }; }, [hub]);
+  if (!hub) return null;
+  return (
+    <div onClick={onClose} style={{ position: "fixed", inset: 0, zIndex: 9999, background: "rgba(0,0,0,.75)", backdropFilter: "blur(12px)", display: "flex", alignItems: "center", justifyContent: "center", padding: 20 }}>
+      <div onClick={e => e.stopPropagation()} style={{ background: "var(--c1)", borderRadius: 22, maxWidth: 640, width: "100%", maxHeight: "85vh", overflow: "auto", border: `1px solid ${hub.color}30`, boxShadow: `0 32px 80px rgba(0,0,0,.6)` }}>
+        <div style={{ padding: "32px 32px 24px", borderBottom: `1px solid ${hub.color}15`, position: "relative" }}>
+          <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 3, background: `linear-gradient(90deg,transparent,${hub.color},transparent)`, opacity: .5 }} />
+          <button onClick={onClose} style={{ position: "absolute", top: 16, right: 16, width: 36, height: 36, borderRadius: "50%", background: "rgba(255,255,255,.05)", border: "1px solid rgba(255,255,255,.1)", color: "var(--td)", fontSize: 18, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}>×</button>
+          <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+            <div style={{ width: 56, height: 56, borderRadius: 16, background: `${hub.color}15`, border: `1px solid ${hub.color}30`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 28 }}>{hub.icon}</div>
+            <h3 style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: 26, fontWeight: 700, color: "var(--tx)" }}>{hub.title}</h3>
+          </div>
+        </div>
+        <div style={{ padding: "24px 32px 32px" }}>
+          <p style={{ fontSize: 15, color: "var(--td)", lineHeight: 1.85, marginBottom: 24 }}>{hub.full}</p>
+          <div style={{ background: `${hub.color}08`, borderRadius: 14, padding: "20px 22px", border: `1px solid ${hub.color}15`, marginBottom: 20 }}>
+            <div style={{ fontSize: 10, color: hub.color, letterSpacing: 3, textTransform: "uppercase" as const, fontWeight: 700, marginBottom: 14 }}>📋 Ce qui est inclus</div>
+            {hub.features.map((f: string, i: number) => (
+              <div key={i} style={{ display: "flex", gap: 10, marginBottom: 10, alignItems: "flex-start" }}>
+                <span style={{ color: hub.color, fontSize: 14, marginTop: 1 }}>▸</span>
+                <p style={{ fontSize: 13, color: "var(--td)", lineHeight: 1.7 }}>{f}</p>
+              </div>
+            ))}
+          </div>
+          <div style={{ background: "rgba(46,204,113,.06)", borderRadius: 14, padding: "18px 22px", border: "1px solid rgba(46,204,113,.12)" }}>
+            <div style={{ fontSize: 10, color: "#2ECC71", letterSpacing: 3, textTransform: "uppercase" as const, fontWeight: 700, marginBottom: 10 }}>💎 Le + Aureus</div>
+            <p style={{ fontSize: 13, color: "var(--td)", lineHeight: 1.7 }}>{hub.bonus}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function Home() {
   const [lang, setLang] = useState<Lang>("en");
   const [loading, setLoading] = useState(true);
@@ -495,6 +564,7 @@ export default function Home() {
   const [showPrivacy, setShowPrivacy] = useState(false);
   const [showBooking, setShowBooking] = useState(false);
   const [selectedTool, setSelectedTool] = useState<any>(null);
+  const [selectedHub, setSelectedHub] = useState<any>(null);
   const L = t[lang];
   const isRtl = lang === "ar";
 
@@ -610,7 +680,7 @@ export default function Home() {
         </div></FI>
         <div className="hfg">
           {[{ i: "🖥️", t2: L.hub_f1_t, d: L.hub_f1_d }, { i: "📶", t2: L.hub_f2_t, d: L.hub_f2_d }, { i: "🧠", t2: L.hub_f3_t, d: L.hub_f3_d }, { i: "☕", t2: L.hub_f4_t, d: L.hub_f4_d }, { i: "🔒", t2: L.hub_f5_t, d: L.hub_f5_d }, { i: "🤝", t2: L.hub_f6_t, d: L.hub_f6_d }].map((f, i) => (
-            <FI key={i}><div className="hf"><div className="hfi">{f.i}</div><div><div className="hft">{f.t2}</div><div className="hfd">{f.d}</div></div></div></FI>
+            <FI key={i}><div className="hf" style={{ cursor: "pointer" }} onClick={() => setSelectedHub(hubFeaturesDetail[i])}><div className="hfi">{f.i}</div><div><div className="hft">{f.t2}</div><div className="hfd">{f.d}</div><div style={{ fontSize: 9, color: "var(--g)", letterSpacing: 1.5, fontWeight: 600, marginTop: 8, opacity: .7 }}>EN SAVOIR PLUS →</div></div></div></FI>
           ))}
         </div>
       </div></section>
@@ -822,6 +892,7 @@ export default function Home() {
 
       {/* TOOL DETAIL MODAL */}
       <ToolModal tool={selectedTool} onClose={() => setSelectedTool(null)} />
+      <HubModal hub={selectedHub} onClose={() => setSelectedHub(null)} />
 
       {/* WHATSAPP */}
       <a href="https://wa.me/32491709413" target="_blank" rel="noopener noreferrer" className="wa">
