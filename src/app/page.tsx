@@ -832,10 +832,9 @@ export default function Home() {
         <FI><SH tag={L.pr_tag} title={L.pr_title} /></FI>
         <div className="pg">
           {[
-            { n: L.pr1_n, dur: "30 min", pr: "Free", per: "", feat: [L.pr1_f1, L.pr1_f2, L.pr1_f3, L.pr1_f4], pop: false, btn: L.pr1_btn },
-            { n: L.pr2_n, dur: "1 hour", pr: "€48.40", per: "/session", feat: [L.pr2_f1, L.pr2_f2, L.pr2_f3, L.pr2_f4], pop: true, btn: L.pr2_btn },
-            { n: L.pr3_n, dur: "1 hour", pr: "€96.80", per: "/session", feat: [L.pr3_f1, L.pr3_f2, L.pr3_f3, L.pr3_f4], pop: false, btn: L.pr3_btn },
-            { n: L.pr4_n, dur: "Full day", pr: L.pr4_price, per: "", feat: [L.pr4_f1, L.pr4_f2, L.pr4_f3, L.pr4_f4], pop: false, btn: L.pr4_btn },
+            { n: "Free Consultation", dur: "30 min", pr: "Free", per: "", feat: ["Vidéoconférence avec Lucas", "Découverte de la plateforme", "Démo live des 11 indicateurs", "Q&R personnalisées", "Zéro engagement"], pop: false, btn: "Planifier", action: "book" },
+            { n: "Discovery Day", dur: "Journée complète", pr: "Gratuit", per: "", feat: ["Journée complète au Hub Brussels", "Accès à tous les postes multi-écrans", "Les 11 indicateurs IA en live", "Coaching 1-on-1 avec Lucas", "Certificat de complétion"], pop: true, btn: "Réserver", action: "book" },
+            { n: "AI-Powered Access", dur: "Abonnement mensuel", pr: "€300", per: "/mois", feat: ["Accès complet au Hub Brussels", "Les 11 indicateurs IA en continu", "Clé API personnelle (€3,500 unique)", "Environnement professionnel dédié", "Support expert illimité"], pop: false, btn: "Nous Contacter", action: "contact", apiNote: "Clé API : paiement unique de €3,500 HTVA" },
           ].map((p, i) => (
             <FI key={i}><div className={`pc ${p.pop ? "pop" : ""}`}><div className="pi">
               {p.pop && <div className="ppb">POPULAR</div>}
@@ -843,7 +842,8 @@ export default function Home() {
               <div className="pdu">⏱ {p.dur}</div>
               <div className="ppr">{p.pr} {p.per && <span className="pper">{p.per}</span>}</div>
               {p.feat.map((f, fi) => <div key={fi} className="pf">{f}</div>)}
-              <button className={`pbt ${p.pop ? "gd" : "ot"}`} onClick={() => { if (i === 0) setShowBooking(true); }}>{p.btn}</button>
+              {p.apiNote && <div style={{ fontSize: 11, color: "var(--g)", padding: "8px 12px", background: "rgba(201,168,76,.06)", borderRadius: 8, border: "1px solid rgba(201,168,76,.1)", marginTop: 4, textAlign: "center" as const, fontWeight: 600 }}>{p.apiNote}</div>}
+              <button className={`pbt ${p.pop ? "gd" : "ot"}`} onClick={() => { if (p.action === "book") setShowBooking(true); else document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" }); }}>{p.btn}</button>
             </div></div></FI>
           ))}
         </div>
