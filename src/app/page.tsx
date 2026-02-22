@@ -232,32 +232,24 @@ function BookingModal({ lang, onClose }: { lang: Lang; onClose: () => void }) {
     setSending(true);
     const dateStr = fmtDate(selDate);
     try {
-      // Create hidden form and submit directly
-      const form = document.createElement("form");
-      form.method = "POST";
-      form.action = "https://formsubmit.co/f84842ea86e3814c3c5b5f8257086ec2";
-      form.target = "_blank";
-      const fields: Record<string, string> = {
-        _subject: `🗓️ Aureus IA — Nouvelle Réservation: ${dateStr} à ${selTime}`,
-        _template: "table",
-        _captcha: "false",
-        _next: "https://aureus-ia.vercel.app/?booking=success",
-        Date: dateStr,
-        Heure: selTime,
-        "Durée": "30 minutes — Free Consultation",
-        Nom: name,
-        Email: email,
-        "Téléphone": phone || "Non renseigné",
-      };
-      Object.entries(fields).forEach(([k, v]) => {
-        const input = document.createElement("input");
-        input.type = "hidden"; input.name = k; input.value = v;
-        form.appendChild(input);
+      const res = await fetch("https://api.web3forms.com/submit", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "Accept": "application/json" },
+        body: JSON.stringify({
+          access_key: "33a6936d-07a7-42c6-8181-70957b972e41",
+          subject: `🗓️ Aureus IA — Nouvelle Réservation: ${dateStr} à ${selTime}`,
+          from_name: "Aureus IA Booking",
+          Date: dateStr,
+          Heure: selTime,
+          Durée: "30 minutes — Free Consultation",
+          Nom: name,
+          Email: email,
+          Téléphone: phone || "Non renseigné",
+        }),
       });
-      document.body.appendChild(form);
-      form.submit();
-      document.body.removeChild(form);
-      setDone(true);
+      const data = await res.json();
+      if (data.success) setDone(true);
+      else throw new Error("fail");
     } catch {
       const subject = encodeURIComponent(`Aureus IA — Booking: ${dateStr} at ${selTime}`);
       const body = encodeURIComponent(`Réservation:\n\nDate: ${dateStr}\nHeure: ${selTime}\nNom: ${name}\nEmail: ${email}\nTéléphone: ${phone || "N/A"}`);
@@ -420,26 +412,19 @@ function ContactForm({ lang }: { lang: Lang }) {
     if (!cName || !cEmail || !cMsg) return;
     setSending(true);
     try {
-      const form = document.createElement("form");
-      form.method = "POST";
-      form.action = "https://formsubmit.co/f84842ea86e3814c3c5b5f8257086ec2";
-      form.target = "_blank";
-      const fields: Record<string, string> = {
-        _subject: `📩 Aureus IA — Message de ${cName}`,
-        _template: "table",
-        _captcha: "false",
-        _next: "https://aureus-ia.vercel.app/?contact=success",
-        Nom: cName, Email: cEmail, Message: cMsg,
-      };
-      Object.entries(fields).forEach(([k, v]) => {
-        const input = document.createElement("input");
-        input.type = "hidden"; input.name = k; input.value = v;
-        form.appendChild(input);
+      const res = await fetch("https://api.web3forms.com/submit", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "Accept": "application/json" },
+        body: JSON.stringify({
+          access_key: "33a6936d-07a7-42c6-8181-70957b972e41",
+          subject: `📩 Aureus IA — Message de ${cName}`,
+          from_name: "Aureus IA Contact",
+          Nom: cName, Email: cEmail, Message: cMsg,
+        }),
       });
-      document.body.appendChild(form);
-      form.submit();
-      document.body.removeChild(form);
-      setSent(true); setCName(""); setCEmail(""); setCMsg(""); setTimeout(() => setSent(false), 3000);
+      const data = await res.json();
+      if (data.success) { setSent(true); setCName(""); setCEmail(""); setCMsg(""); setTimeout(() => setSent(false), 3000); }
+      else throw new Error("fail");
     } catch {
       const subject = encodeURIComponent(`Aureus IA — Message de ${cName}`);
       const body = encodeURIComponent(`Nom: ${cName}\nEmail: ${cEmail}\n\n${cMsg}`);
