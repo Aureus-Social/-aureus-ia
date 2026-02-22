@@ -232,7 +232,7 @@ function BookingModal({ lang, onClose }: { lang: Lang; onClose: () => void }) {
     setSending(true);
     const dateStr = fmtDate(selDate);
     try {
-      const res = await fetch("https://formsubmit.co/ajax/info@aureus-ia.com", {
+      const res = await fetch("https://formsubmit.co/ajax/f84842ea86e3814c3c5b5f8257086ec2", {
         method: "POST",
         headers: { "Content-Type": "application/json", "Accept": "application/json" },
         body: JSON.stringify({
@@ -418,7 +418,7 @@ function ContactForm({ lang }: { lang: Lang }) {
     if (!cName || !cEmail || !cMsg) return;
     setSending(true);
     try {
-      const res = await fetch("https://formsubmit.co/ajax/info@aureus-ia.com", {
+      const res = await fetch("https://formsubmit.co/ajax/f84842ea86e3814c3c5b5f8257086ec2", {
         method: "POST",
         headers: { "Content-Type": "application/json", "Accept": "application/json" },
         body: JSON.stringify({
