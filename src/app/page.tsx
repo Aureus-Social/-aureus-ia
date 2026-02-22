@@ -209,7 +209,18 @@ function BookingModal({ lang, onClose }: { lang: Lang; onClose: () => void }) {
   const isSelectable = (d: number) => {
     const dt = new Date(viewYear, viewMonth, d);
     const dow = dt.getDay();
-    return dt >= today && dow !== 0 && dow !== 6;
+    if (dt < today || dow === 0 || dow === 6) return false;
+    const mm = dt.getMonth(), dd = dt.getDate(), yy = dt.getFullYear();
+    const fixed = [[0,1],[4,1],[6,21],[7,15],[10,1],[10,11],[11,25]];
+    if (fixed.some(([m,dy]) => mm === m && dd === dy)) return false;
+    const a=yy%19,b=Math.floor(yy/100),c=yy%100,dv=Math.floor(b/4),e=b%4,f=Math.floor((b+8)/25),g=Math.floor((b-f+1)/3),h=(19*a+b-dv-g+15)%30,i=Math.floor(c/4),k=c%4,l=(32+2*e+2*i-h-k)%7,m2=Math.floor((a+11*h+22*l)/451),em=(h+l-7*m2+114),eM=Math.floor(em/31)-1,eD=em%31+1;
+    const easter = new Date(yy, eM, eD);
+    const easterMon = new Date(yy, eM, eD + 1);
+    const ascension = new Date(yy, eM, eD + 39);
+    const whitMon = new Date(yy, eM, eD + 50);
+    const moving = [easterMon, ascension, whitMon];
+    if (moving.some(h => h.getMonth() === mm && h.getDate() === dd)) return false;
+    return true;
   };
 
   const fmtDate = (d: Date) => `${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()}`;
@@ -510,7 +521,7 @@ export default function Home() {
       {/* DISCOVERY DAY */}
       <section id="discovery"><div className="mx">
         <FI><div className="dc">
-          <img src="https://tile.loc.gov/storage-services/service/pnp/highsm/12000/12607v.jpg" alt="Wall Street Charging Bull" style={{ width: 200, height: 200, objectFit: "cover", borderRadius: "50%", margin: "0 auto 24px", display: "block", border: "3px solid rgba(201,168,76,.3)" }} />
+          <img src="/beinjamin.webp" alt="Benjamin Franklin $100" style={{ width: 200, height: 200, objectFit: "cover", borderRadius: "50%", margin: "0 auto 24px", display: "block", border: "3px solid rgba(201,168,76,.3)" }} />
           <h2 className="dct"><span className="gld">{L.disc_title}</span></h2>
           <p className="dcp">{L.disc_desc}</p>
           <div className="dcc">{[L.disc_c1, L.disc_c2, L.disc_c3, L.disc_c4].map((c, i) => <span key={i} className="dcch">{c}</span>)}</div>
