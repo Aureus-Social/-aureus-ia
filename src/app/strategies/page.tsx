@@ -294,27 +294,7 @@ function StrategySection({ strategy, index }: { strategy: typeof strategies[0]; 
               border: "1px solid rgba(201,168,76,.08)", position: "relative",
               aspectRatio: "16/10",
             }}>
-              {/* Image placeholder — will be replaced */}
-              <div style={{
-                position: "absolute", inset: 0,
-                background: `linear-gradient(135deg, ${strategy.color}10, var(--c2))`,
-                display: "flex", flexDirection: "column" as const, alignItems: "center", justifyContent: "center",
-                gap: 12,
-              }}>
-                <div style={{
-                  width: 72, height: 72, borderRadius: 20,
-                  background: `${strategy.color}15`, border: `2px solid ${strategy.color}30`,
-                  display: "flex", alignItems: "center", justifyContent: "center",
-                  fontFamily: "'Cormorant Garamond',serif", fontSize: 32, fontWeight: 700, color: strategy.color,
-                }}>
-                  {strategy.id}
-                </div>
-                <div style={{ fontSize: 11, color: "var(--tm)", letterSpacing: 2 }}>CHART SCREENSHOT</div>
-                <div style={{ fontSize: 10, color: "var(--tm)" }}>{strategy.image}</div>
-              </div>
-              {/* Uncomment when image is added:
               <img src={strategy.image} alt={strategy.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-              */}
             </div>
             {/* Caption */}
             <div style={{ textAlign: "center" as const, marginTop: 12, fontSize: 11, color: "var(--tm)" }}>
