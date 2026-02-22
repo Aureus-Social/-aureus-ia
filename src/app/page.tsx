@@ -631,7 +631,7 @@ export default function Home() {
       <section id="indicators" style={{ background: "linear-gradient(180deg,transparent,rgba(201,168,76,.015),transparent)" }}><div className="mx">
         <FI><SH tag={L.ind_tag} title={L.ind_title} /></FI>
         <div className="ig">{indicators.map((ind, i) => (
-          <FI key={i}><div className="ic"><div className="icb" style={{ background: ind.c }} /><div className="icd" style={{ background: ind.c, boxShadow: `0 0 10px ${ind.c}66` }} /><div className="icn">{ind.n}</div><div className="icdesc">{ind.d}</div></div></FI>
+          <FI key={i}><div className="ic" style={{ cursor: "pointer" }} onClick={() => setSelectedTool(toolsDetail[i])}><div className="icb" style={{ background: ind.c }} /><div className="icd" style={{ background: ind.c, boxShadow: `0 0 10px ${ind.c}66` }} /><div className="icn">{ind.n}</div><div className="icdesc">{ind.d}</div><div style={{ fontSize: 9, color: ind.c, letterSpacing: 1.5, fontWeight: 600, marginTop: 8, opacity: .7 }}>VOIR DÉTAILS →</div></div></FI>
         ))}</div>
       </div></section>
 
