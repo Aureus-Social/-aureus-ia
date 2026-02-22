@@ -413,6 +413,7 @@ export default function Home() {
     { label: L.nav_reviews, href: "#reviews" },
     { label: L.nav_faq, href: "#faq" },
     { label: L.nav_calendar, href: "#calendar" },
+    { label: "Strategies", href: "/strategies" },
   ];
 
   return (
@@ -631,7 +632,7 @@ export default function Home() {
           </div>
           <p style={{ fontSize: 12, color: "var(--tm)", lineHeight: 1.65, whiteSpace: "pre-line" }}>{L.ft_disc}</p>
         </div>
-        <div><div className="fh">{L.ft_platform}</div><a href="#services">{L.nav_services}</a><a href="#hub">Brussels Hub</a><a href="#indicators">{L.nav_indicators}</a><a href="#discovery">Discovery Day</a><a href="#pricing">{L.nav_pricing}</a></div>
+        <div><div className="fh">{L.ft_platform}</div><a href="#services">{L.nav_services}</a><a href="#hub">Brussels Hub</a><a href="#indicators">{L.nav_indicators}</a><a href="/strategies">Strategies</a><a href="#discovery">Discovery Day</a><a href="#pricing">{L.nav_pricing}</a></div>
         <div><div className="fh">{L.ft_legal}</div><a href="https://fr.trustpilot.com/review/aureus-ia.com" target="_blank" rel="noopener noreferrer">⭐ Trustpilot</a><a href="#" onClick={e => { e.preventDefault(); setShowPrivacy(true); }}>{L.ft_privacy}</a><a href="#" onClick={e => { e.preventDefault(); setShowTerms(true); }}>{L.ft_terms}</a></div>
         <div><div className="fh">{L.ft_contact}</div><p style={{ fontSize: 12, color: "var(--td)", lineHeight: 1.65 }}>Pl. Marcel Broodthaers 8<br />1060 Saint-Gilles, Belgium<br />info@aureus-ia.com<br />+32 491 70 94 13</p></div>
       </div><div className="fb">{L.ft_copy}</div></footer>
