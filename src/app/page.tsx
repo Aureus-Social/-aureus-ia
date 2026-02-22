@@ -390,6 +390,30 @@ function ContactForm({ lang }: { lang: Lang }) {
   );
 }
 
+/* ── SERVICES DETAIL DATA ── */
+const servicesDetail = [
+  { icon: "🧠", title: "AI Market Intelligence", color: "#C9A84C",
+    full: "Notre moteur IA propriétaire est le cœur d'Aureus IA. Il analyse en continu des millions de points de données — prix, volumes, flux d'ordres, volatilité, corrélations inter-marchés — pour détecter en temps réel les patterns comportementaux invisibles à l'œil nu.",
+    features: ["Analyse simultanée de 2.4 millions de points de données en temps réel", "Détection de patterns institutionnels : Order Blocks, liquidity grabs, MSS", "11 indicateurs propriétaires travaillant en synergie pour des confluences maximales", "Algorithmes entraînés sur 13 ans de données historiques multi-actifs"],
+    bonus: "Contrairement aux indicateurs classiques qui réagissent au passé, notre IA anticipe les mouvements en détectant les empreintes institutionnelles AVANT qu'elles ne se manifestent sur le prix."
+  },
+  { icon: "🖥️", title: "Remote Analytical Access", color: "#3498DB",
+    full: "Accédez à toute la puissance d'Aureus IA depuis n'importe où dans le monde. Notre environnement numérique sécurisé vous connecte à nos serveurs via une clé API chiffrée, garantissant des performances identiques à celles du hub physique.",
+    features: ["Connexion chiffrée de bout en bout via API sécurisée", "Compatible tout appareil : PC, Mac, tablette, smartphone", "Les 11 indicateurs fonctionnent en temps réel côté serveur — aucune installation locale", "Latence optimisée grâce à nos serveurs hébergés à proximité des data centers financiers"],
+    bonus: "Votre clé API est unique et liée à votre compte. En cas de perte, elle peut être révoquée et régénérée instantanément pour garantir la sécurité de votre accès."
+  },
+  { icon: "🎯", title: "Premium Coaching", color: "#E74C3C",
+    full: "Le coaching avec Lucas n'est pas un cours théorique. C'est une immersion pratique dans 13 ans d'expérience de marché, adaptée à votre niveau et vos objectifs. Chaque session est unique, construite autour de VOS questions et VOS trades.",
+    features: ["Sessions 1-on-1 de 60 minutes avec Lucas, fondateur d'Aureus IA", "Analyse en direct de vos trades passés : ce qui a fonctionné et pourquoi", "Construction d'un plan de trading personnalisé basé sur votre profil de risque", "Accès prioritaire pour des questions rapides entre les sessions par email"],
+    bonus: "Après 4 sessions, Lucas vous remet un rapport personnalisé détaillant vos forces, vos axes d'amélioration, et un programme de progression sur 3 mois."
+  },
+  { icon: "🏢", title: "Brussels Analysis Hub", color: "#2ECC71",
+    full: "Le premier espace physique au monde dédié à l'analyse de marché par intelligence artificielle. Situé au cœur de Saint-Gilles à Bruxelles, le hub offre un environnement professionnel conçu pour maximiser votre concentration et vos performances.",
+    features: ["Postes multi-écrans équipés des 11 indicateurs Aureus IA", "Fibre optique dédiée avec latence sub-milliseconde", "Espace lounge, café/thé en libre-service, ambiance professionnelle", "Accès à l'heure, à la journée, ou via le Discovery Day"],
+    bonus: "Le hub n'est pas qu'un espace de travail — c'est une communauté. Les traders présents partagent leurs insights et Lucas commente les événements de marché en direct."
+  },
+];
+
 /* ── HUB FEATURES DETAIL DATA ── */
 const hubFeaturesDetail = [
   { icon: "🖥️", title: "Pro Workstations", color: "#3498DB",
@@ -565,6 +589,7 @@ export default function Home() {
   const [showBooking, setShowBooking] = useState(false);
   const [selectedTool, setSelectedTool] = useState<any>(null);
   const [selectedHub, setSelectedHub] = useState<any>(null);
+  const [selectedService, setSelectedService] = useState<any>(null);
   const L = t[lang];
   const isRtl = lang === "ar";
 
@@ -654,7 +679,7 @@ export default function Home() {
         <FI><SH tag={L.svc_tag} title={L.svc_title} /></FI>
         <div className="g4">
           {[{ i: "🧠", t2: L.svc1_t, d: L.svc1_d }, { i: "🖥️", t2: L.svc2_t, d: L.svc2_d }, { i: "🎯", t2: L.svc3_t, d: L.svc3_d }, { i: "🏢", t2: L.svc4_t, d: L.svc4_d }].map((s, idx) => (
-            <FI key={idx}><div className="sc2"><span className="si">{s.i}</span><h3 className="sct">{s.t2}</h3><p className="scd">{s.d}</p></div></FI>
+            <FI key={idx}><div className="sc2" style={{ cursor: "pointer" }} onClick={() => setSelectedService(servicesDetail[idx])}><span className="si">{s.i}</span><h3 className="sct">{s.t2}</h3><p className="scd">{s.d}</p><div style={{ fontSize: 9, color: "var(--g)", letterSpacing: 1.5, fontWeight: 600, marginTop: 12, opacity: .7 }}>EN SAVOIR PLUS →</div></div></FI>
           ))}
         </div>
       </div></section>
@@ -893,6 +918,7 @@ export default function Home() {
       {/* TOOL DETAIL MODAL */}
       <ToolModal tool={selectedTool} onClose={() => setSelectedTool(null)} />
       <HubModal hub={selectedHub} onClose={() => setSelectedHub(null)} />
+      <HubModal hub={selectedService} onClose={() => setSelectedService(null)} />
 
       {/* WHATSAPP */}
       <a href="https://wa.me/32491709413" target="_blank" rel="noopener noreferrer" className="wa">
