@@ -17,7 +17,7 @@ const tickerData = [
 
 const reviewsData = [
   { n: "Marc D.", r: "Independent Trader", t_txt: "Aureus IA has completely transformed my analytical approach. The AI indicators detect patterns I would never have seen. Exceptional." },
-  { n: "Sophie L.", r: "Financial Analyst", t_txt: "The coaching with Lucas is incredibly valuable. 13 years of expertise distilled into actionable insights. The platform is next-level." },
+  { n: "Sophie L.", r: "Financial Analyst", t_txt: "The coaching with our founder is incredibly valuable. 13 years of expertise distilled into actionable insights. The platform is next-level." },
   { n: "Thomas B.", r: "Portfolio Manager", t_txt: "Finally an AI tool that delivers real analytical depth. The institutional-grade approach is exactly what I needed." },
   { n: "Elena K.", r: "Data Scientist", t_txt: "From a technical standpoint, the AI models behind Aureus IA are impressive. Pattern recognition accuracy is truly remarkable." },
   { n: "Pierre V.", r: "Day Trader", t_txt: "The Discovery Day was a game-changer. A full day of immersion that gave me a completely new perspective on market analysis." },
@@ -455,14 +455,14 @@ const servicesDetail = [
     bonus: "Votre clé API est unique et liée à votre compte. En cas de perte, elle peut être révoquée et régénérée instantanément pour garantir la sécurité de votre accès."
   },
   { icon: "🎯", title: "Premium Coaching", color: "#E74C3C",
-    full: "Le coaching avec Lucas n'est pas un cours théorique. C'est une immersion pratique dans 13 ans d'expérience de marché, adaptée à votre niveau et vos objectifs. Chaque session est unique, construite autour de VOS questions et VOS trades.",
-    features: ["Sessions 1-on-1 de 60 minutes avec Lucas, fondateur d'Aureus IA", "Analyse en direct de vos trades passés : ce qui a fonctionné et pourquoi", "Construction d'un plan de trading personnalisé basé sur votre profil de risque", "Accès prioritaire pour des questions rapides entre les sessions par email"],
-    bonus: "Après 4 sessions, Lucas vous remet un rapport personnalisé détaillant vos forces, vos axes d'amélioration, et un programme de progression sur 3 mois."
+    full: "Le coaching avec notre fondateur n'est pas un cours théorique. C'est une immersion pratique dans 13 ans d'expérience de marché, adaptée à votre niveau et vos objectifs. Chaque session est unique, construite autour de VOS questions et VOS trades.",
+    features: ["Sessions 1-on-1 de 60 minutes avec notre fondateur, fondateur d'Aureus IA", "Analyse en direct de vos trades passés : ce qui a fonctionné et pourquoi", "Construction d'un plan de trading personnalisé basé sur votre profil de risque", "Accès prioritaire pour des questions rapides entre les sessions par email"],
+    bonus: "Après 4 sessions, our founder vous remet un rapport personnalisé détaillant vos forces, vos axes d'amélioration, et un programme de progression sur 3 mois."
   },
   { icon: "🏢", title: "Brussels Analysis Hub", color: "#2ECC71",
     full: "Le premier espace physique au monde dédié à l'analyse de marché par intelligence artificielle. Situé au cœur de Saint-Gilles à Bruxelles, le hub offre un environnement professionnel conçu pour maximiser votre concentration et vos performances.",
     features: ["Postes multi-écrans équipés des 11 indicateurs Aureus IA", "Fibre optique dédiée avec latence sub-milliseconde", "Espace lounge, café/thé en libre-service, ambiance professionnelle", "Accès à l'heure, à la journée, ou via le Discovery Day"],
-    bonus: "Le hub n'est pas qu'un espace de travail — c'est une communauté. Les traders présents partagent leurs insights et Lucas commente les événements de marché en direct."
+    bonus: "Le hub n'est pas qu'un espace de travail — c'est une communauté. Les traders présents partagent leurs insights et our founder commente les événements de marché en direct."
   },
 ];
 
@@ -481,7 +481,7 @@ const hubFeaturesDetail = [
   { icon: "🧠", title: "AI Tools On-Site", color: "#C9A84C",
     full: "Tous les 11 indicateurs propriétaires Aureus IA sont pré-installés et configurés sur chaque poste. Pas de clé API à gérer, pas d'installation — tout est prêt dès votre arrivée.",
     features: ["Les 11 indicateurs Aureus IA activés et mis à jour automatiquement", "Templates de graphiques pré-configurés par stratégie", "Accès aux backtests et aux données historiques", "Mises à jour et nouvelles fonctionnalités déployées en continu"],
-    bonus: "Lucas configure personnellement vos graphiques lors de votre première session pour optimiser votre workflow selon votre style de trading."
+    bonus: "Notre expert configure personnellement vos graphiques lors de votre première session pour optimiser votre workflow selon votre style de trading."
   },
   { icon: "☕", title: "Premium Amenities", color: "#E67E22",
     full: "Le trading exige de la concentration sur la durée. Notre espace est conçu pour maintenir votre confort et votre focus tout au long de la journée, avec des équipements premium à disposition.",
@@ -494,9 +494,9 @@ const hubFeaturesDetail = [
     bonus: "À la fin de chaque session, vos données de trading et configurations sont sauvegardées de manière chiffrée et accessibles uniquement par vous."
   },
   { icon: "🤝", title: "Expert Guidance", color: "#1ABC9C",
-    full: "Vous n'êtes jamais seul au hub. Lucas et son équipe sont présents pour répondre à vos questions, valider vos analyses, et vous guider vers les meilleures décisions analytiques.",
-    features: ["Lucas disponible pour des questions ponctuelles tout au long de la journée", "Validation d'analyses et de setups en temps réel", "Mini-sessions de coaching spontanées selon les conditions de marché", "Partage d'insights et d'opportunités détectées par l'équipe"],
-    bonus: "Les moments de marché les plus intéressants (NFP, FOMC, BCE) sont commentés en direct par Lucas pour tous les présents au hub."
+    full: "Vous n'êtes jamais seul au hub. Notre équipe sont présents pour répondre à vos questions, valider vos analyses, et vous guider vers les meilleures décisions analytiques.",
+    features: ["Expert disponible pour des questions ponctuelles tout au long de la journée", "Validation d'analyses et de setups en temps réel", "Mini-sessions de coaching spontanées selon les conditions de marché", "Partage d'insights et d'opportunités détectées par l'équipe"],
+    bonus: "Les moments de marché les plus intéressants (NFP, FOMC, BCE) sont commentés en direct par notre expert pour tous les présents au hub."
   },
 ];
 
@@ -884,8 +884,8 @@ export default function Home() {
         <FI><SH tag={L.pr_tag} title={L.pr_title} /></FI>
         <div className="pg">
           {[
-            { n: "Free Consultation", dur: "30 min", pr: "Free", per: "", feat: ["Vidéoconférence avec Lucas", "Découverte de la plateforme", "Démo live des 11 indicateurs", "Q&R personnalisées", "Zéro engagement"], pop: false, btn: "Planifier", action: "book" },
-            { n: "Discovery Day", dur: "Journée complète", pr: "Gratuit", per: "", feat: ["Journée complète au Hub Brussels", "Accès à tous les postes multi-écrans", "Les 11 indicateurs IA en live", "Coaching 1-on-1 avec Lucas", "Certificat de complétion"], pop: true, btn: "Réserver", action: "book" },
+            { n: "Free Consultation", dur: "30 min", pr: "Free", per: "", feat: ["Vidéoconférence avec notre fondateur", "Découverte de la plateforme", "Démo live des 11 indicateurs", "Q&R personnalisées", "Zéro engagement"], pop: false, btn: "Planifier", action: "book" },
+            { n: "Discovery Day", dur: "Journée complète", pr: "Gratuit", per: "", feat: ["Journée complète au Hub Brussels", "Accès à tous les postes multi-écrans", "Les 11 indicateurs IA en live", "Coaching 1-on-1 avec notre fondateur", "Certificat de complétion"], pop: true, btn: "Réserver", action: "book" },
             { n: "AI-Powered Access", dur: "Abonnement mensuel", pr: "€300", per: "/mois", feat: ["Accès complet au Hub Brussels", "Les 11 indicateurs IA en continu", "Clé API personnelle (€3,500 unique)", "Environnement professionnel dédié", "Support expert illimité"], pop: false, btn: "Nous Contacter", action: "contact", apiNote: "Clé API : paiement unique de €3,500 HTVA" },
           ].map((p, i) => (
             <FI key={i}><div className={`pc ${p.pop ? "pop" : ""}`}><div className="pi">
@@ -904,7 +904,7 @@ export default function Home() {
       {/* TEAM */}
       <section id="team" style={{ background: "linear-gradient(180deg,transparent,rgba(201,168,76,.015),transparent)" }}><div className="mx">
         <FI><SH tag={L.team_tag} title={L.team_title} /></FI>
-        <FI><div className="tc"><div className="tav"><div className="tavi">L</div></div><div className="tn">Lucas</div><div className="tr2">{L.team_role}</div><p className="tbio">{L.team_bio}</p></div></FI>
+        <FI><div className="tc"><div className="tav"><div className="tavi">L</div></div><div className="tn">our founder</div><div className="tr2">{L.team_role}</div><p className="tbio">{L.team_bio}</p></div></FI>
       </div></section>
 
       {/* REVIEWS */}
