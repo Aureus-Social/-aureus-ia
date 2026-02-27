@@ -6,13 +6,13 @@ import { privacyContent } from "./privacy-content";
 import { bookingT, timeSlots } from "./booking";
 
 const tickerData = [
-  { s: "XAUUSD", p: "2,687.45", c: "+1.24%", up: true },
-  { s: "EURUSD", p: "1.0842", c: "+0.15%", up: true },
-  { s: "BTCUSD", p: "97,432", c: "+3.21%", up: true },
+  { s: "XAUUSD", p: "5,216.59", c: "+1.22%", up: true },
+  { s: "EURUSD", p: "1.1806", c: "+0.02%", up: true },
+  { s: "BTCUSD", p: "67,921", c: "+0.36%", up: true },
   { s: "US500", p: "6,012.8", c: "-0.32%", up: false },
-  { s: "GBPUSD", p: "1.2634", c: "+0.08%", up: true },
-  { s: "USDJPY", p: "149.82", c: "-0.45%", up: false },
-  { s: "XAGUSD", p: "31.42", c: "+2.10%", up: true },
+  { s: "GBPUSD", p: "1.3477", c: "-0.04%", up: false },
+  { s: "USDJPY", p: "155.88", c: "-0.12%", up: false },
+  { s: "XAGUSD", p: "89.54", c: "+1.40%", up: true },
 ];
 
 const reviewsData = [
@@ -698,8 +698,8 @@ export default function Home() {
           <div>
             <div className="cc">
               <div className="cch">
-                <div><div className="ccs">XAUUSD • Gold</div><div className="ccp">2,687.<span style={{ fontSize: 22, color: "var(--td)" }}>45</span></div></div>
-                <div style={{ textAlign: isRtl ? "left" : "right" }}><div className="ccpc">▲ +1.24%</div><div style={{ fontSize: 10, color: "var(--tm)", marginTop: 6, fontFamily: "'JetBrains Mono',monospace" }}>{L.chart_conf}</div></div>
+                <div><div className="ccs">XAUUSD • Gold</div><div className="ccp">5,216.<span style={{ fontSize: 22, color: "var(--td)" }}>59</span></div></div>
+                <div style={{ textAlign: isRtl ? "left" : "right" }}><div className="ccpc">▲ +1.22%</div><div style={{ fontSize: 10, color: "var(--tm)", marginTop: 6, fontFamily: "'JetBrains Mono',monospace" }}>{L.chart_conf}</div></div>
               </div>
               <LiveChart />
               <div className="cctg"><span className="cct">Trend: Bullish</span><span className="cct">Volume: High</span><span className="cct">RSI: 62.4</span></div>
