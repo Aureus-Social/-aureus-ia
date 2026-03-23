@@ -138,6 +138,133 @@ function LiveChart() {
   return <canvas ref={ref} width={720} height={260} style={{ width: "100%", height: 130, display: "block", borderRadius: 8 }} />;
 }
 
+function HeroCanvas() {
+  const ref = useRef<HTMLCanvasElement>(null);
+  useEffect(() => {
+    const c = ref.current; if (!c) return;
+    const ctx = c.getContext("2d"); if (!ctx) return;
+    let W = c.width = window.innerWidth;
+    let H = c.height = window.innerHeight;
+    const onResize = () => { W = c.width = window.innerWidth; H = c.height = window.innerHeight; };
+    window.addEventListener("resize", onResize);
+    // Particles
+    const N = 55;
+    const pts = Array.from({ length: N }, () => ({
+      x: Math.random() * W, y: Math.random() * H,
+      vx: (Math.random() - .5) * .35, vy: (Math.random() - .5) * .35,
+      r: Math.random() * 1.8 + .4, a: Math.random()
+    }));
+    // Candlesticks ghost data
+    const candles = Array.from({ length: 28 }, (_, i) => {
+      const o = 200 + Math.random() * 300;
+      const c2 = o + (Math.random() - .5) * 60;
+      const h = Math.max(o, c2) + Math.random() * 30;
+      const l = Math.min(o, c2) - Math.random() * 30;
+      return { x: 60 + i * (W / 28), o, c: c2, h, l, bull: c2 >= o };
+    });
+    // Price line
+    const lineData: number[] = Array.from({ length: 120 }, (_, i) => 300 + Math.sin(i * .18) * 60 + Math.random() * 25);
+    let frame = 0;
+    let raf: number;
+    const draw = () => {
+      frame++;
+      ctx.clearRect(0, 0, W, H);
+      // Candlesticks in background
+      const cw = Math.max(8, W / 32);
+      candles.forEach((cd, i) => {
+        const x = 40 + i * (W / 28);
+        const scaleY = H / 600;
+        const col = cd.bull ? "rgba(46,204,113,.045)" : "rgba(231,76,60,.035)";
+        ctx.strokeStyle = col; ctx.lineWidth = 1;
+        ctx.beginPath(); ctx.moveTo(x, H - cd.h * scaleY); ctx.lineTo(x, H - cd.l * scaleY); ctx.stroke();
+        ctx.fillStyle = col;
+        const top = H - Math.max(cd.o, cd.c) * scaleY;
+        const bot = H - Math.min(cd.o, cd.c) * scaleY;
+        ctx.fillRect(x - cw / 2, top, cw, Math.max(1, bot - top));
+      });
+      // Animated price line
+      const seg = lineData.length;
+      const ph = frame * .4;
+      ctx.beginPath();
+      lineData.forEach((v, i) => {
+        const x = (i / (seg - 1)) * W;
+        const y = H * .65 - (v + Math.sin((i + frame * .08) * .3) * 12) * (H / 1000);
+        i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+      });
+      ctx.strokeStyle = "rgba(201,168,76,.07)"; ctx.lineWidth = 1.5; ctx.stroke();
+      // Second line
+      ctx.beginPath();
+      lineData.forEach((v, i) => {
+        const x = (i / (seg - 1)) * W;
+        const y = H * .42 - (v + Math.cos((i + frame * .05) * .25) * 18) * (H / 1200);
+        i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+      });
+      ctx.strokeStyle = "rgba(201,168,76,.04)"; ctx.lineWidth = 1; ctx.stroke();
+      // Particles + connections
+      pts.forEach(p => {
+        p.x += p.vx; p.y += p.vy;
+        if (p.x < 0) p.x = W; if (p.x > W) p.x = 0;
+        if (p.y < 0) p.y = H; if (p.y > H) p.y = 0;
+        p.a = .3 + .4 * Math.abs(Math.sin(frame * .012 + p.x * .003));
+        ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(201,168,76,${p.a * .8})`; ctx.fill();
+      });
+      for (let i = 0; i < N; i++) for (let j = i + 1; j < N; j++) {
+        const dx = pts[i].x - pts[j].x, dy = pts[i].y - pts[j].y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist < 130) {
+          ctx.beginPath(); ctx.moveTo(pts[i].x, pts[i].y); ctx.lineTo(pts[j].x, pts[j].y);
+          ctx.strokeStyle = `rgba(201,168,76,${(.12 - dist / 1200) * .6})`; ctx.lineWidth = .6; ctx.stroke();
+        }
+      }
+      // Grid lines horizontal
+      for (let i = 1; i < 5; i++) {
+        ctx.beginPath(); ctx.moveTo(0, H * i / 5); ctx.lineTo(W, H * i / 5);
+        ctx.strokeStyle = "rgba(201,168,76,.02)"; ctx.lineWidth = 1; ctx.stroke();
+      }
+      // Grid lines vertical
+      for (let i = 1; i < 8; i++) {
+        ctx.beginPath(); ctx.moveTo(W * i / 8, 0); ctx.lineTo(W * i / 8, H);
+        ctx.strokeStyle = "rgba(201,168,76,.015)"; ctx.lineWidth = 1; ctx.stroke();
+      }
+      raf = requestAnimationFrame(draw);
+    };
+    draw();
+    return () => { cancelAnimationFrame(raf); window.removeEventListener("resize", onResize); };
+  }, []);
+  return <canvas ref={ref} style={{ position: "absolute", inset: 0, width: "100%", height: "100%", pointerEvents: "none", zIndex: 0 }} />;
+}
+
+function LiveTicker() {
+  const [prices, setPrices] = useState([
+    { s: "XAUUSD", p: 5216.59, c: +1.22 },
+    { s: "EURUSD", p: 1.0842, c: -0.18 },
+    { s: "GBPUSD", p: 1.2631, c: +0.31 },
+    { s: "BTCUSD", p: 67842, c: +2.14 },
+  ]);
+  useEffect(() => {
+    const iv = setInterval(() => {
+      setPrices(prev => prev.map(p => ({
+        ...p,
+        p: +(p.p * (1 + (Math.random() - .5) * .0002)).toFixed(p.s === "XAUUSD" ? 2 : p.s === "BTCUSD" ? 0 : 4),
+        c: +(p.c + (Math.random() - .5) * .04).toFixed(2),
+      })));
+    }, 1200);
+    return () => clearInterval(iv);
+  }, []);
+  return (
+    <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginTop: 10 }}>
+      {prices.map((p, i) => (
+        <div key={i} style={{ padding: "6px 12px", borderRadius: 8, background: "rgba(255,255,255,.03)", border: "1px solid rgba(201,168,76,.08)", display: "flex", gap: 8, alignItems: "center" }}>
+          <span style={{ fontSize: 9, fontWeight: 700, color: "var(--g)", fontFamily: "'JetBrains Mono',monospace", letterSpacing: 1 }}>{p.s}</span>
+          <span style={{ fontSize: 11, fontWeight: 700, color: "var(--tx)", fontFamily: "'JetBrains Mono',monospace" }}>{p.p.toLocaleString()}</span>
+          <span style={{ fontSize: 9, fontWeight: 700, color: p.c >= 0 ? "#2ECC71" : "#E74C3C" }}>{p.c >= 0 ? "▲" : "▼"}{Math.abs(p.c)}%</span>
+        </div>
+      ))}
+    </div>
+  );
+}
+
 function Reviews() {
   const [cur, setCur] = useState(0);
   useEffect(() => { const iv = setInterval(() => setCur(c => (c + 1) % reviewsData.length), 5000); return () => clearInterval(iv); }, []);
@@ -582,39 +709,55 @@ export default function Home() {
         </div>
       </nav>
 
-      {/* HERO */}
-      <section id="hero"><div className="hbg" /><div className="hmesh" /><div className="hero-img" /><div className="hero-lines" />
-        <div className="hg">
+      {/* HERO — CINEMATIC */}
+      <section id="hero" style={{ position: "relative", minHeight: "100vh", display: "flex", alignItems: "center", overflow: "hidden", paddingTop: 120, paddingBottom: 60 }}>
+        <HeroCanvas />
+        <video autoPlay muted loop playsInline style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", opacity: .055, zIndex: 0, filter: "sepia(.6) hue-rotate(5deg)" }}>
+          <source src="https://videos.pexels.com/video-files/3945078/3945078-hd_1920_1080_30fps.mp4" type="video/mp4" />
+        </video>
+        <div style={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse 100% 80% at 50% -10%, rgba(201,168,76,.10), transparent 58%)", zIndex: 1 }} />
+        <div style={{ position: "absolute", inset: 0, background: "linear-gradient(180deg, var(--bg) 0%, transparent 12%, transparent 88%, var(--bg) 100%)", zIndex: 1 }} />
+        <div style={{ position: "absolute", inset: 0, background: "linear-gradient(90deg, rgba(6,6,11,.88) 0%, rgba(6,6,11,.15) 55%, transparent 100%)", zIndex: 1 }} />
+        <div className="hg" style={{ position: "relative", zIndex: 2 }}>
           <div>
             <div className="hbd"><span className="hdt" /><span>{L.hero_badge}</span></div>
-            <h1>{L.hero_title}<br /><Typewriter lang={lang} /></h1>
-            <p className="hp">{L.hero_desc}</p>
+            <h1 style={{ fontSize: "clamp(50px,7.5vw,100px)", lineHeight: 1.0, marginBottom: 28 }}>
+              {L.hero_title}<br />
+              <span style={{ background: "linear-gradient(135deg,#C9A84C 0%,#f5e090 45%,#C9A84C 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>
+                <Typewriter lang={lang} />
+              </span>
+            </h1>
+            <p className="hp" style={{ fontSize: "clamp(15px,1.7vw,18px)", maxWidth: 510, lineHeight: 1.9 }}>{L.hero_desc}</p>
             <div className="hbt">
-              <a href="#pricing" className="bg2">{L.hero_btn1}</a>
-              <a href="#hub" className="bo">{L.hero_btn2}</a>
+              <a href="#pricing" className="bg2" style={{ padding: "14px 34px", fontSize: 14, fontWeight: 700, letterSpacing: .5, boxShadow: "0 8px 32px rgba(201,168,76,.3)" }}>{L.hero_btn1}</a>
+              <a href="#hub" className="bo" style={{ padding: "14px 28px", fontSize: 14 }}>{L.hero_btn2}</a>
             </div>
-            <div className="hero-trust">
-              <div className="hero-trust-item">✓ Brussels Hub</div>
+            <div className="hero-trust" style={{ marginTop: 32 }}>
+              <div className="hero-trust-item">✓ Brussels Hub OPEN</div>
               <div className="hero-trust-dot" />
               <div className="hero-trust-item">✓ BCE BE 1028.230.781</div>
               <div className="hero-trust-dot" />
-              <div className="hero-trust-item">✓ No financial advice</div>
+              <div className="hero-trust-item">✓ 200+ Professionals</div>
             </div>
           </div>
           <div>
-            <div className="cc">
+            <div className="cc" style={{ boxShadow: "0 40px 100px rgba(0,0,0,.65), 0 0 80px rgba(201,168,76,.07)", border: "1px solid rgba(201,168,76,.15)", backdropFilter: "blur(20px)", background: "rgba(10,10,14,.85)" }}>
               <div className="cch">
                 <div><div className="ccs">XAUUSD • Gold</div><div className="ccp">5,216.<span style={{ fontSize: 22, color: "var(--td)" }}>59</span></div></div>
-                <div style={{ textAlign: isRtl ? "left" : "right" }}><div className="ccpc">▲ +1.22%</div><div style={{ fontSize: 10, color: "var(--tm)", marginTop: 6, fontFamily: "'JetBrains Mono',monospace" }}>{L.chart_conf}</div></div>
+                <div style={{ textAlign: isRtl ? "left" : "right" }}>
+                  <div className="ccpc">▲ +1.22%</div>
+                  <div style={{ fontSize: 10, color: "var(--tm)", marginTop: 6, fontFamily: "'JetBrains Mono',monospace" }}>{L.chart_conf}</div>
+                </div>
               </div>
               <LiveChart />
               <div className="cctg"><span className="cct">Trend: Bullish</span><span className="cct">Volume: High</span><span className="cct">RSI: 62.4</span></div>
               <div className="ccai"><span className="ccaid" /><span>{L.chart_ai} <b>{L.chart_ai2}</b> {L.chart_ai3}</span></div>
-              <div style={{ marginTop: 16, paddingTop: 16, borderTop: "1px solid rgba(201,168,76,.06)", display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8 }}>
-                {[["11", "Indicators"], ["6", "Strategies"], ["13+", "Years"]].map(([v, l], i) => (
-                  <div key={i} style={{ textAlign: "center", padding: "10px 0" }}>
-                    <div style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: 22, fontWeight: 700, color: "var(--g)" }}>{v}</div>
-                    <div style={{ fontSize: 9, color: "var(--td)", letterSpacing: 1.5, textTransform: "uppercase" as const }}>{l}</div>
+              <LiveTicker />
+              <div style={{ marginTop: 16, paddingTop: 16, borderTop: "1px solid rgba(201,168,76,.06)", display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 0 }}>
+                {[["11", "Indicators"], ["6", "Strategies"], ["13+", "Years"]].map(([v, l2], i) => (
+                  <div key={i} style={{ textAlign: "center", padding: "12px 0", borderRight: i < 2 ? "1px solid rgba(201,168,76,.06)" : "none" }}>
+                    <div style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: 26, fontWeight: 700, color: "var(--g)" }}>{v}</div>
+                    <div style={{ fontSize: 9, color: "var(--td)", letterSpacing: 1.5, textTransform: "uppercase" as const, marginTop: 2 }}>{l2}</div>
                   </div>
                 ))}
               </div>
