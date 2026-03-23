@@ -583,13 +583,23 @@ export default function Home() {
       </nav>
 
       {/* HERO */}
-      <section id="hero"><div className="hbg" /><div className="hmesh" /><div className="hero-img" />
+      <section id="hero"><div className="hbg" /><div className="hmesh" /><div className="hero-img" /><div className="hero-lines" />
         <div className="hg">
           <div>
             <div className="hbd"><span className="hdt" /><span>{L.hero_badge}</span></div>
             <h1>{L.hero_title}<br /><Typewriter lang={lang} /></h1>
             <p className="hp">{L.hero_desc}</p>
-            <div className="hbt"><a href="#pricing" className="bg2">{L.hero_btn1}</a><a href="#hub" className="bo">{L.hero_btn2}</a></div>
+            <div className="hbt">
+              <a href="#pricing" className="bg2">{L.hero_btn1}</a>
+              <a href="#hub" className="bo">{L.hero_btn2}</a>
+            </div>
+            <div className="hero-trust">
+              <div className="hero-trust-item">✓ Brussels Hub</div>
+              <div className="hero-trust-dot" />
+              <div className="hero-trust-item">✓ BCE BE 1028.230.781</div>
+              <div className="hero-trust-dot" />
+              <div className="hero-trust-item">✓ No financial advice</div>
+            </div>
           </div>
           <div>
             <div className="cc">
@@ -600,6 +610,14 @@ export default function Home() {
               <LiveChart />
               <div className="cctg"><span className="cct">Trend: Bullish</span><span className="cct">Volume: High</span><span className="cct">RSI: 62.4</span></div>
               <div className="ccai"><span className="ccaid" /><span>{L.chart_ai} <b>{L.chart_ai2}</b> {L.chart_ai3}</span></div>
+              <div style={{ marginTop: 16, paddingTop: 16, borderTop: "1px solid rgba(201,168,76,.06)", display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8 }}>
+                {[["11", "Indicators"], ["6", "Strategies"], ["13+", "Years"]].map(([v, l], i) => (
+                  <div key={i} style={{ textAlign: "center", padding: "10px 0" }}>
+                    <div style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: 22, fontWeight: 700, color: "var(--g)" }}>{v}</div>
+                    <div style={{ fontSize: 9, color: "var(--td)", letterSpacing: 1.5, textTransform: "uppercase" as const }}>{l}</div>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         </div>
