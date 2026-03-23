@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
 import { t, langNames, type Lang } from "./translations";
+import { cL, getTools, getStrategies, getServices, getHubFeatures } from "./content-data";
 import { termsContent } from "./terms-content";
 import { privacyContent } from "./privacy-content";
 import { bookingT, timeSlots } from "./booking";
@@ -442,122 +443,11 @@ function ContactForm({ lang }: { lang: Lang }) {
   );
 }
 
-/* ── SERVICES DETAIL DATA ── */
-const servicesDetail = [
-  { icon: "🧠", title: "AI Market Intelligence", color: "#C9A84C",
-    full: "Notre moteur IA propriétaire est le cœur d'Aureus IA. Il analyse en continu des millions de points de données — prix, volumes, flux d'ordres, volatilité, corrélations inter-marchés — pour détecter en temps réel les patterns comportementaux invisibles à l'œil nu.",
-    features: ["Analyse simultanée de 2.4 millions de points de données en temps réel", "Détection de patterns institutionnels : Order Blocks, liquidity grabs, MSS", "11 indicateurs propriétaires travaillant en synergie pour des confluences maximales", "Algorithmes entraînés sur 13 ans de données historiques multi-actifs"],
-    bonus: "Contrairement aux indicateurs classiques qui réagissent au passé, notre IA anticipe les mouvements en détectant les empreintes institutionnelles AVANT qu'elles ne se manifestent sur le prix."
-  },
-  { icon: "🖥️", title: "Remote Analytical Access", color: "#3498DB",
-    full: "Accédez à toute la puissance d'Aureus IA depuis n'importe où dans le monde. Notre environnement numérique sécurisé vous connecte à nos serveurs via une clé API chiffrée, garantissant des performances identiques à celles du hub physique.",
-    features: ["Connexion chiffrée de bout en bout via API sécurisée", "Compatible tout appareil : PC, Mac, tablette, smartphone", "Les 11 indicateurs fonctionnent en temps réel côté serveur — aucune installation locale", "Latence optimisée grâce à nos serveurs hébergés à proximité des data centers financiers"],
-    bonus: "Votre clé API est unique et liée à votre compte. En cas de perte, elle peut être révoquée et régénérée instantanément pour garantir la sécurité de votre accès."
-  },
-  { icon: "🎯", title: "Premium Coaching", color: "#E74C3C",
-    full: "Le coaching avec notre fondateur n'est pas un cours théorique. C'est une immersion pratique dans 13 ans d'expérience de marché, adaptée à votre niveau et vos objectifs. Chaque session est unique, construite autour de VOS questions et VOS trades.",
-    features: ["Sessions 1-on-1 de 60 minutes avec notre fondateur, fondateur d'Aureus IA", "Analyse en direct de vos trades passés : ce qui a fonctionné et pourquoi", "Construction d'un plan de trading personnalisé basé sur votre profil de risque", "Accès prioritaire pour des questions rapides entre les sessions par email"],
-    bonus: "Après 4 sessions, our founder vous remet un rapport personnalisé détaillant vos forces, vos axes d'amélioration, et un programme de progression sur 3 mois."
-  },
-  { icon: "🏢", title: "Brussels Analysis Hub", color: "#2ECC71",
-    full: "Le premier espace physique au monde dédié à l'analyse de marché par intelligence artificielle. Situé au cœur de Saint-Gilles à Bruxelles, le hub offre un environnement professionnel conçu pour maximiser votre concentration et vos performances.",
-    features: ["Postes multi-écrans équipés des 11 indicateurs Aureus IA", "Fibre optique dédiée avec latence sub-milliseconde", "Espace lounge, café/thé en libre-service, ambiance professionnelle", "Accès à l'heure, à la journée, ou via le Discovery Day"],
-    bonus: "Le hub n'est pas qu'un espace de travail — c'est une communauté. Les traders présents partagent leurs insights et our founder commente les événements de marché en direct."
-  },
-];
+/* ── DATA MOVED TO content-data.ts ── */
 
-/* ── HUB FEATURES DETAIL DATA ── */
-const hubFeaturesDetail = [
-  { icon: "🖥️", title: "Pro Workstations", color: "#3498DB",
-    full: "Nos postes de travail multi-écrans sont configurés pour offrir une expérience de trading de niveau institutionnel. Chaque station dispose de 2 à 4 moniteurs haute résolution, permettant une surveillance simultanée des marchés, des indicateurs et des flux d'actualités.",
-    features: ["Configurations multi-écrans (2 à 4 moniteurs UHD)", "MetaTrader 4/5 pré-installé avec les 11 indicateurs Aureus IA", "Clavier et souris ergonomiques, sièges professionnels", "Espace de travail individuel avec isolation acoustique partielle"],
-    bonus: "Chaque poste est pré-configuré avec vos préférences après votre première visite. Vous retrouvez votre environnement exact à chaque session."
-  },
-  { icon: "📶", title: "Ultra-Fast Connectivity", color: "#2ECC71",
-    full: "La connectivité est le nerf de la guerre en trading. Notre hub est équipé d'une connexion fibre optique dédiée avec backup redondant, garantissant une latence sub-milliseconde et zéro interruption.",
-    features: ["Fibre optique 1 Gbps avec backup automatique 4G/5G", "Latence sub-milliseconde vers les serveurs de trading", "Réseau dédié et séparé du WiFi public", "Monitoring réseau en temps réel par l'équipe technique"],
-    bonus: "En cas de coupure (extrêmement rare), le basculement sur le réseau de secours est automatique et transparent — vos positions ne sont jamais en danger."
-  },
-  { icon: "🧠", title: "AI Tools On-Site", color: "#C9A84C",
-    full: "Tous les 11 indicateurs propriétaires Aureus IA sont pré-installés et configurés sur chaque poste. Pas de clé API à gérer, pas d'installation — tout est prêt dès votre arrivée.",
-    features: ["Les 11 indicateurs Aureus IA activés et mis à jour automatiquement", "Templates de graphiques pré-configurés par stratégie", "Accès aux backtests et aux données historiques", "Mises à jour et nouvelles fonctionnalités déployées en continu"],
-    bonus: "Notre expert configure personnellement vos graphiques lors de votre première session pour optimiser votre workflow selon votre style de trading."
-  },
-  { icon: "☕", title: "Premium Amenities", color: "#E67E22",
-    full: "Le trading exige de la concentration sur la durée. Notre espace est conçu pour maintenir votre confort et votre focus tout au long de la journée, avec des équipements premium à disposition.",
-    features: ["Café, thé, et rafraîchissements en libre-service toute la journée", "Espace lounge dédié pour les pauses et le networking", "Cuisine équipée pour les traders en session journée complète", "Ambiance calme et professionnelle — pas de distractions"],
-    bonus: "Les participants au Discovery Day bénéficient d'un déjeuner offert dans un restaurant partenaire du quartier."
-  },
-  { icon: "🔒", title: "Secure Environment", color: "#9B59B6",
-    full: "La sécurité de vos données et de vos accès est notre priorité absolue. Notre infrastructure est conforme aux normes européennes les plus strictes, avec un chiffrement de bout en bout.",
-    features: ["Accès biométrique au hub (empreinte digitale + badge)", "Réseau chiffré de bout en bout — aucune donnée ne transite en clair", "Postes de travail sans stockage local — tout est en session sécurisée", "Conformité RGPD complète — vos données restent les vôtres"],
-    bonus: "À la fin de chaque session, vos données de trading et configurations sont sauvegardées de manière chiffrée et accessibles uniquement par vous."
-  },
-  { icon: "🤝", title: "Expert Guidance", color: "#1ABC9C",
-    full: "Vous n'êtes jamais seul au hub. Notre équipe sont présents pour répondre à vos questions, valider vos analyses, et vous guider vers les meilleures décisions analytiques.",
-    features: ["Expert disponible pour des questions ponctuelles tout au long de la journée", "Validation d'analyses et de setups en temps réel", "Mini-sessions de coaching spontanées selon les conditions de marché", "Partage d'insights et d'opportunités détectées par l'équipe"],
-    bonus: "Les moments de marché les plus intéressants (NFP, FOMC, BCE) sont commentés en direct par notre expert pour tous les présents au hub."
-  },
-];
-
-/* ── TOOLS DETAIL DATA ── */
-const toolsDetail = [
-  { id: 1, name: "LT Trade BP Symbol", role: "Identification instantanée", icon: "🎯", color: "#C9A84C",
-    full: "Cet outil, simple en apparence, a pourtant une importance clé dans un environnement de trading institutionnel. Le LT Trade BP Symbol affiche en temps réel l'indice, la paire de devises ou la matière première sur laquelle le trader intervient.",
-    utility: ["Sécurité opérationnelle : élimine les erreurs d'exécution dues à la confusion entre instruments", "Clarté analytique : vérifie en un coup d'œil que toutes les analyses se rapportent au bon actif", "Compatibilité multi-écrans : idéal pour les traders disposant de 4 à 6 écrans"],
-    trap: "Ne pas considérer cet outil comme décoratif. Une mauvaise identification d'actif peut ruiner une session entière." },
-  { id: 2, name: "LT Trade Breakout Signal", role: "Rupture structurelle", icon: "⚡", color: "#2ECC71",
-    full: "Module de détection avancée des points d'entrée via Engulfing créateur d'Order Block et Market Structure Shift (MSS), signalant un basculement de la dynamique institutionnelle.",
-    utility: ["Anticiper les zones d'accumulation/distribution créées par les banques et fonds", "Identifier les mouvements propulsés par de véritables flux de capitaux", "Toujours contextualiser dans une lecture globale de la narrative de marché"],
-    trap: "Prendre un signal isolé sans vérifier la structure supérieure (H1/H4)." },
-  { id: 3, name: "LT Trade Daily H/L", role: "Liquidité de la veille", icon: "📊", color: "#3498DB",
-    full: "Trace automatiquement le plus haut et le plus bas de la journée précédente, zones où se trouvent souvent d'importantes poches de liquidités (ordres stop, ordres limit).",
-    utility: ["Les institutions visent ces niveaux pour provoquer des liquidity grabs (stop hunts)", "Permet de savoir si la liquidité du haut ou du bas de la veille a été prise", "Oriente fortement le biais directionnel de la journée"],
-    trap: "Supposer qu'une prise de liquidité entraîne toujours un retournement immédiat." },
-  { id: 4, name: "LT Trade GMC-OB", role: "Order Blocks temps réel", icon: "🧊", color: "#E67E22",
-    full: "IA spécialisée dans la reconnaissance des Order Blocks au moment même de leur formation. Scanne en continu l'activité des bougies et identifie un déplacement institutionnel.",
-    utility: ["Timing ultra-précis : connaître un OB dès sa naissance", "Lecture des intentions algorithmiques bancaires", "Confirmer avec Momentum et AP LT Trade avant exécution"],
-    trap: "Entrer sur le premier retour sans validation multi-outils. Un OB n'est pas forcément respecté sans volume suffisant." },
-  { id: 5, name: "OB Zone Pro", role: "Validation volumétrique", icon: "🔬", color: "#9B59B6",
-    full: "Complément indispensable du GMC-OB. Mesure la solidité d'un OB via le volume institutionnel. Code couleur : Vert (haussier) / Rouge (baissier).",
-    utility: ["Évite de trader des OB « faibles » ou non institutionnels", "Filtre le bruit pour se concentrer sur les zones à forte probabilité", "Utiliser en tandem avec LT Trade GMC-OB"],
-    trap: "Négliger les étapes intermédiaires du code couleur. Un OB peut se renforcer ou disparaître." },
-  { id: 6, name: "LT Trade ShowPips", role: "Performance en direct", icon: "💰", color: "#F39C12",
-    full: "Module visuel affichant pips gagnés/perdus, pourcentage de gain/perte et équivalent monétaire en euros. Essentiel pour la discipline émotionnelle.",
-    utility: ["Favorise la discipline émotionnelle et la sécurisation partielle", "Facilite le suivi multi-trades en scalping", "Surveiller le gain en fonction du Risk-to-Reward initial"],
-    trap: "Laisser l'affichage influencer la décision prématurément. Restez sur le plan." },
-  { id: 7, name: "LT Trade Trend Corridor", role: "Élasticité du marché", icon: "📈", color: "#1ABC9C",
-    full: "Canal adaptatif évoluant avec le marché en fonction du volume et de la volatilité. Indique la zone maximale de mouvement et la tendance via l'inclinaison.",
-    utility: ["Le prix tend statistiquement à revenir vers l'autre bande", "Le corridor « respire » avec le marché, évitant les entrées prématurées", "Utiliser l'autre bande comme objectif de Take Profit"],
-    trap: "Penser que toute sortie de bande entraîne un retournement. La validation contextuelle est essentielle." },
-  { id: 8, name: "AP LT Trade", role: "Zones extrêmes IA", icon: "🧠", color: "#E74C3C",
-    full: "Module phare d'Aureus AI. IA d'analyse comportementale mesurant la pression d'achat/vente en croisant volumes, volatilité, vitesse de mouvement et micro-liquidités.",
-    utility: ["Identifie les zones de surachat/survente extrême", "Filtre les faux signaux des indicateurs techniques classiques", "Combiner avec le contexte structurel (Dow Theory)"],
-    trap: "Confondre un extrême institutionnel avec une simple fluctuation technique." },
-  { id: 9, name: "LT Trade Momentum", role: "Force du mouvement", icon: "🚀", color: "#C9A84C",
-    full: "Mesure la force réelle derrière un mouvement en pondérant flux d'ordres et volume effectif des gros acteurs. Déclencheur final de vos entrées.",
-    utility: ["Agit comme déclencheur final basé sur un changement mesurable d'énergie", "Attendre le croisement Momentum + prix dans le sens de l'opportunité", "Valider dans un contexte structurel favorable (Dow Theory)"],
-    trap: "Entrer uniquement sur un croisement sans contexte. Toujours confirmer avec un autre outil." },
-  { id: 10, name: "LT Trade WorkTime", role: "Session asiatique", icon: "🌏", color: "#3498DB",
-    full: "Surligne les fenêtres horaires de session. L'Asie crée un range « tampon » que Londres/NY viennent balayer pour créer le vrai mouvement du jour.",
-    utility: ["L'Asie cadre un range ; Londres/NY balayent ces extrêmes (stop hunt)", "Sweep d'un bord + AP LT Trade AI extrême → signal d'entrée", "Si le bord touche un pivot ou Daily H/L, la probabilité augmente"],
-    trap: "Paramétrage horaire approximatif. Toujours aligner WorkTime sur le fuseau du broker." },
-  { id: 11, name: "LT Trade Davits Pivot", role: "Pivots × Fibonacci", icon: "🎯", color: "#9B59B6",
-    full: "Fusionne points pivots et ratios Fibonacci pour cartographier des niveaux d'intervention massivement suivis par les desks professionnels.",
-    utility: ["Pivots = repères publics massivement suivis → réactions collectives", "Fibonacci ajoute des paliers naturels de respiration/accumulation", "Confluence pivot + OB validé + Daily H/L = probabilité maximale"],
-    trap: "Trader un pivot seul sans contexte (Dow/IA/OB). Ignorer la volatilité de session." },
-];
-
-const strategiesData = [
-  { id: 1, name: "OB Momentum Corridor", sub: "Order Blocks + AP LT Trade AI + Momentum + Trend Corridor", obj: "Capturer un mouvement après retest d'Order Block, en profitant du flux institutionnel.", steps: ["Identifier l'Order Block validé (OB Zone Pro vert/rouge)", "Attendre le retour du prix dans l'OB", "Observer l'AP LT Trade AI en zone extrême", "Attendre le croisement Momentum", "Entrée à la clôture de la bougie de croisement", "SL derrière le dernier extrême, TP bande opposée"], filters: ["OB validé IA", "AP LT Trade extrême", "Croisement Momentum", "Trend Corridor"], ex: { pair: "XAUUSD", tf: "M15", type: "Long", sl: "sous 3404", tp: "ADR High 3440+" }, img: "/strategy1.png", color: "#C9A84C" },
-  { id: 2, name: "Corridor Re-Entry & Liquidity Grab", sub: "Trend Corridor + Momentum + AP LT Trade + prise de liquidités", obj: "Entrer après que le marché ait effectué une prise de liquidités au-delà des bandes du Corridor.", steps: ["Sortie complète du prix hors du Trend Corridor", "Confirmer la prise de liquidités (cassure swing H/L)", "Sortie simultanée du Momentum hors des bandes", "Réintégration : clôture à l'intérieur du Corridor", "Entrée + croisement Momentum confirmé", "SL derrière l'extrême, TP bande opposée"], filters: ["Sortie Corridor", "Liquidity Grab", "Réintégration", "Croisement Momentum"], ex: { pair: "EUR/USD", tf: "M15", type: "Short", sl: "au-dessus mèche haute", tp: "bande basse Corridor" }, img: "/strategy2.png", color: "#2ECC71" },
-  { id: 3, name: "Scalping Directionnel MM200", sub: "MM200 M15 + AP LT Trade AI + exécution M1", obj: "Mouvements rapides en M1 dans le sens de la tendance M15 confirmée par la MM200.", steps: ["M15 : position du prix vs MM200 → biais", "M1 : AP LT Trade AI en zone extrême", "M1 : micro-structure Dow (HH/HL ou LH/LL)", "M1 : croisement Momentum dans le sens du biais", "Entrée à la clôture de confirmation", "SL sous creux/sommet, TP bande opposée"], filters: ["MM200 filtre M15", "AP LT Trade M1", "Structure Dow", "Momentum M1"], ex: { pair: "GBP/USD", tf: "M15→M1", type: "Multi-UT", sl: "sous creux local", tp: "bande haute" }, img: "/strategy3.png", color: "#3498DB" },
-  { id: 4, name: "Scalping Multi-TF Extrêmes", sub: "AP LT Trade AI M15 + Trend Corridor + Momentum → M1", obj: "Exploiter les déséquilibres M15 pour des entrées haute précision en M1.", steps: ["M15 : extrême AP LT Trade AI (liquidity grab)", "M15 : structure Dow + OB Pro si disponible", "M1 : sortie des bandes Corridor ET Momentum", "M1 : croisement prix/Momentum hors bandes", "M1 : entrée à la réintégration du Corridor", "SL derrière extrême M1, TP bande opposée"], filters: ["Extrême M15", "Sortie Corridor M1", "Croisement Momentum", "Réintégration"], ex: { pair: "XAU/USD", tf: "M15→M1", type: "Short", sl: "au-dessus mèche haute", tp: "bande basse / OB" }, img: "/strategy4.png", color: "#E67E22" },
-  { id: 5, name: "Prise de Liquidité de la Veille", sub: "Daily H/L + AP LT Trade AI + Trend Corridor + Momentum", obj: "Exploiter la chasse de liquidité au-delà des extrêmes de la veille.", steps: ["Repérer plus haut / plus bas de la veille", "Prix dépasse légèrement un de ces niveaux", "AP LT Trade AI en zone extrême", "Sortie prix + Momentum des bandes du Corridor", "Croisement + clôture à l'intérieur du Corridor", "SL derrière le spike, TP bande opposée M15"], filters: ["Daily H/L cassé", "Stop Hunt confirmé", "AP LT Trade extrême", "Réintégration Corridor"], ex: { pair: "XAU/USD", tf: "M15", type: "Long", sl: "sous mèche du sweep", tp: "bande haute" }, img: "/strategy5.png", color: "#9B59B6" },
-  { id: 6, name: "Swing Trading Extrême", sub: "AP LT Trade AI + Engulfing + Momentum + Trend Corridor", obj: "Point de retournement majeur pour un mouvement swing sur plusieurs jours/semaines.", steps: ["Pic extrême AP LT Trade AI (surachat/survente)", "Sortie prix ET Momentum hors Corridor", "Croisement prix/Momentum en dehors des bandes", "Engulfing (haussière/baissière) → nouvel OB", "Entrée à la clôture de l'Engulfing validée", "SL derrière zone clé, TP1 bande opposée, TP2 liquidité"], filters: ["Extrême AP LT Trade", "Engulfing", "Croisement hors bandes", "OB Pro validé"], ex: { pair: "BTC/USD", tf: "M15+", type: "Swing", sl: "sous mèche basse", tp: "Daily High" }, img: "/strategy6.png", color: "#E74C3C" },
-];
-
-function ToolModal({ tool, onClose }: { tool: any; onClose: () => void }) {
+/* ── TOOL MODAL ── */
+function ToolModal({ tool, lang, onClose }: { tool: any; lang: Lang; onClose: () => void }) {
+  const CL = cL[lang] || cL.en;
   useEffect(() => { if (tool) document.body.style.overflow = "hidden"; else document.body.style.overflow = ""; return () => { document.body.style.overflow = ""; }; }, [tool]);
   if (!tool) return null;
   return (
@@ -577,7 +467,7 @@ function ToolModal({ tool, onClose }: { tool: any; onClose: () => void }) {
         <div style={{ padding: "24px 32px 32px" }}>
           <p style={{ fontSize: 15, color: "var(--td)", lineHeight: 1.85, marginBottom: 24 }}>{tool.full}</p>
           <div style={{ background: `${tool.color}08`, borderRadius: 14, padding: "20px 22px", border: `1px solid ${tool.color}15`, marginBottom: 20 }}>
-            <div style={{ fontSize: 10, color: tool.color, letterSpacing: 3, textTransform: "uppercase" as const, fontWeight: 700, marginBottom: 14 }}>🏛️ Utilité Institutionnelle</div>
+            <div style={{ fontSize: 10, color: tool.color, letterSpacing: 3, textTransform: "uppercase" as const, fontWeight: 700, marginBottom: 14 }}>{CL.instit}</div>
             {tool.utility.map((u: string, i: number) => (
               <div key={i} style={{ display: "flex", gap: 10, marginBottom: 10, alignItems: "flex-start" }}>
                 <span style={{ color: tool.color, fontSize: 14, marginTop: 1 }}>▸</span>
@@ -586,7 +476,7 @@ function ToolModal({ tool, onClose }: { tool: any; onClose: () => void }) {
             ))}
           </div>
           <div style={{ background: "rgba(231,76,60,.06)", borderRadius: 14, padding: "18px 22px", border: "1px solid rgba(231,76,60,.12)" }}>
-            <div style={{ fontSize: 10, color: "#E74C3C", letterSpacing: 3, textTransform: "uppercase" as const, fontWeight: 700, marginBottom: 10 }}>⚠️ Piège à Éviter</div>
+            <div style={{ fontSize: 10, color: "#E74C3C", letterSpacing: 3, textTransform: "uppercase" as const, fontWeight: 700, marginBottom: 10 }}>{CL.trap}</div>
             <p style={{ fontSize: 13, color: "var(--td)", lineHeight: 1.7 }}>{tool.trap}</p>
           </div>
         </div>
@@ -595,7 +485,8 @@ function ToolModal({ tool, onClose }: { tool: any; onClose: () => void }) {
   );
 }
 
-function HubModal({ hub, onClose }: { hub: any; onClose: () => void }) {
+function HubModal({ hub, lang, onClose }: { hub: any; lang: Lang; onClose: () => void }) {
+  const CL = cL[lang] || cL.en;
   useEffect(() => { if (hub) document.body.style.overflow = "hidden"; else document.body.style.overflow = ""; return () => { document.body.style.overflow = ""; }; }, [hub]);
   if (!hub) return null;
   return (
@@ -612,7 +503,7 @@ function HubModal({ hub, onClose }: { hub: any; onClose: () => void }) {
         <div style={{ padding: "24px 32px 32px" }}>
           <p style={{ fontSize: 15, color: "var(--td)", lineHeight: 1.85, marginBottom: 24 }}>{hub.full}</p>
           <div style={{ background: `${hub.color}08`, borderRadius: 14, padding: "20px 22px", border: `1px solid ${hub.color}15`, marginBottom: 20 }}>
-            <div style={{ fontSize: 10, color: hub.color, letterSpacing: 3, textTransform: "uppercase" as const, fontWeight: 700, marginBottom: 14 }}>📋 Ce qui est inclus</div>
+            <div style={{ fontSize: 10, color: hub.color, letterSpacing: 3, textTransform: "uppercase" as const, fontWeight: 700, marginBottom: 14 }}>{CL.included}</div>
             {hub.features.map((f: string, i: number) => (
               <div key={i} style={{ display: "flex", gap: 10, marginBottom: 10, alignItems: "flex-start" }}>
                 <span style={{ color: hub.color, fontSize: 14, marginTop: 1 }}>▸</span>
@@ -621,7 +512,7 @@ function HubModal({ hub, onClose }: { hub: any; onClose: () => void }) {
             ))}
           </div>
           <div style={{ background: "rgba(46,204,113,.06)", borderRadius: 14, padding: "18px 22px", border: "1px solid rgba(46,204,113,.12)" }}>
-            <div style={{ fontSize: 10, color: "#2ECC71", letterSpacing: 3, textTransform: "uppercase" as const, fontWeight: 700, marginBottom: 10 }}>💎 Le + Aureus</div>
+            <div style={{ fontSize: 10, color: "#2ECC71", letterSpacing: 3, textTransform: "uppercase" as const, fontWeight: 700, marginBottom: 10 }}>{CL.aureus_plus}</div>
             <p style={{ fontSize: 13, color: "var(--td)", lineHeight: 1.7 }}>{hub.bonus}</p>
           </div>
         </div>
@@ -643,6 +534,11 @@ export default function Home() {
   const [selectedHub, setSelectedHub] = useState<any>(null);
   const [selectedService, setSelectedService] = useState<any>(null);
   const L = t[lang];
+  const CL = cL[lang] || cL.en;
+  const tools = getTools(lang);
+  const strategies = getStrategies(lang);
+  const services = getServices(lang);
+  const hubFeatures = getHubFeatures(lang);
   const isRtl = lang === "ar";
 
   useEffect(() => { setTimeout(() => setLoading(false), 1800); const onScroll = () => { const s = window.scrollY, d = document.documentElement.scrollHeight - window.innerHeight; setScrollPct(d > 0 ? (s / d) * 100 : 0); setScrolled(s > 60); }; window.addEventListener("scroll", onScroll); return () => window.removeEventListener("scroll", onScroll); }, []);
@@ -730,8 +626,8 @@ export default function Home() {
       <section id="services"><div className="mx">
         <FI><SH tag={L.svc_tag} title={L.svc_title} /></FI>
         <div className="g4">
-          {[{ i: "🧠", t2: L.svc1_t, d: L.svc1_d }, { i: "🖥️", t2: L.svc2_t, d: L.svc2_d }, { i: "🎯", t2: L.svc3_t, d: L.svc3_d }, { i: "🏢", t2: L.svc4_t, d: L.svc4_d }].map((s, idx) => (
-            <FI key={idx}><div className="sc2" style={{ cursor: "pointer" }} onClick={() => setSelectedService(servicesDetail[idx])}><span className="si">{s.i}</span><h3 className="sct">{s.t2}</h3><p className="scd">{s.d}</p><div style={{ fontSize: 9, color: "var(--g)", letterSpacing: 1.5, fontWeight: 600, marginTop: 12, opacity: .7 }}>EN SAVOIR PLUS →</div></div></FI>
+          {services.map((s, idx) => (
+            <FI key={idx}><div className="sc2" style={{ cursor: "pointer" }} onClick={() => setSelectedService(s)}><span className="si">{s.icon}</span><h3 className="sct">{s.title}</h3><p className="scd">{s.full.slice(0,120)}…</p><div style={{ fontSize: 9, color: "var(--g)", letterSpacing: 1.5, fontWeight: 600, marginTop: 12, opacity: .7 }}>{CL.see_details}</div></div></FI>
           ))}
         </div>
       </div></section>
@@ -756,8 +652,8 @@ export default function Home() {
           </div>
         </div></FI>
         <div className="hfg">
-          {[{ i: "🖥️", t2: L.hub_f1_t, d: L.hub_f1_d }, { i: "📶", t2: L.hub_f2_t, d: L.hub_f2_d }, { i: "🧠", t2: L.hub_f3_t, d: L.hub_f3_d }, { i: "☕", t2: L.hub_f4_t, d: L.hub_f4_d }, { i: "🔒", t2: L.hub_f5_t, d: L.hub_f5_d }, { i: "🤝", t2: L.hub_f6_t, d: L.hub_f6_d }].map((f, i) => (
-            <FI key={i}><div className="hf" style={{ cursor: "pointer" }} onClick={() => setSelectedHub(hubFeaturesDetail[i])}><div className="hfi">{f.i}</div><div><div className="hft">{f.t2}</div><div className="hfd">{f.d}</div><div style={{ fontSize: 9, color: "var(--g)", letterSpacing: 1.5, fontWeight: 600, marginTop: 8, opacity: .7 }}>EN SAVOIR PLUS →</div></div></div></FI>
+          {hubFeatures.map((f, i) => (
+            <FI key={i}><div className="hf" style={{ cursor: "pointer" }} onClick={() => setSelectedHub(f)}><div className="hfi">{f.icon}</div><div><div className="hft">{f.title}</div><div className="hfd">{f.full.slice(0,80)}…</div><div style={{ fontSize: 9, color: "var(--g)", letterSpacing: 1.5, fontWeight: 600, marginTop: 8, opacity: .7 }}>{CL.see_details}</div></div></div></FI>
           ))}
         </div>
       </div></section>
@@ -778,17 +674,17 @@ export default function Home() {
       <section id="indicators" style={{ background: "linear-gradient(180deg,transparent,rgba(201,168,76,.015),transparent)" }}><div className="mx">
         <FI><SH tag={L.ind_tag} title={L.ind_title} /></FI>
         <div className="ig">{indicators.map((ind, i) => (
-          <FI key={i}><div className="ic" style={{ cursor: "pointer" }} onClick={() => setSelectedTool(toolsDetail[i])}><div className="icb" style={{ background: ind.c }} /><div className="icd" style={{ background: ind.c, boxShadow: `0 0 10px ${ind.c}66` }} /><div className="icn">{ind.n}</div><div className="icdesc">{ind.d}</div><div style={{ fontSize: 9, color: ind.c, letterSpacing: 1.5, fontWeight: 600, marginTop: 8, opacity: .7 }}>VOIR DÉTAILS →</div></div></FI>
+          <FI key={i}><div className="ic" style={{ cursor: "pointer" }} onClick={() => setSelectedTool(tools[i])}><div className="icb" style={{ background: ind.c }} /><div className="icd" style={{ background: ind.c, boxShadow: `0 0 10px ${ind.c}66` }} /><div className="icn">{ind.n}</div><div className="icdesc">{ind.d}</div><div style={{ fontSize: 9, color: ind.c, letterSpacing: 1.5, fontWeight: 600, marginTop: 8, opacity: .7 }}>{CL.see_details}</div></div></FI>
         ))}</div>
       </div></section>
 
       {/* ═══════ STRATEGIES — TOOLS + DOW + 6 STRATEGIES ═══════ */}
       <section id="strategies" style={{ background: "linear-gradient(180deg,transparent,rgba(201,168,76,.015),transparent)" }}><div className="mx">
-        <FI><SH tag="Arsenal" title="Tools & Strategies" desc="11 outils IA institutionnels et 6 stratégies éprouvées. Cliquez sur chaque outil pour découvrir les détails." /></FI>
+        <FI><SH tag={CL.tools_tag} title={CL.tools_title} desc={CL.tools_desc} /></FI>
         
         {/* 11 TOOLS GRID */}
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(250px,1fr))", gap: 14, marginBottom: 80 }}>
-          {toolsDetail.map((td, i) => (
+          {tools.map((td, i) => (
             <FI key={td.id}><div style={{ background: "var(--c1)", borderRadius: 14, padding: "24px 20px", border: "1px solid rgba(201,168,76,.05)", cursor: "pointer", transition: "all .4s", position: "relative", overflow: "hidden" }}
               onClick={() => setSelectedTool(td)}
               onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = "rgba(201,168,76,.18)"; (e.currentTarget as HTMLElement).style.transform = "translateY(-4px)"; (e.currentTarget as HTMLElement).style.boxShadow = "0 16px 40px rgba(0,0,0,.3)"; }}
@@ -800,20 +696,20 @@ export default function Home() {
               <div style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: 17, fontWeight: 700, marginBottom: 3 }}>{td.name}</div>
               <div style={{ fontSize: 9, color: td.color, letterSpacing: 2, textTransform: "uppercase" as const, fontWeight: 600, marginBottom: 10 }}>{td.role}</div>
               <div style={{ fontSize: 12, color: "var(--td)", lineHeight: 1.7, marginBottom: 12 }}>{td.full.slice(0, 120)}…</div>
-              <div style={{ fontSize: 9, color: td.color, letterSpacing: 1.5, fontWeight: 600, opacity: .7 }}>VOIR DÉTAILS →</div>
+              <div style={{ fontSize: 9, color: td.color, letterSpacing: 1.5, fontWeight: 600, opacity: .7 }}>{CL.see_details}</div>
             </div></FI>
           ))}
         </div>
 
         {/* DOW THEORY */}
         <FI><div style={{ maxWidth: 800, margin: "0 auto 80px", background: "var(--c1)", borderRadius: 18, padding: "36px 32px", border: "1px solid rgba(201,168,76,.08)" }}>
-          <div style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: "clamp(22px,3vw,36px)", fontWeight: 700, textAlign: "center", marginBottom: 20 }}>La <span className="gld">Théorie de Dow</span> — Le Socle</div>
+          <div style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: "clamp(22px,3vw,36px)", fontWeight: 700, textAlign: "center", marginBottom: 20}}>{CL.dow_title.includes("Dow") ? <>{CL.dow_title.split("Dow")[0]}<span className="gld">Dow</span>{CL.dow_title.split("Dow")[1]}</> : CL.dow_title}</div>
           <div style={{ width: 60, height: 2, background: "linear-gradient(90deg,transparent,var(--g),transparent)", margin: "0 auto 24px" }} />
-          <p style={{ fontSize: 14, color: "var(--td)", lineHeight: 1.85, marginBottom: 20, textAlign: "center" }}>La structure du marché agit comme un <strong style={{ color: "var(--g)" }}>GPS institutionnel</strong>. Sans elle, les signaux deviennent contradictoires. Avec elle, chaque outil prend son sens.</p>
+          <p style={{ fontSize: 14, color: "var(--td)", lineHeight: 1.85, marginBottom: 20, textAlign: "center" }}>{CL.dow_desc}</p>
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
             {[{n:"AP LT Trade AI",r:"Indicateur d'excès pertinent",id:8},{n:"Momentum",r:"Confirmation de retournement",id:9},{n:"Order Blocks",r:"Zones de réaction haute probabilité",id:4},{n:"Trend Corridor",r:"Canal d'élasticité cohérent",id:7}].map((d,i) => (
               <div key={i} style={{ padding: "12px 16px", borderRadius: 10, background: "rgba(201,168,76,.03)", border: "1px solid rgba(201,168,76,.06)", cursor: "pointer", transition: "all .3s" }}
-                onClick={() => setSelectedTool(toolsDetail.find(t => t.id === d.id))}
+                onClick={() => setSelectedTool(tools.find(t => t.id === d.id))}
                 onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = "rgba(201,168,76,.08)"; }}
                 onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = "rgba(201,168,76,.03)"; }}
               >
@@ -825,7 +721,7 @@ export default function Home() {
         </div></FI>
 
         {/* 6 STRATEGIES */}
-        {strategiesData.map((s, si) => (
+        {strategies.map((s, si) => (
           <FI key={s.id}><div style={{ marginBottom: 80 }}>
             <div style={{ display: "flex", alignItems: "center", gap: 14, marginBottom: 28 }}>
               <div style={{ width: 48, height: 48, borderRadius: 14, background: `${s.color}15`, border: `1px solid ${s.color}35`, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "'Cormorant Garamond',serif", fontSize: 24, fontWeight: 700, color: s.color }}>{s.id}</div>
@@ -834,11 +730,11 @@ export default function Home() {
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 32, alignItems: "start" }}>
               <div style={{ order: si % 2 === 0 ? 1 : 2 }}>
                 <div style={{ background: "var(--c1)", borderRadius: 14, padding: "18px 20px", border: "1px solid rgba(201,168,76,.08)", marginBottom: 16 }}>
-                  <div style={{ fontSize: 9, color: "var(--g)", letterSpacing: 3, textTransform: "uppercase" as const, fontWeight: 600, marginBottom: 6 }}>Objectif</div>
+                  <div style={{ fontSize: 9, color: "var(--g)", letterSpacing: 3, textTransform: "uppercase" as const, fontWeight: 600, marginBottom: 6 }}>{CL.obj}</div>
                   <p style={{ fontSize: 13, color: "var(--td)", lineHeight: 1.7 }}>{s.obj}</p>
                 </div>
                 <div style={{ background: "var(--c1)", borderRadius: 14, padding: "18px 20px", border: "1px solid rgba(201,168,76,.08)", marginBottom: 16 }}>
-                  <div style={{ fontSize: 9, color: "var(--g)", letterSpacing: 3, textTransform: "uppercase" as const, fontWeight: 600, marginBottom: 12 }}>Process</div>
+                  <div style={{ fontSize: 9, color: "var(--g)", letterSpacing: 3, textTransform: "uppercase" as const, fontWeight: 600, marginBottom: 12 }}>{CL.proc}</div>
                   {s.steps.map((st, sti) => (
                     <div key={sti} style={{ display: "flex", gap: 10, marginBottom: 8 }}>
                       <div style={{ minWidth: 22, height: 22, borderRadius: "50%", background: sti === s.steps.length - 1 ? "linear-gradient(135deg,var(--g),var(--gd))" : "rgba(201,168,76,.08)", border: `1px solid ${sti === s.steps.length - 1 ? "transparent" : "rgba(201,168,76,.15)"}`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 9, fontWeight: 700, color: sti === s.steps.length - 1 ? "var(--bg)" : "var(--g)", fontFamily: "'JetBrains Mono',monospace" }}>{sti + 1}</div>
@@ -850,9 +746,9 @@ export default function Home() {
                   {s.filters.map((f, fi) => <span key={fi} style={{ padding: "4px 12px", borderRadius: 20, background: `${s.color}10`, border: `1px solid ${s.color}25`, fontSize: 10, color: s.color, fontWeight: 600 }}>✓ {f}</span>)}
                 </div>
                 <div style={{ background: `${s.color}08`, borderRadius: 12, padding: "14px 18px", border: `1px solid ${s.color}20` }}>
-                  <div style={{ fontSize: 9, color: s.color, letterSpacing: 3, textTransform: "uppercase" as const, fontWeight: 600, marginBottom: 8 }}>Exemple de Trade</div>
+                  <div style={{ fontSize: 9, color: s.color, letterSpacing: 3, textTransform: "uppercase" as const, fontWeight: 600, marginBottom: 8 }}>{CL.example}</div>
                   <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 6 }}>
-                    {[["Paire", s.ex.pair], ["TF", s.ex.tf], ["Type", s.ex.type], ["SL", s.ex.sl], ["TP", s.ex.tp]].map(([l, v], ei) => (
+                    {[[CL.pair, s.ex.pair], [CL.tf, s.ex.tf], [CL.type, s.ex.type], [CL.sl, s.ex.sl], [CL.tp, s.ex.tp]].map(([l, v], ei) => (
                       <div key={ei} style={{ fontSize: 11, color: "var(--td)" }}><span style={{ color: "var(--tm)", fontSize: 9 }}>{l}: </span><span style={{ fontWeight: 600, color: "var(--tx)" }}>{v}</span></div>
                     ))}
                   </div>
@@ -875,8 +771,8 @@ export default function Home() {
         <img src="https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?w=1920&q=80" alt="Trading Floor" style={{ width: "100%", height: "100%", objectFit: "cover", filter: "brightness(0.25) sepia(0.2)" }} />
         <div style={{ position: "absolute", inset: 0, background: "linear-gradient(180deg,var(--bg),transparent 15%,transparent 85%,var(--bg))" }} />
         <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", flexDirection: "column", gap: 8 }}>
-          <div style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: "clamp(20px,3vw,36px)", fontWeight: 700, color: "var(--tx)", textAlign: "center" }}>Powered by <span className="gld">13 Years</span> of Market Data</div>
-          <div style={{ fontSize: 12, color: "var(--td)", letterSpacing: 2 }}>AI • Analytics • Excellence</div>
+          <div style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: "clamp(20px,3vw,36px)", fontWeight: 700, color: "var(--tx)", textAlign: "center" }} dangerouslySetInnerHTML={{ __html: CL.powered }} />
+          <div style={{ fontSize: 12, color: "var(--td)", letterSpacing: 2 }}>{CL.powered_sub}</div>
         </div>
       </div></FI>
 
@@ -884,12 +780,12 @@ export default function Home() {
         <FI><SH tag={L.pr_tag} title={L.pr_title} /></FI>
         <div className="pg">
           {[
-            { n: "Free Consultation", dur: "30 min", pr: "Free", per: "", feat: ["Vidéoconférence avec notre fondateur", "Découverte de la plateforme", "Démo live des 11 indicateurs", "Q&R personnalisées", "Zéro engagement"], pop: false, btn: "Planifier", action: "book" },
-            { n: "Discovery Day", dur: "Journée complète", pr: "Gratuit", per: "", feat: ["Journée complète au Hub Brussels", "Accès à tous les postes multi-écrans", "Les 11 indicateurs IA en live", "Coaching 1-on-1 avec notre fondateur", "Certificat de complétion"], pop: true, btn: "Réserver", action: "book" },
-            { n: "AI-Powered Access", dur: "Abonnement mensuel", pr: "€300", per: "/mois", feat: ["Accès complet au Hub Brussels", "Les 11 indicateurs IA en continu", "Clé API personnelle (€3,500 unique)", "Environnement professionnel dédié", "Support expert illimité"], pop: false, btn: "Nous Contacter", action: "contact", apiNote: "Clé API : paiement unique de €3,500 HTVA" },
+            { n: CL.free_consult, dur: "30 min", pr: CL.free, per: "", feat: [CL.p1f1, CL.p1f2, CL.p1f3, CL.p1f4, CL.p1f5], pop: false, btn: CL.plan_btn_schedule, action: "book" },
+            { n: CL.discovery_day, dur: CL.full_day, pr: CL.free, per: "", feat: [CL.p2f1, CL.p2f2, CL.p2f3, CL.p2f4, CL.p2f5], pop: true, btn: CL.plan_btn_book, action: "book" },
+            { n: CL.ai_access, dur: CL.monthly_sub, pr: "€300", per: "/mo", feat: [CL.p3f1, CL.p3f2, CL.p3f3, CL.p3f4, CL.p3f5], pop: false, btn: CL.plan_btn_contact, action: "contact", apiNote: CL.api_note },
           ].map((p, i) => (
             <FI key={i}><div className={`pc ${p.pop ? "pop" : ""}`}><div className="pi">
-              {p.pop && <div className="ppb">POPULAR</div>}
+              {p.pop && <div className="ppb">{CL.popular}</div>}
               <div className="pn">{p.n}</div>
               <div className="pdu">⏱ {p.dur}</div>
               <div className="ppr">{p.pr} {p.per && <span className="pper">{p.per}</span>}</div>
@@ -968,9 +864,9 @@ export default function Home() {
       </div><div className="fb">{L.ft_copy}</div></footer>
 
       {/* TOOL DETAIL MODAL */}
-      <ToolModal tool={selectedTool} onClose={() => setSelectedTool(null)} />
-      <HubModal hub={selectedHub} onClose={() => setSelectedHub(null)} />
-      <HubModal hub={selectedService} onClose={() => setSelectedService(null)} />
+      <ToolModal tool={selectedTool} lang={lang} onClose={() => setSelectedTool(null)} />
+      <HubModal hub={selectedHub} lang={lang} onClose={() => setSelectedHub(null)} />
+      <HubModal hub={selectedService} lang={lang} onClose={() => setSelectedService(null)} />
 
       {/* WHATSAPP */}
       <a href="https://wa.me/32491709413" target="_blank" rel="noopener noreferrer" className="wa">
