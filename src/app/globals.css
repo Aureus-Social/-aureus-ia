@@ -75,6 +75,8 @@ section{padding:130px 28px}
 .hero-img{position:absolute;inset:0;background:url("https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=1920&q=80") center/cover no-repeat;opacity:.05;filter:sepia(.3)}
 .hero-lines{position:absolute;inset:0;background:repeating-linear-gradient(90deg,rgba(201,168,76,.015) 0px,rgba(201,168,76,.015) 1px,transparent 1px,transparent 80px);pointer-events:none}
 @keyframes mf{0%{transform:translate(0,0) scale(1)}50%{transform:translate(-2%,1%) scale(1.04)}100%{transform:translate(1%,-1%) scale(.97)}}
+@keyframes shimmer{0%{background-position:0% center}100%{background-position:200% center}}
+@keyframes scrollPulse{0%,100%{opacity:.4;transform:scaleY(1)}50%{opacity:1;transform:scaleY(1.3)}}
 .hg{display:grid;grid-template-columns:1.1fr 0.9fr;gap:60px;align-items:center;max-width:1240px;margin:0 auto;width:100%;padding:0 28px;position:relative;z-index:2}
 @media(max-width:960px){.hg{grid-template-columns:1fr!important}}
 .hbd{display:inline-flex;align-items:center;gap:8px;padding:8px 20px;border-radius:50px;border:1px solid rgba(201,168,76,.25);background:rgba(201,168,76,.06);margin-bottom:26px;backdrop-filter:blur(10px)}
