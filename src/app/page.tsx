@@ -782,7 +782,7 @@ export default function Home() {
           {[
             { n: CL.free_consult, dur: "30 min", pr: CL.free, per: "", feat: [CL.p1f1, CL.p1f2, CL.p1f3, CL.p1f4, CL.p1f5], pop: false, btn: CL.plan_btn_schedule, action: "book" },
             { n: CL.discovery_day, dur: CL.full_day, pr: CL.free, per: "", feat: [CL.p2f1, CL.p2f2, CL.p2f3, CL.p2f4, CL.p2f5], pop: true, btn: CL.plan_btn_book, action: "book" },
-            { n: CL.ai_access, dur: CL.monthly_sub, pr: "€33", per: "/mo", feat: [CL.p3f1, CL.p3f2, CL.p3f3, CL.p3f4, CL.p3f5], pop: false, btn: CL.plan_btn_contact, action: "contact", apiNote: CL.api_note },
+            { n: CL.ai_access, dur: CL.monthly_sub, pr: "€300", per: "/mo", feat: [CL.p3f1, CL.p3f2, CL.p3f3, CL.p3f4, CL.p3f5], pop: false, btn: CL.plan_btn_contact, action: "contact", apiNote: CL.api_note },
           ].map((p, i) => (
             <FI key={i}><div className={`pc ${p.pop ? "pop" : ""}`}><div className="pi">
               {p.pop && <div className="ppb">{CL.popular}</div>}
