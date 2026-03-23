@@ -782,7 +782,7 @@ export default function Home() {
           {[
             { n: CL.free_consult, dur: "30 min", pr: CL.free, per: "", feat: [CL.p1f1, CL.p1f2, CL.p1f3, CL.p1f4, CL.p1f5], pop: false, btn: CL.plan_btn_schedule, action: "book" },
             { n: CL.discovery_day, dur: CL.full_day, pr: CL.free, per: "", feat: [CL.p2f1, CL.p2f2, CL.p2f3, CL.p2f4, CL.p2f5], pop: true, btn: CL.plan_btn_book, action: "book" },
-            { n: CL.ai_access, dur: CL.monthly_sub, pr: "€300", per: "/mo", feat: [CL.p3f1, CL.p3f2, CL.p3f3, CL.p3f4, CL.p3f5], pop: false, btn: CL.plan_btn_contact, action: "contact", apiNote: CL.api_note },
+            { n: CL.ai_access, dur: CL.monthly_sub, pr: "€300", per: "/mo", feat: [CL.p3f1, CL.p3f2, CL.p3f3, CL.p3f4, CL.p3f5], pop: false, btn: CL.plan_btn_contact, action: "contact", apiNote: CL.api_note, progressive: true },
           ].map((p, i) => (
             <FI key={i}><div className={`pc ${p.pop ? "pop" : ""}`}><div className="pi">
               {p.pop && <div className="ppb">{CL.popular}</div>}
@@ -791,6 +791,16 @@ export default function Home() {
               <div className="ppr">{p.pr} {p.per && <span className="pper">{p.per}</span>}</div>
               {p.feat.map((f, fi) => <div key={fi} className="pf">{f}</div>)}
               {p.apiNote && <div style={{ fontSize: 11, color: "var(--g)", padding: "8px 12px", background: "rgba(201,168,76,.06)", borderRadius: 8, border: "1px solid rgba(201,168,76,.1)", marginTop: 4, textAlign: "center" as const, fontWeight: 600 }}>{p.apiNote}</div>}
+              {p.progressive && <div style={{ marginTop: 12, padding: "12px 14px", background: "rgba(201,168,76,.04)", borderRadius: 10, border: "1px solid rgba(201,168,76,.08)" }}>
+                <div style={{ fontSize: 9, color: "var(--g)", letterSpacing: 2, textTransform: "uppercase" as const, fontWeight: 700, marginBottom: 8 }}>{CL.prog_label}</div>
+                {[CL.prog_1, CL.prog_2, CL.prog_3, CL.prog_4].map((row, ri) => (
+                  <div key={ri} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "4px 0", borderBottom: ri < 3 ? "1px solid rgba(201,168,76,.06)" : "none" }}>
+                    <span style={{ fontSize: 11, color: "var(--td)" }}>{row.split(":")[0]}</span>
+                    <span style={{ fontSize: 12, fontWeight: 700, color: ri === 0 ? "var(--g)" : ri === 3 ? "#C9A84C" : "var(--tx)", fontFamily: "'JetBrains Mono',monospace" }}>{row.split(":")[1]}</span>
+                  </div>
+                ))}
+                <div style={{ fontSize: 10, color: "var(--tm)", marginTop: 8, textAlign: "center" as const, fontStyle: "italic" }}>{CL.prog_note}</div>
+              </div>}
               <button className={`pbt ${p.pop ? "gd" : "ot"}`} onClick={() => { if (p.action === "book") setShowBooking(true); else document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" }); }}>{p.btn}</button>
             </div></div></FI>
           ))}
