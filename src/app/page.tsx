@@ -147,86 +147,167 @@ function HeroCanvas() {
     let H = c.height = window.innerHeight;
     const onResize = () => { W = c.width = window.innerWidth; H = c.height = window.innerHeight; };
     window.addEventListener("resize", onResize);
-    // Particles
-    const N = 55;
+
+    // ── Particles ──
+    const N = 70;
     const pts = Array.from({ length: N }, () => ({
       x: Math.random() * W, y: Math.random() * H,
-      vx: (Math.random() - .5) * .35, vy: (Math.random() - .5) * .35,
-      r: Math.random() * 1.8 + .4, a: Math.random()
+      vx: (Math.random() - .5) * .4, vy: (Math.random() - .5) * .4,
+      r: Math.random() * 1.6 + .5,
+      pulse: Math.random() * Math.PI * 2,
     }));
-    // Candlesticks ghost data
-    const candles = Array.from({ length: 28 }, (_, i) => {
-      const o = 200 + Math.random() * 300;
-      const c2 = o + (Math.random() - .5) * 60;
-      const h = Math.max(o, c2) + Math.random() * 30;
-      const l = Math.min(o, c2) - Math.random() * 30;
-      return { x: 60 + i * (W / 28), o, c: c2, h, l, bull: c2 >= o };
+
+    // ── Multi-instrument price lines ──
+    const makeWave = (seed: number, amp: number, freq: number, base: number) =>
+      Array.from({ length: 160 }, (_, i) =>
+        base + Math.sin(i * freq + seed) * amp + Math.cos(i * freq * .7 + seed * 1.3) * (amp * .4) + (Math.random() - .5) * 6
+      );
+    let waves = [
+      { data: makeWave(0, 55, .13, H * .38), color: "rgba(201,168,76,", lw: 1.8 },
+      { data: makeWave(2, 35, .18, H * .55), color: "rgba(52,152,219,",  lw: 1.2 },
+      { data: makeWave(5, 28, .22, H * .70), color: "rgba(46,204,113,",  lw: 1.0 },
+    ];
+
+    // ── Order blocks (institutional zones) ──
+    const blocks = Array.from({ length: 6 }, () => ({
+      x: Math.random() * W * .85 + W * .05,
+      y: Math.random() * H * .5 + H * .15,
+      w: 40 + Math.random() * 80,
+      h: 12 + Math.random() * 30,
+      bull: Math.random() > .5,
+      a: 0,
+    }));
+
+    // ── Candles ──
+    const CANDLES = 32;
+    const candles = Array.from({ length: CANDLES }, (_, i) => {
+      const o = 280 + Math.random() * 200;
+      const cl = o + (Math.random() - .5) * 70;
+      return { o, c: cl, h: Math.max(o, cl) + Math.random() * 35, l: Math.min(o, cl) - Math.random() * 25, bull: cl >= o };
     });
-    // Price line
-    const lineData: number[] = Array.from({ length: 120 }, (_, i) => 300 + Math.sin(i * .18) * 60 + Math.random() * 25);
+
+    // ── Horizontal price levels ──
+    const levels = [H * .22, H * .38, H * .52, H * .68, H * .78];
+
     let frame = 0;
     let raf: number;
+
     const draw = () => {
       frame++;
       ctx.clearRect(0, 0, W, H);
-      // Candlesticks in background
-      const cw = Math.max(8, W / 32);
-      candles.forEach((cd, i) => {
-        const x = 40 + i * (W / 28);
-        const scaleY = H / 600;
-        const col = cd.bull ? "rgba(46,204,113,.045)" : "rgba(231,76,60,.035)";
-        ctx.strokeStyle = col; ctx.lineWidth = 1;
-        ctx.beginPath(); ctx.moveTo(x, H - cd.h * scaleY); ctx.lineTo(x, H - cd.l * scaleY); ctx.stroke();
-        ctx.fillStyle = col;
-        const top = H - Math.max(cd.o, cd.c) * scaleY;
-        const bot = H - Math.min(cd.o, cd.c) * scaleY;
-        ctx.fillRect(x - cw / 2, top, cw, Math.max(1, bot - top));
+
+      // Price levels (dashed)
+      levels.forEach((y, i) => {
+        ctx.setLineDash([4, 12]);
+        ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y);
+        ctx.strokeStyle = `rgba(201,168,76,${i === 1 ? .06 : .025})`; ctx.lineWidth = 1; ctx.stroke();
+        ctx.setLineDash([]);
       });
-      // Animated price line
-      const seg = lineData.length;
-      const ph = frame * .4;
-      ctx.beginPath();
-      lineData.forEach((v, i) => {
-        const x = (i / (seg - 1)) * W;
-        const y = H * .65 - (v + Math.sin((i + frame * .08) * .3) * 12) * (H / 1000);
-        i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
-      });
-      ctx.strokeStyle = "rgba(201,168,76,.07)"; ctx.lineWidth = 1.5; ctx.stroke();
-      // Second line
-      ctx.beginPath();
-      lineData.forEach((v, i) => {
-        const x = (i / (seg - 1)) * W;
-        const y = H * .42 - (v + Math.cos((i + frame * .05) * .25) * 18) * (H / 1200);
-        i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
-      });
-      ctx.strokeStyle = "rgba(201,168,76,.04)"; ctx.lineWidth = 1; ctx.stroke();
-      // Particles + connections
-      pts.forEach(p => {
-        p.x += p.vx; p.y += p.vy;
-        if (p.x < 0) p.x = W; if (p.x > W) p.x = 0;
-        if (p.y < 0) p.y = H; if (p.y > H) p.y = 0;
-        p.a = .3 + .4 * Math.abs(Math.sin(frame * .012 + p.x * .003));
-        ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(201,168,76,${p.a * .8})`; ctx.fill();
-      });
-      for (let i = 0; i < N; i++) for (let j = i + 1; j < N; j++) {
-        const dx = pts[i].x - pts[j].x, dy = pts[i].y - pts[j].y;
-        const dist = Math.sqrt(dx * dx + dy * dy);
-        if (dist < 130) {
-          ctx.beginPath(); ctx.moveTo(pts[i].x, pts[i].y); ctx.lineTo(pts[j].x, pts[j].y);
-          ctx.strokeStyle = `rgba(201,168,76,${(.12 - dist / 1200) * .6})`; ctx.lineWidth = .6; ctx.stroke();
-        }
-      }
-      // Grid lines horizontal
-      for (let i = 1; i < 5; i++) {
-        ctx.beginPath(); ctx.moveTo(0, H * i / 5); ctx.lineTo(W, H * i / 5);
-        ctx.strokeStyle = "rgba(201,168,76,.02)"; ctx.lineWidth = 1; ctx.stroke();
-      }
-      // Grid lines vertical
-      for (let i = 1; i < 8; i++) {
-        ctx.beginPath(); ctx.moveTo(W * i / 8, 0); ctx.lineTo(W * i / 8, H);
+
+      // Vertical grid
+      for (let i = 1; i < 9; i++) {
+        ctx.beginPath(); ctx.moveTo(W * i / 9, 0); ctx.lineTo(W * i / 9, H);
         ctx.strokeStyle = "rgba(201,168,76,.015)"; ctx.lineWidth = 1; ctx.stroke();
       }
+
+      // Candles
+      const cw = Math.max(6, W / (CANDLES * 1.6));
+      candles.forEach((cd, i) => {
+        const x = (i / (CANDLES - 1)) * W * .92 + W * .04;
+        const sy = H / 600;
+        const col = cd.bull ? "rgba(46,204,113,.055)" : "rgba(231,76,60,.042)";
+        ctx.strokeStyle = col; ctx.lineWidth = .8;
+        ctx.beginPath(); ctx.moveTo(x, H - cd.h * sy); ctx.lineTo(x, H - cd.l * sy); ctx.stroke();
+        ctx.fillStyle = col;
+        const top = H - Math.max(cd.o, cd.c) * sy;
+        ctx.fillRect(x - cw/2, top, cw, Math.max(1, Math.abs(cd.c - cd.o) * sy));
+      });
+
+      // Order blocks (pulsing)
+      blocks.forEach(b => {
+        b.a = .035 + .025 * Math.abs(Math.sin(frame * .018 + b.x * .002));
+        ctx.fillStyle = b.bull ? `rgba(46,204,113,${b.a})` : `rgba(231,76,60,${b.a})`;
+        ctx.fillRect(b.x, b.y, b.w, b.h);
+        ctx.strokeStyle = b.bull ? `rgba(46,204,113,${b.a * 3})` : `rgba(231,76,60,${b.a * 3})`;
+        ctx.lineWidth = .6;
+        ctx.strokeRect(b.x, b.y, b.w, b.h);
+      });
+
+      // Multi-instrument waves with glow
+      waves.forEach((wave, wi) => {
+        const offset = frame * (.018 + wi * .006);
+        // Glow pass
+        ctx.beginPath();
+        wave.data.forEach((v, i) => {
+          const x = (i / (wave.data.length - 1)) * W;
+          const y = v + Math.sin((i * .08) + offset) * 8;
+          i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+        });
+        ctx.strokeStyle = wave.color + (wi === 0 ? ".12)" : ".06)");
+        ctx.lineWidth = wave.lw * 4; ctx.filter = "blur(3px)"; ctx.stroke(); ctx.filter = "none";
+        // Sharp line
+        ctx.beginPath();
+        wave.data.forEach((v, i) => {
+          const x = (i / (wave.data.length - 1)) * W;
+          const y = v + Math.sin((i * .08) + offset) * 8;
+          i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+        });
+        ctx.strokeStyle = wave.color + (wi === 0 ? ".22)" : ".12)");
+        ctx.lineWidth = wave.lw; ctx.stroke();
+        // Gradient fill under first wave
+        if (wi === 0) {
+          const grad = ctx.createLinearGradient(0, wave.data[0] - 40, 0, H);
+          grad.addColorStop(0, "rgba(201,168,76,.06)");
+          grad.addColorStop(1, "rgba(201,168,76,0)");
+          ctx.beginPath();
+          wave.data.forEach((v, i) => {
+            const x = (i / (wave.data.length - 1)) * W;
+            const y = v + Math.sin((i * .08) + offset) * 8;
+            i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+          });
+          ctx.lineTo(W, H); ctx.lineTo(0, H); ctx.closePath();
+          ctx.fillStyle = grad; ctx.fill();
+        }
+      });
+
+      // Particles + neural network connections
+      pts.forEach(p => {
+        p.x += p.vx; p.y += p.vy; p.pulse += .025;
+        if (p.x < 0) p.x = W; if (p.x > W) p.x = 0;
+        if (p.y < 0) p.y = H; if (p.y > H) p.y = 0;
+        const pa = .25 + .45 * Math.abs(Math.sin(p.pulse));
+        // Outer glow
+        const gradient = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.r * 6);
+        gradient.addColorStop(0, `rgba(201,168,76,${pa * .3})`);
+        gradient.addColorStop(1, "rgba(201,168,76,0)");
+        ctx.beginPath(); ctx.arc(p.x, p.y, p.r * 6, 0, Math.PI * 2);
+        ctx.fillStyle = gradient; ctx.fill();
+        // Core
+        ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(201,168,76,${pa})`; ctx.fill();
+      });
+      // Connections
+      for (let i = 0; i < N; i++) for (let j = i + 1; j < N; j++) {
+        const dx = pts[i].x - pts[j].x, dy = pts[i].y - pts[j].y;
+        const d = Math.sqrt(dx*dx + dy*dy);
+        if (d < 140) {
+          ctx.beginPath(); ctx.moveTo(pts[i].x, pts[i].y); ctx.lineTo(pts[j].x, pts[j].y);
+          ctx.strokeStyle = `rgba(201,168,76,${(.10 - d/1600) * .7})`; ctx.lineWidth = .5; ctx.stroke();
+        }
+      }
+
+      // Scanning line
+      const scanX = (frame * 1.2) % (W + 100) - 50;
+      const scanGrad = ctx.createLinearGradient(scanX - 40, 0, scanX + 2, 0);
+      scanGrad.addColorStop(0, "rgba(201,168,76,0)");
+      scanGrad.addColorStop(1, "rgba(201,168,76,.06)");
+      ctx.fillStyle = scanGrad; ctx.fillRect(scanX - 40, 0, 42, H);
+
+      // Floating data tags
+      if (frame % 120 === 0) {
+        waves[0].data = makeWave(frame * .01, 55, .13, H * .38);
+      }
+
       raf = requestAnimationFrame(draw);
     };
     draw();
@@ -237,34 +318,37 @@ function HeroCanvas() {
 
 function LiveTicker() {
   const [prices, setPrices] = useState([
-    { s: "XAUUSD", p: 5216.59, c: +1.22 },
-    { s: "EURUSD", p: 1.0842, c: -0.18 },
-    { s: "GBPUSD", p: 1.2631, c: +0.31 },
-    { s: "BTCUSD", p: 67842, c: +2.14 },
+    { s: "XAUUSD", p: 5216.59, c: +1.22, prev: 5216.59 },
+    { s: "EURUSD", p: 1.0842, c: -0.18, prev: 1.0842 },
+    { s: "GBPUSD", p: 1.2631, c: +0.31, prev: 1.2631 },
+    { s: "BTCUSD", p: 67842, c: +2.14, prev: 67842 },
   ]);
   useEffect(() => {
     const iv = setInterval(() => {
-      setPrices(prev => prev.map(p => ({
-        ...p,
-        p: +(p.p * (1 + (Math.random() - .5) * .0002)).toFixed(p.s === "XAUUSD" ? 2 : p.s === "BTCUSD" ? 0 : 4),
-        c: +(p.c + (Math.random() - .5) * .04).toFixed(2),
-      })));
-    }, 1200);
+      setPrices(prev => prev.map(p => {
+        const np = +(p.p * (1 + (Math.random() - .5) * .00018)).toFixed(p.s === "XAUUSD" ? 2 : p.s === "BTCUSD" ? 0 : 4);
+        return { ...p, prev: p.p, p: np, c: +(p.c + (Math.random() - .5) * .035).toFixed(2) };
+      }));
+    }, 900);
     return () => clearInterval(iv);
   }, []);
   return (
-    <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginTop: 10 }}>
-      {prices.map((p, i) => (
-        <div key={i} style={{ padding: "6px 12px", borderRadius: 8, background: "rgba(255,255,255,.03)", border: "1px solid rgba(201,168,76,.08)", display: "flex", gap: 8, alignItems: "center" }}>
-          <span style={{ fontSize: 9, fontWeight: 700, color: "var(--g)", fontFamily: "'JetBrains Mono',monospace", letterSpacing: 1 }}>{p.s}</span>
-          <span style={{ fontSize: 11, fontWeight: 700, color: "var(--tx)", fontFamily: "'JetBrains Mono',monospace" }}>{p.p.toLocaleString()}</span>
-          <span style={{ fontSize: 9, fontWeight: 700, color: p.c >= 0 ? "#2ECC71" : "#E74C3C" }}>{p.c >= 0 ? "▲" : "▼"}{Math.abs(p.c)}%</span>
-        </div>
-      ))}
+    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 6, marginTop: 14 }}>
+      {prices.map((p, i) => {
+        const up = p.p >= p.prev;
+        return (
+          <div key={i} style={{ padding: "8px 10px", borderRadius: 8, background: "rgba(255,255,255,.025)", border: `1px solid ${up ? "rgba(46,204,113,.12)" : "rgba(231,76,60,.12)"}`, transition: "border-color .3s" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+              <span style={{ fontSize: 9, fontWeight: 700, color: "var(--g)", fontFamily: "'JetBrains Mono',monospace", letterSpacing: 1 }}>{p.s}</span>
+              <span style={{ fontSize: 8, fontWeight: 700, color: up ? "#2ECC71" : "#E74C3C", padding: "1px 5px", borderRadius: 3, background: up ? "rgba(46,204,113,.1)" : "rgba(231,76,60,.1)" }}>{p.c >= 0 ? "+" : ""}{p.c}%</span>
+            </div>
+            <div style={{ fontSize: 13, fontWeight: 700, color: up ? "#e8f8f0" : "#fde8e8", fontFamily: "'JetBrains Mono',monospace", marginTop: 3, transition: "color .2s" }}>{p.p.toLocaleString()}</div>
+          </div>
+        );
+      })}
     </div>
   );
 }
-
 function Reviews() {
   const [cur, setCur] = useState(0);
   useEffect(() => { const iv = setInterval(() => setCur(c => (c + 1) % reviewsData.length), 5000); return () => clearInterval(iv); }, []);
@@ -709,63 +793,143 @@ export default function Home() {
         </div>
       </nav>
 
-      {/* HERO — CINEMATIC */}
-      <section id="hero" style={{ position: "relative", minHeight: "100vh", display: "flex", alignItems: "center", overflow: "hidden", paddingTop: 120, paddingBottom: 60 }}>
+      {/* HERO — MAXIMUM IMPACT */}
+      <section id="hero" style={{ position: "relative", minHeight: "100vh", display: "flex", flexDirection: "column", justifyContent: "center", overflow: "hidden", paddingTop: 130, paddingBottom: 80 }}>
         <HeroCanvas />
-        <video autoPlay muted loop playsInline style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", opacity: .055, zIndex: 0, filter: "sepia(.6) hue-rotate(5deg)" }}>
+        {/* Trading floor video */}
+        <video autoPlay muted loop playsInline style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", opacity: .05, zIndex: 0, filter: "sepia(.7) hue-rotate(8deg) contrast(1.2)" }}>
           <source src="https://videos.pexels.com/video-files/3945078/3945078-hd_1920_1080_30fps.mp4" type="video/mp4" />
         </video>
-        <div style={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse 100% 80% at 50% -10%, rgba(201,168,76,.10), transparent 58%)", zIndex: 1 }} />
-        <div style={{ position: "absolute", inset: 0, background: "linear-gradient(180deg, var(--bg) 0%, transparent 12%, transparent 88%, var(--bg) 100%)", zIndex: 1 }} />
-        <div style={{ position: "absolute", inset: 0, background: "linear-gradient(90deg, rgba(6,6,11,.88) 0%, rgba(6,6,11,.15) 55%, transparent 100%)", zIndex: 1 }} />
+        {/* Depth layers */}
+        <div style={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse 120% 80% at 50% -15%, rgba(201,168,76,.12), transparent 55%)", zIndex: 1 }} />
+        <div style={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse 60% 60% at 15% 80%, rgba(201,168,76,.04), transparent)", zIndex: 1 }} />
+        <div style={{ position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(6,6,11,.95) 0%, rgba(6,6,11,.1) 20%, rgba(6,6,11,.1) 80%, rgba(6,6,11,.98) 100%)", zIndex: 1 }} />
+        <div style={{ position: "absolute", inset: 0, background: "linear-gradient(105deg, rgba(6,6,11,.92) 0%, rgba(6,6,11,.3) 45%, transparent 100%)", zIndex: 1 }} />
+        {/* Bottom vignette */}
+        <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, height: "30%", background: "linear-gradient(0deg, var(--bg), transparent)", zIndex: 1 }} />
+
         <div className="hg" style={{ position: "relative", zIndex: 2 }}>
+          {/* LEFT — Text */}
           <div>
-            <div className="hbd"><span className="hdt" /><span>{L.hero_badge}</span></div>
-            <h1 style={{ fontSize: "clamp(50px,7.5vw,100px)", lineHeight: 1.0, marginBottom: 28 }}>
-              {L.hero_title}<br />
-              <span style={{ background: "linear-gradient(135deg,#C9A84C 0%,#f5e090 45%,#C9A84C 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>
+            {/* Live badge */}
+            <div className="hbd" style={{ marginBottom: 32 }}>
+              <span className="hdt" />
+              <span>{L.hero_badge}</span>
+            </div>
+
+            {/* Massive headline */}
+            <h1 style={{ fontSize: "clamp(52px,8vw,108px)", lineHeight: .98, marginBottom: 32, letterSpacing: "-2px" }}>
+              <span style={{ display: "block", color: "var(--tx)", fontWeight: 700 }}>{L.hero_title}</span>
+              <span style={{
+                display: "block",
+                background: "linear-gradient(120deg, #8a6a1a 0%, #C9A84C 25%, #f5e090 50%, #C9A84C 75%, #8a6a1a 100%)",
+                backgroundSize: "200% auto",
+                WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text",
+                animation: "shimmer 4s linear infinite",
+              }}>
                 <Typewriter lang={lang} />
               </span>
             </h1>
-            <p className="hp" style={{ fontSize: "clamp(15px,1.7vw,18px)", maxWidth: 510, lineHeight: 1.9 }}>{L.hero_desc}</p>
-            <div className="hbt">
-              <a href="#pricing" className="bg2" style={{ padding: "14px 34px", fontSize: 14, fontWeight: 700, letterSpacing: .5, boxShadow: "0 8px 32px rgba(201,168,76,.3)" }}>{L.hero_btn1}</a>
-              <a href="#hub" className="bo" style={{ padding: "14px 28px", fontSize: 14 }}>{L.hero_btn2}</a>
+
+            <p className="hp" style={{ fontSize: "clamp(15px,1.7vw,19px)", maxWidth: 520, lineHeight: 1.95, color: "rgba(240,237,230,.75)" }}>{L.hero_desc}</p>
+
+            {/* CTAs */}
+            <div className="hbt" style={{ gap: 16, marginBottom: 0 }}>
+              <a href="#pricing" className="bg2" style={{ padding: "16px 38px", fontSize: 14, fontWeight: 800, letterSpacing: 1, boxShadow: "0 8px 40px rgba(201,168,76,.35), inset 0 1px 0 rgba(255,255,255,.15)", textTransform: "uppercase" as const }}>
+                {L.hero_btn1}
+              </a>
+              <a href="#hub" className="bo" style={{ padding: "16px 30px", fontSize: 14, letterSpacing: .5 }}>{L.hero_btn2}</a>
             </div>
-            <div className="hero-trust" style={{ marginTop: 32 }}>
-              <div className="hero-trust-item">✓ Brussels Hub OPEN</div>
-              <div className="hero-trust-dot" />
-              <div className="hero-trust-item">✓ BCE BE 1028.230.781</div>
-              <div className="hero-trust-dot" />
-              <div className="hero-trust-item">✓ 200+ Professionals</div>
+
+            {/* Trust bar */}
+            <div className="hero-trust" style={{ marginTop: 36, paddingTop: 28 }}>
+              {[
+                { icon: "🏛️", label: "Brussels Hub — NOW OPEN" },
+                { icon: "✓", label: "BCE BE 1028.230.781" },
+                { icon: "✓", label: "200+ Professionals" },
+                { icon: "✓", label: "13 Years Expertise" },
+              ].map((item, i) => (
+                <span key={i} style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 11, color: "rgba(240,237,230,.55)", letterSpacing: .3 }}>
+                  <span style={{ color: "var(--g)", fontSize: 10 }}>{item.icon}</span>
+                  {item.label}
+                  {i < 3 && <span style={{ width: 3, height: 3, borderRadius: "50%", background: "rgba(201,168,76,.4)", margin: "0 6px" }} />}
+                </span>
+              ))}
             </div>
           </div>
+
+          {/* RIGHT — Chart card */}
           <div>
-            <div className="cc" style={{ boxShadow: "0 40px 100px rgba(0,0,0,.65), 0 0 80px rgba(201,168,76,.07)", border: "1px solid rgba(201,168,76,.15)", backdropFilter: "blur(20px)", background: "rgba(10,10,14,.85)" }}>
-              <div className="cch">
-                <div><div className="ccs">XAUUSD • Gold</div><div className="ccp">5,216.<span style={{ fontSize: 22, color: "var(--td)" }}>59</span></div></div>
-                <div style={{ textAlign: isRtl ? "left" : "right" }}>
-                  <div className="ccpc">▲ +1.22%</div>
-                  <div style={{ fontSize: 10, color: "var(--tm)", marginTop: 6, fontFamily: "'JetBrains Mono',monospace" }}>{L.chart_conf}</div>
+            <div className="cc" style={{
+              boxShadow: "0 50px 120px rgba(0,0,0,.7), 0 0 100px rgba(201,168,76,.08), inset 0 1px 0 rgba(201,168,76,.15)",
+              border: "1px solid rgba(201,168,76,.18)",
+              backdropFilter: "blur(24px) saturate(1.4)",
+              background: "rgba(8,8,12,.88)",
+              borderRadius: 24,
+            }}>
+              {/* Header */}
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 16 }}>
+                <div>
+                  <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 4 }}>
+                    <div style={{ width: 6, height: 6, borderRadius: "50%", background: "#2ECC71", animation: "pls 2s infinite" }} />
+                    <span style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: 10, color: "var(--g)", fontWeight: 700, letterSpacing: 2 }}>LIVE • XAUUSD</span>
+                  </div>
+                  <div style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: 36, fontWeight: 700, lineHeight: 1, letterSpacing: -1 }}>
+                    5,216<span style={{ fontSize: 20, color: "var(--td)" }}>.59</span>
+                    <span style={{ fontSize: 13, color: "#2ECC71", fontFamily: "'JetBrains Mono',monospace", marginLeft: 10, fontWeight: 700 }}>▲ +1.22%</span>
+                  </div>
+                </div>
+                <div style={{ textAlign: "right" }}>
+                  <div style={{ fontSize: 9, color: "var(--tm)", letterSpacing: 1.5, textTransform: "uppercase" as const, marginBottom: 4 }}>AI Confidence</div>
+                  <div style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: 20, fontWeight: 700, color: "var(--g)" }}>94.2%</div>
+                  <div style={{ display: "flex", gap: 3, justifyContent: "flex-end", marginTop: 4 }}>
+                    {[90,75,85,95,70,88,94].map((v,i) => (
+                      <div key={i} style={{ width: 3, height: v/10, borderRadius: 2, background: `rgba(201,168,76,${.3+v/200})`, alignSelf: "flex-end" }} />
+                    ))}
+                  </div>
                 </div>
               </div>
+
               <LiveChart />
-              <div className="cctg"><span className="cct">Trend: Bullish</span><span className="cct">Volume: High</span><span className="cct">RSI: 62.4</span></div>
-              <div className="ccai"><span className="ccaid" /><span>{L.chart_ai} <b>{L.chart_ai2}</b> {L.chart_ai3}</span></div>
+
+              <div className="cctg" style={{ marginTop: 10 }}>
+                <span className="cct">📈 Trend: Bullish</span>
+                <span className="cct">📊 Volume: High</span>
+                <span className="cct">⚡ RSI: 62.4</span>
+                <span className="cct">🎯 OB Detected</span>
+              </div>
+
+              <div className="ccai" style={{ marginTop: 12 }}>
+                <span className="ccaid" />
+                <span style={{ fontSize: 11 }}>{L.chart_ai} <b style={{ color: "var(--g)" }}>{L.chart_ai2}</b> {L.chart_ai3}</span>
+              </div>
+
               <LiveTicker />
-              <div style={{ marginTop: 16, paddingTop: 16, borderTop: "1px solid rgba(201,168,76,.06)", display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 0 }}>
-                {[["11", "Indicators"], ["6", "Strategies"], ["13+", "Years"]].map(([v, l2], i) => (
-                  <div key={i} style={{ textAlign: "center", padding: "12px 0", borderRight: i < 2 ? "1px solid rgba(201,168,76,.06)" : "none" }}>
-                    <div style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: 26, fontWeight: 700, color: "var(--g)" }}>{v}</div>
-                    <div style={{ fontSize: 9, color: "var(--td)", letterSpacing: 1.5, textTransform: "uppercase" as const, marginTop: 2 }}>{l2}</div>
+
+              {/* Bottom stats */}
+              <div style={{ marginTop: 16, paddingTop: 14, borderTop: "1px solid rgba(201,168,76,.07)", display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 0 }}>
+                {[["11", "Indicators"], ["6", "Strategies"], ["200+", "Clients"], ["13+", "Years"]].map(([v, l2], i) => (
+                  <div key={i} style={{ textAlign: "center", padding: "10px 4px", borderRight: i < 3 ? "1px solid rgba(201,168,76,.06)" : "none" }}>
+                    <div style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: 22, fontWeight: 700, color: "var(--g)", lineHeight: 1 }}>{v}</div>
+                    <div style={{ fontSize: 8, color: "var(--td)", letterSpacing: 1.2, textTransform: "uppercase" as const, marginTop: 3 }}>{l2}</div>
                   </div>
                 ))}
               </div>
             </div>
+
+            {/* Floating label under card */}
+            <div style={{ textAlign: "center", marginTop: 12, fontSize: 10, color: "rgba(201,168,76,.4)", letterSpacing: 2, textTransform: "uppercase" as const, fontFamily: "'JetBrains Mono',monospace" }}>
+              ● LIVE MARKET DATA • AUREUS IA ENGINE
+            </div>
           </div>
         </div>
-      </section>
 
+        {/* Scroll indicator */}
+        <div style={{ position: "absolute", bottom: 32, left: "50%", transform: "translateX(-50%)", zIndex: 2, display: "flex", flexDirection: "column", alignItems: "center", gap: 6, opacity: .5 }}>
+          <div style={{ fontSize: 9, color: "var(--g)", letterSpacing: 3, textTransform: "uppercase" as const }}>Scroll</div>
+          <div style={{ width: 1, height: 40, background: "linear-gradient(var(--g),transparent)", animation: "scrollPulse 2s ease-in-out infinite" }} />
+        </div>
+      </section>
       {/* STATS */}
       <section style={{ padding: "0 28px" }}><div className="stats">
         {[{ v: "13+", l: L.stat1 }, { v: "200+", l: L.stat2 }, { v: "11", l: L.stat3 }, { v: "24/7", l: L.stat4 }].map((s, i) => (
