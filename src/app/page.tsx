@@ -17,11 +17,10 @@ const tickerData = [
 ];
 
 const reviewsData = [
-  { n: "Marc D.", r: "Independent Trader", t_txt: "Aureus IA has completely transformed my analytical approach. The AI indicators detect patterns I would never have seen. Exceptional." },
-  { n: "Sophie L.", r: "Financial Analyst", t_txt: "The coaching with our founder is incredibly valuable. 13 years of expertise distilled into actionable insights. The platform is next-level." },
-  { n: "Thomas B.", r: "Portfolio Manager", t_txt: "Finally an AI tool that delivers real analytical depth. The institutional-grade approach is exactly what I needed." },
-  { n: "Elena K.", r: "Data Scientist", t_txt: "From a technical standpoint, the AI models behind Aureus IA are impressive. Pattern recognition accuracy is truly remarkable." },
-  { n: "Pierre V.", r: "Day Trader", t_txt: "The Discovery Day was a game-changer. A full day of immersion that gave me a completely new perspective on market analysis." },
+  { n: "NOON", r: "Google Review ★★★★★", t_txt: "J'ai eu l'occasion d'assister à une présentation par le maître lui-même. Je n'ai qu'une seule hâte c'est de pouvoir l'utiliser très prochainement. Un réel BANGER 🔥🔥🔥🔥" },
+  { n: "Mehdi R.", r: "Google Review ★★★★★", t_txt: "Après une journée de formation, j'ai pu prendre en main l'outils, corresponds à mes attentes, le formateur est pro et dispose d'une expertise en lien avec l'analyse institutionnelle, je suis très satisfait, je recommande 👌" },
+  { n: "Assy Steven", r: "Google Review ★★★★★", t_txt: "Super outil qui complète grandement l'analyse et permet de meilleure entrée" },
+  { n: "Mucahid Bilgili", r: "Google Review ★★★★★", t_txt: "Un outil incroyable !" },
 ];
 
 const indicators = [
@@ -355,12 +354,19 @@ function Reviews() {
   const r = reviewsData[cur];
   return (
     <div className="rv">
+      <a href="https://maps.app.goo.gl/VMUHTHixnwayVXV96" target="_blank" rel="noopener noreferrer" style={{ display:"inline-flex",alignItems:"center",gap:10,background:"rgba(255,255,255,.07)",border:"1px solid rgba(201,168,76,.3)",borderRadius:12,padding:"10px 20px",marginBottom:28,textDecoration:"none",transition:"all .3s" }} onMouseOver={e=>(e.currentTarget.style.background="rgba(201,168,76,.12)")} onMouseOut={e=>(e.currentTarget.style.background="rgba(255,255,255,.07)")}>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 01-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18A10.96 10.96 0 001 12c0 1.77.42 3.44 1.18 4.93l3.66-2.84z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
+        <span style={{ color:"#C9A84C",fontWeight:700,fontSize:15 }}>5.0</span>
+        <span style={{ color:"#C9A84C",fontSize:13 }}>★★★★★</span>
+        <span style={{ color:"rgba(255,255,255,.6)",fontSize:13 }}>Google Reviews</span>
+      </a>
       <div className="rvq">&ldquo;</div>
       <p className="rvt">{r.t_txt}</p>
       <div className="rvs">★★★★★</div>
       <div className="rvn">{r.n}</div>
       <div className="rvr">{r.r}</div>
       <div className="rvd">{reviewsData.map((_, i) => (<button key={i} className={`rvdt ${i === cur ? "act" : ""}`} onClick={() => setCur(i)} />))}</div>
+      <a href="https://maps.app.goo.gl/VMUHTHixnwayVXV96" target="_blank" rel="noopener noreferrer" style={{ display:"inline-block",marginTop:20,color:"#C9A84C",fontSize:13,textDecoration:"none",borderBottom:"1px solid rgba(201,168,76,.3)",paddingBottom:2 }}>See all reviews on Google →</a>
     </div>
   );
 }
@@ -1185,7 +1191,7 @@ export default function Home() {
           <p style={{ fontSize: 12, color: "var(--tm)", lineHeight: 1.65, whiteSpace: "pre-line" }}>{L.ft_disc}</p>
         </div>
         <div><div className="fh">{L.ft_platform}</div><a href="#services">{L.nav_services}</a><a href="#hub">Brussels Hub</a><a href="#indicators">{L.nav_indicators}</a><a href="#strategies">Strategies</a><a href="#discovery">Discovery Day</a><a href="#pricing">{L.nav_pricing}</a></div>
-        <div><div className="fh">{L.ft_legal}</div><a href="https://fr.trustpilot.com/review/aureus-ia.com" target="_blank" rel="noopener noreferrer">⭐ Trustpilot</a><a href="#" onClick={e => { e.preventDefault(); setShowPrivacy(true); }}>{L.ft_privacy}</a><a href="#" onClick={e => { e.preventDefault(); setShowTerms(true); }}>{L.ft_terms}</a></div>
+        <div><div className="fh">{L.ft_legal}</div><a href="https://maps.app.goo.gl/VMUHTHixnwayVXV96" target="_blank" rel="noopener noreferrer">⭐ Google Reviews (5.0/5)</a><a href="https://fr.trustpilot.com/review/aureus-ia.com" target="_blank" rel="noopener noreferrer">⭐ Trustpilot</a><a href="#" onClick={e => { e.preventDefault(); setShowPrivacy(true); }}>{L.ft_privacy}</a><a href="#" onClick={e => { e.preventDefault(); setShowTerms(true); }}>{L.ft_terms}</a></div>
         <div><div className="fh">{L.ft_contact}</div><p style={{ fontSize: 12, color: "var(--td)", lineHeight: 1.65 }}>Pl. Marcel Broodthaers 8<br />1060 Saint-Gilles, Belgium<br />info@aureus-ia.com<br />+32 491 70 94 13</p></div>
       </div><div className="fb">{L.ft_copy}</div></footer>
 
