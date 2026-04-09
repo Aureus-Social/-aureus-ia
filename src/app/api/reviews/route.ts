@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 // ━━━ CONFIG ━━━
 const PLACE_ID = process.env.GOOGLE_PLACE_ID || "";
 const API_KEY = process.env.GOOGLE_PLACES_API_KEY || "";
-const CACHE_TTL = 24 * 60 * 60 * 1000; // 24h in ms
+const CACHE_TTL = 7 * 24 * 60 * 60 * 1000; // 7 days in ms
 
 // ━━━ IN-MEMORY CACHE ━━━
 let cache: { data: unknown; ts: number } | null = null;
@@ -25,14 +25,14 @@ export async function GET() {
   // Return cache if fresh
   if (cache && Date.now() - cache.ts < CACHE_TTL) {
     return NextResponse.json(cache.data, {
-      headers: { "Cache-Control": "public, s-maxage=86400, stale-while-revalidate=3600" },
+      headers: { "Cache-Control": "public, s-maxage=604800, stale-while-revalidate=86400" },
     });
   }
 
   // If no API key or Place ID configured, return fallback
   if (!API_KEY || !PLACE_ID) {
     return NextResponse.json(FALLBACK, {
-      headers: { "Cache-Control": "public, s-maxage=86400" },
+      headers: { "Cache-Control": "public, s-maxage=604800" },
     });
   }
 
@@ -73,7 +73,7 @@ export async function GET() {
     cache = { data: result, ts: Date.now() };
 
     return NextResponse.json(result, {
-      headers: { "Cache-Control": "public, s-maxage=86400, stale-while-revalidate=3600" },
+      headers: { "Cache-Control": "public, s-maxage=604800, stale-while-revalidate=86400" },
     });
   } catch (err) {
     console.error("Google Places fetch error:", err);
